@@ -35,10 +35,10 @@ jobs:
         run: |
           .github/scripts/activate_env.bat
 
-      - name: Download Multiwfn source code
-        run: |
-          curl -L http://sobereva.com/multiwfn/misc/${{env.Multiwfn_version}}.zip -o Multiwfn_src.zip
-          7z x Multiwfn_src.zip
+      # - name: Download Multiwfn source code
+      #   run: |
+      #     curl -L http://sobereva.com/multiwfn/misc/${{env.Multiwfn_version}}.zip -o Multiwfn_src.zip
+      #     7z x Multiwfn_src.zip
         
       - name: Configure build for amd64
         uses: ilammy/msvc-dev-cmd@v1
@@ -62,7 +62,7 @@ jobs:
         uses: actions/upload-artifact@v4
         if: ${{ success() }}
         with:
-          name: Multwnf_Win_X64
+          name: Multwnf_Win_x64
           path: |
             ${{env.Multiwfn_version}}\build\x64\Release\Multiwfn.exe
             .\libiomp5md.dll

@@ -21,8 +21,8 @@ if(NOT CMAKE_BUILD_TYPE)
       FORCE)
 endif()
 
-# 设置编译选项
-set(CMAKE_Fortran_FLAGS_RELEASE "/MP /O2 /Qopenmp /fpp /Qmkl:parallel /Qmkl /QxSSE3 /threads /stand:f08 /static-intel /DINTEL_MKL /D_WIN32")
+# 设置编译选项 O2 级别
+set(CMAKE_Fortran_FLAGS_RELEASE "/MP /O2 /Qopenmp /fpp /Qmkl:parallel /Qmkl /QxCORE-AVX2 /threads /stand:f08 /static-intel /DINTEL_MKL /D_WIN32")
 
 # 设置链接器选项
 set(CMAKE_EXE_LINKER_FLAGS "/STACK:1900000000 legacy_stdio_definitions.lib")
@@ -31,7 +31,7 @@ set(CMAKE_EXE_LINKER_FLAGS "/STACK:1900000000 legacy_stdio_definitions.lib")
 set(LIB_base "")
 set(LIB_GUI "disifl_d.lib")
 set(LIB_noGUI "${LIB_base}")
-set(INCLUDE "-I./ -I./ext")
+set(INCLUDE "-I./ -I./ext -I./libreta_hybrid")
 
 # 添加可执行文件
 set(EXE "Multiwfn")
@@ -88,7 +88,7 @@ set(SOURCES
     deloc_aromat.f90
     cp2kmate.f90
     minpack.f90
-    ext/no2F2.f90
+    #ext/no2F2.f90
     ext/frj.f90
 )
 
@@ -107,6 +107,7 @@ set(LIBRETAPATH "./libreta_hybrid")
 # 添加libreta的源文件
 set(LIBRETA_SOURCES
     ${LIBRETAPATH}/libreta.f90
+    # XXXhrr_012345.f90 O2编译非常耗时间
     ${LIBRETAPATH}/hrr_012345.f90
     ${LIBRETAPATH}/blockhrr_012345.f90
     ${LIBRETAPATH}/ean.f90
