@@ -5,8 +5,8 @@ project(Multiwfn Fortran C)
 set(CMAKE_Fortran_COMPILER ifort)
 set(CMAKE_C_COMPILER cl)  # 使用Visual Studio的C编译器
 
-# 设置生成Visual Studio 2019解决方案
-set(CMAKE_GENERATOR "Visual Studio 16 2019")
+# 设置生成Visual Studio 2022解决方案
+set(CMAKE_GENERATOR "Visual Studio 17 2022")
 
 # 设置编译选项
 set(CMAKE_Fortran_FLAGS_RELEASE "/MP /Qopenmp /fpp /Qmkl:parallel /Qmkl /QxSSE3 /threads /stand:f08 /static-intel /DINTEL_MKL /D_WIN32")
