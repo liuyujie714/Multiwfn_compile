@@ -8,6 +8,7 @@ start /b /wait %TEMP%\webimage.exe -s -x -f webimage_extracted --log extract.log
 del %TEMP%\webimage.exe
 webimage_extracted\bootstrapper.exe -s --action install --components=%COMPONENTS% --eula=accept -p=NEED_VS2017_INTEGRATION=0 -p=NEED_VS2019_INTEGRATION=0 -p=NEED_VS2022_INTEGRATION=1 --log-dir=.
 
+
 set installer_exit_code=%ERRORLEVEL%
 rd /s/q "webimage_extracted"
 exit /b %installer_exit_code%
