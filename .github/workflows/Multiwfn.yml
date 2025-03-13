@@ -26,7 +26,7 @@ jobs:
           path: ifort-2021.12
           key: ${{ runner.os }}-ifort-2021.12
 
-      - name: Install Fortran compiler and VS 2022 integration
+      - name: Install Fortran compiler and Visual Studio 2022 integration
         if: steps.cache-ifort.outputs.cache-hit != 'true'
         run: |
           .github/scripts/install_ifort.bat ${{env.WINDOWS_HPCKIT_URL}} ${{env.WINDOWS_FORTRAN_COMPONENTS}}
