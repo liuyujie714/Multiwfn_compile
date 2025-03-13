@@ -7,22 +7,21 @@ on:
 
 env:
   Multiwfn_version:  Multiwfn_3.8_dev_src_Linux
+  WINDOWS_HPCKIT_URL: https://registrationcenter-download.intel.com/akdlm/IRC_NAS/a37c30c3-a846-4371-a85d-603e9a9eb94c/intel-oneapi-hpc-toolkit-2025.0.1.48_offline.exe
+  WINDOWS_FORTRAN_COMPONENTS: intel.oneapi.win.ifort-compiler
 
 jobs:
   Windows:
-    runs-on: windows-2019
+    runs-on: windows-2022
 
     if: github.event.repository.owner.id == github.event.sender.id
     steps:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Set up Ifortran
-        uses: fortran-lang/setup-fortran@v1
-        id: setup-fortran
-        with:
-          compiler: intel-classic
-          version: 2021.12
+      - name: Install Fortran compiler
+        run: |
+          .github/scripts/install_windows.bat $WINDOWS_HPCKIT_URL $WINDOWS_FORTRAN_COMPONENTS
 
       - name: Download Multiwfn source code
         run: |
