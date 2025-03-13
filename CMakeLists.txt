@@ -1,9 +1,8 @@
 cmake_minimum_required(VERSION 3.10)
-project(Multiwfn Fortran C)
+project(Multiwfn Fortran)
 
 # 设置编译器为Intel Visual Fortran
 set(CMAKE_Fortran_COMPILER ifort)
-set(CMAKE_C_COMPILER cl)  # 使用Visual Studio的C编译器
 
 # 设置生成Visual Studio 2022解决方案
 set(CMAKE_GENERATOR "Visual Studio 17 2022")
@@ -74,7 +73,6 @@ set(SOURCES
     deloc_aromat.f90
     cp2kmate.f90
     minpack.f90
-    ext/no2F2.c
     ext/no2F2.f90
     ext/frj.f90
 )
