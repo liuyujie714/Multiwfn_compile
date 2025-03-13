@@ -19,7 +19,15 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
+      - name: Cache Fortran compiler 2021.12
+        id: cache-ifort
+        uses: actions/cache@v4
+        with:
+          path: ifort-2021.12
+          key: ${{ runner.os }}-ifort-2021.12
+
       - name: Install Fortran compiler
+        if: steps.cache-ifort.outputs.cache-hit != 'true'
         run: |
           .github/scripts/install_windows.bat ${{env.WINDOWS_HPCKIT_URL}} ${{env.WINDOWS_FORTRAN_COMPONENTS}}
 
