@@ -1,4 +1,11 @@
 cmake_minimum_required(VERSION 3.10)
+
+# 只能用于Windows
+if(NOT WIN32)
+  message(FATAL_ERROR "Only Windows build is supported!")
+endif()
+
+# 打开Fotran支持
 project(Multiwfn Fortran)
 
 # 设置编译器为Intel Visual Fortran
@@ -7,9 +14,15 @@ set(CMAKE_Fortran_COMPILER ifort)
 # 设置生成Visual Studio 2022解决方案
 set(CMAKE_GENERATOR "Visual Studio 17 2022")
 
+# Release
+if(NOT CMAKE_BUILD_TYPE)
+  set(CMAKE_BUILD_TYPE Release CACHE STRING
+      "Choose the type of build, options are: None Debug Release RelWithDebInfo MinSizeRel."
+      FORCE)
+endif()
+
 # 设置编译选项
-set(CMAKE_Fortran_FLAGS_RELEASE "/MP /Qopenmp /fpp /Qmkl:parallel /Qmkl /QxSSE3 /threads /stand:f08 /static-intel /DINTEL_MKL /D_WIN32")
-set(CMAKE_Fortran_FLAGS_DEBUG "/Od /Qopenmp /fpp /Qmkl:parallel /Qmkl /QxSSE3 /threads /stand:f08 /static-intel /DINTEL_MKL /D_WIN32 /debug:all /traceback /check:all /fstack-protector")
+set(CMAKE_Fortran_FLAGS_RELEASE "/MP /O2 /Qopenmp /fpp /Qmkl:parallel /Qmkl /QxSSE3 /threads /stand:f08 /static-intel /DINTEL_MKL /D_WIN32")
 
 # 设置链接器选项
 set(CMAKE_EXE_LINKER_FLAGS "/STACK:1900000000 legacy_stdio_definitions.lib")
@@ -22,7 +35,9 @@ set(INCLUDE "-I./ -I./ext")
 
 # 添加可执行文件
 set(EXE "Multiwfn")
-set(EXE_noGUI "Multiwfn_noGUI")
+if (NOGUI)
+    set(EXE_noGUI "Multiwfn_noGUI")
+endif()
 
 # 添加源文件
 set(SOURCES
@@ -103,16 +118,16 @@ set(LIBRETA_SOURCES
 
 # 添加可执行文件
 add_executable(${EXE} ${SOURCES} ${SOURCES_GUI} ${LIBRETA_SOURCES})
-add_executable(${EXE_noGUI} ${SOURCES} ${SOURCES_noGUI} ${LIBRETA_SOURCES})
-
 # 设置编译选项
 target_compile_options(${EXE} PRIVATE ${CMAKE_Fortran_FLAGS_RELEASE})
-target_compile_options(${EXE_noGUI} PRIVATE ${CMAKE_Fortran_FLAGS_RELEASE})
-
 # 设置链接库
 target_link_libraries(${EXE} ${LIB_GUI})
-target_link_libraries(${EXE_noGUI} ${LIB_noGUI})
-
 # 设置包含目录
 target_include_directories(${EXE} PRIVATE ${INCLUDE})
-target_include_directories(${EXE_noGUI} PRIVATE ${INCLUDE})
+
+if (NOGUI)
+    add_executable(${EXE_noGUI} ${SOURCES} ${SOURCES_noGUI} ${LIBRETA_SOURCES})
+    target_compile_options(${EXE_noGUI} PRIVATE ${CMAKE_Fortran_FLAGS_RELEASE})
+    target_link_libraries(${EXE_noGUI} ${LIB_noGUI})
+    target_include_directories(${EXE_noGUI} PRIVATE ${INCLUDE})
+endif()

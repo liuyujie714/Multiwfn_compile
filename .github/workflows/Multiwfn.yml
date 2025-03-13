@@ -26,10 +26,14 @@ jobs:
           path: ifort-2021.12
           key: ${{ runner.os }}-ifort-2021.12
 
-      - name: Install Fortran compiler
+      - name: Install Fortran compiler and VS 2022 integration
         if: steps.cache-ifort.outputs.cache-hit != 'true'
         run: |
-          .github/scripts/install_windows.bat ${{env.WINDOWS_HPCKIT_URL}} ${{env.WINDOWS_FORTRAN_COMPONENTS}}
+          .github/scripts/install_ifort.bat ${{env.WINDOWS_HPCKIT_URL}} ${{env.WINDOWS_FORTRAN_COMPONENTS}}
+
+      - name: Activate compiler environment and Copy libiomp5md.dll to working directory
+        run: |
+          .github/scripts/activate_env.bat
 
       - name: Download Multiwfn source code
         run: |
@@ -52,4 +56,14 @@ jobs:
           cmake .. -DCMAKE_BUILD_TYPE=Release -A x64
           cmake --build . --config Release --target Multiwfn
           
-          dir 
+          dir x64\Release
+
+      - name: Upload Multiwfn
+        uses: actions/upload-artifact@v3
+        if: ${{ success() }}
+        with:
+          name: Multwnf_Win_X64
+          path: |
+            ${{env.Multiwfn_version}}\build\x64\Release\Multiwfn.exe
+            .\libiomp5md.dll
+
