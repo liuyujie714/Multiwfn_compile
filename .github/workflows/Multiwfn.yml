@@ -21,7 +21,7 @@ jobs:
 
       - name: Install Fortran compiler
         run: |
-          .github/scripts/install_windows.bat $WINDOWS_HPCKIT_URL $WINDOWS_FORTRAN_COMPONENTS
+          .github/scripts/install_windows.bat ${{env.WINDOWS_HPCKIT_URL}} ${{env.WINDOWS_FORTRAN_COMPONENTS}}
 
       - name: Download Multiwfn source code
         run: |
