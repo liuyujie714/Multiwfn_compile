@@ -1,0 +1,42 @@
+name: Build Multiwfn on Windows
+
+on:
+  push:
+    branches:
+      - master
+
+env:
+  Multiwfn_version:  Multiwfn_3.8_dev_src_Linux
+
+jobs:
+  Windows:
+    runs-on: windows-2019
+
+    if: github.event.repository.owner.id == github.event.sender.id
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Set up Ifortran
+        uses: fortran-lang/setup-fortran@v1
+        id: setup-fortran
+        with:
+          compiler: intel-classic
+          version: 2021.12
+
+      - name: Download Multiwfn source code
+        run: |
+          curl -L http://sobereva.com/multiwfn/misc/${{env.Multiwfn_version}}.zip -o Multiwfn_src.zip
+          7z x Multiwfn_src.zip
+        
+      - name: Compile Multiwfn
+        shell: cmd
+        run: |
+          cd ${{env.Multiwfn_version}}
+          copy ..\CMakeLists.txt . /Y
+          copy disifl_d.lib . /Y
+          md build && cd build
+          cmake .. -DCMAKE_BUILD_TYPE=Release -A x64
+          cmake --build . --config Release --target Multiwfn
+          
+          dir 
