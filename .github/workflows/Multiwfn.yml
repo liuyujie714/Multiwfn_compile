@@ -8,23 +8,16 @@ on:
 env:
   Multiwfn_version:  Multiwfn_3.8_dev_src_Linux
   WINDOWS_HPCKIT_URL: https://registrationcenter-download.intel.com/akdlm/IRC_NAS/c95a3b26-fc45-496c-833b-df08b10297b9/w_HPCKit_p_2024.1.0.561_offline.exe
-  WINDOWS_FORTRAN_COMPONENTS: intel.oneapi.win.ifort-compiler
+  WINDOWS_FORTRAN_COMPONENTS: intel.oneapi.win.ifort-compiler:intel.oneapi.win.mkl
 
 jobs:
   Windows:
-    runs-on: windows-2022
+    runs-on: windows-2019
 
     if: github.event.repository.owner.id == github.event.sender.id
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-
-      # - name: Cache Fortran compiler 2021.12
-      #   id: cache-ifort
-      #   uses: actions/cache@v4
-      #   with:
-      #     path: "C:/Program Files (x86)/Intel/oneAPI"
-      #     key: ${{ runner.os }}-ifort-2021.12
 
       # - name: Cache Code
       #   id: cache-code
@@ -60,7 +53,7 @@ jobs:
           copy ..\disifl_d.lib . /Y
           md build && cd build
           cmake .. -DCMAKE_BUILD_TYPE=Release -A x64
-          cmake --build . --config Release --target Multiwfn -- "-maxCpuCount" "-p:CL_MPCount=3"
+          cmake --build . --config Release --target Multiwfn 
           
           dir x64\Release
 

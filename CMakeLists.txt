@@ -8,9 +8,6 @@ endif()
 # 打开Fotran支持
 project(Multiwfn Fortran)
 
-# 设置编译器为Intel Visual Fortran
-set(CMAKE_Fortran_COMPILER ifort)
-
 # Release
 if(NOT CMAKE_BUILD_TYPE)
   set(CMAKE_BUILD_TYPE Release CACHE STRING
@@ -18,8 +15,30 @@ if(NOT CMAKE_BUILD_TYPE)
       FORCE)
 endif()
 
+# 预定义宏
+add_definitions(
+    /DINTEL_MKL
+    /D_WIN32
+)
+
 # 设置编译选项 O2 级别
-set(CMAKE_Fortran_FLAGS_RELEASE "/O2 /Qopenmp /fpp /Qmkl:parallel /Qmkl /QxCORE-AVX2 /threads /stand:f08 /static /DINTEL_MKL /D_WIN32")
+set(COMMON_FLAGES
+    /fpp
+    /O2
+    /QxHost
+    /Qopenmp
+    /Qmkl:parallel
+    /Qmkl
+    /QxCORE-AVX2
+    /threads
+    /stand:f08
+    /static
+)
+target_compile_options(
+    ${EXE} 
+    PRIVATE
+    ${COMMON_FLAGES}
+)
 
 # 设置链接器选项
 set(CMAKE_EXE_LINKER_FLAGS "/STACK:1900000000 legacy_stdio_definitions.lib")
@@ -27,14 +46,11 @@ set(CMAKE_EXE_LINKER_FLAGS "/STACK:1900000000 legacy_stdio_definitions.lib")
 # 设置库路径和包含路径
 set(LIB_base "")
 set(LIB_GUI "disifl_d.lib")
-set(LIB_noGUI "${LIB_base}")
 set(INCLUDE "-I./ -I./ext -I./libreta_hybrid")
 
 # 添加可执行文件
 set(EXE "Multiwfn")
-if (NOGUI)
-    set(EXE_noGUI "Multiwfn_noGUI")
-endif()
+add_executable(${EXE} "Multiwfn.f90" )
 
 # 添加源文件
 set(SOURCES
@@ -54,7 +70,6 @@ set(SOURCES
     fileIO.f90
     spectrum.f90
     DOS.f90
-    Multiwfn.f90
     0123dim.f90
     LSB.f90
     population.f90
@@ -94,11 +109,6 @@ set(SOURCES_GUI
     dislin_d.f90
 )
 
-# 添加无GUI的源文件
-set(SOURCES_noGUI
-    noGUI/dislin_d_empty.f90
-)
-
 set(LIBRETAPATH "./libreta_hybrid")
 
 # 添加libreta的源文件
@@ -114,18 +124,21 @@ set(LIBRETA_SOURCES
     ${LIBRETAPATH}/ryspoly.f90
 )
 
-# 添加可执行文件
-add_executable(${EXE} ${SOURCES} ${SOURCES_GUI} ${LIBRETA_SOURCES})
-# 设置编译选项
-target_compile_options(${EXE} PRIVATE ${CMAKE_Fortran_FLAGS_RELEASE})
-# 设置链接库
-target_link_libraries(${EXE} ${LIB_GUI})
+# 生成目标文件
+add_library(lib_base STATIC ${SOURCES})
+target_include_directories(lib_base PRIVATE ${INCLUDE})
+target_compile_options(lib_base PRIVATE ${COMMON_FLAGES})
+
+add_library(lib_gui STATIC ${SOURCES_GUI})
+target_include_directories(lib_gui PRIVATE ${INCLUDE})
+target_compile_options(lib_gui PRIVATE ${COMMON_FLAGES})
+
+add_library(libreta_hybrid STATIC ${LIBRETA_SOURCES})
+target_include_directories(libreta_hybrid PRIVATE ${INCLUDE})
+target_compile_options(libreta_hybrid PRIVATE ${COMMON_FLAGES})
+
 # 设置包含目录
 target_include_directories(${EXE} PRIVATE ${INCLUDE})
 
-if (NOGUI)
-    add_executable(${EXE_noGUI} ${SOURCES} ${SOURCES_noGUI} ${LIBRETA_SOURCES})
-    target_compile_options(${EXE_noGUI} PRIVATE ${CMAKE_Fortran_FLAGS_RELEASE})
-    target_link_libraries(${EXE_noGUI} ${LIB_noGUI})
-    target_include_directories(${EXE_noGUI} PRIVATE ${INCLUDE})
-endif()
+# 链接主程序
+target_link_libraries(${EXE} lib_base lib_gui libreta_hybrid)
