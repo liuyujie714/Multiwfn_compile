@@ -60,7 +60,7 @@ jobs:
           copy ..\CMakeLists.txt . /Y
           copy ..\disifl_d.lib . /Y
           md build && cd build
-          cmake .. -DCMAKE_BUILD_TYPE=Release -G Ninja
+          cmake .. -DCMAKE_BUILD_TYPE=Release -A x64
           cmake --build . --config Release --target Multiwfn -- "-maxCpuCount" "-p:CL_MPCount=3"
           
           dir x64\Release
