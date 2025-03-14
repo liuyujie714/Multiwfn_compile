@@ -60,10 +60,11 @@ jobs:
           copy ..\CMakeLists.txt . /Y
           copy ..\disifl_d.lib . /Y
           md build && cd build
-          cmake .. -DCMAKE_BUILD_TYPE=Release -A x64
-          cmake --build . --config Release --target Multiwfn -- "-maxCpuCount" "-p:CL_MPCount=3"
+          cmake .. -DCMAKE_BUILD_TYPE=Release -G Ninja
+          sed -i 's/-MD/-MT/g' build.ninja
+          ninja install -j4 || ninja install -j1
           
-          dir x64\Release
+          dir \Release
 
       - name: Upload Multiwfn
         uses: actions/upload-artifact@v4
@@ -71,6 +72,6 @@ jobs:
         with:
           name: Multwnf_Win_x64
           path: |
-            ${{env.Multiwfn_version}}\build\x64\Release\Multiwfn.exe
+            ${{env.Multiwfn_version}}\build\Release\Multiwfn.exe
             .\libiomp5md.dll
 
