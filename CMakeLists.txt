@@ -11,9 +11,6 @@ project(Multiwfn Fortran)
 # 设置编译器为Intel Visual Fortran
 set(CMAKE_Fortran_COMPILER ifort)
 
-# 设置生成Visual Studio 2022解决方案
-set(CMAKE_GENERATOR "Visual Studio 17 2022")
-
 # Release
 if(NOT CMAKE_BUILD_TYPE)
   set(CMAKE_BUILD_TYPE Release CACHE STRING
@@ -22,7 +19,7 @@ if(NOT CMAKE_BUILD_TYPE)
 endif()
 
 # 设置编译选项 O2 级别
-set(CMAKE_Fortran_FLAGS_RELEASE "/MP /O2 /Qopenmp /fpp /Qmkl:parallel /Qmkl /QxCORE-AVX2 /threads /stand:f08 /static-intel /DINTEL_MKL /D_WIN32")
+set(CMAKE_Fortran_FLAGS_RELEASE "/O2 /Qopenmp /fpp /Qmkl:parallel /Qmkl /QxCORE-AVX2 /threads /stand:f08 /static /DINTEL_MKL /D_WIN32")
 
 # 设置链接器选项
 set(CMAKE_EXE_LINKER_FLAGS "/STACK:1900000000 legacy_stdio_definitions.lib")
