@@ -41,6 +41,8 @@ jobs:
       - name: Activate compiler environment and Copy libiomp5md.dll to working directory
         run: |
           .github/scripts/activate_env.bat
+          # add Path
+          set PATH=%PATH%;"C:\Program Files (x86)\Intel\oneAPI\compiler\latest\bin"
 
       # - name: Download Multiwfn source code
       #   run: |
