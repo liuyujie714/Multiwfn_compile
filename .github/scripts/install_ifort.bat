@@ -9,5 +9,4 @@ curl.exe --output %TEMP%\webimage.exe --url %URL% --retry 5 --retry-delay 5
 del %TEMP%\webimage.exe
 
 set installer_exit_code=%ERRORLEVEL%
-rd /s/q "webimage_extracted"
 exit /b %installer_exit_code%

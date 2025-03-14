@@ -7,7 +7,7 @@ on:
 
 env:
   Multiwfn_version:  Multiwfn_3.8_dev_src_Linux
-  WINDOWS_HPCKIT_URL: https://registrationcenter-download.intel.com/akdlm/IRC_NAS/c95a3b26-fc45-496c-833b-df08b10297b9/w_HPCKit_p_2024.1.0.561_offline.exe
+  WINDOWS_HPCKIT_URL: https://registrationcenter-download.intel.com/akdlm/IRC_NAS/a37c30c3-a846-4371-a85d-603e9a9eb94c/intel-oneapi-hpc-toolkit-2025.0.1.48_offline.exe
   WINDOWS_FORTRAN_COMPONENTS: intel.oneapi.win.ifort-compiler:intel.oneapi.win.mkl.devel
 
 jobs:
