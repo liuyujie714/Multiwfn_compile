@@ -34,11 +34,6 @@ set(COMMON_FLAGES
     /stand:f08
     /static
 )
-target_compile_options(
-    ${EXE} 
-    PRIVATE
-    ${COMMON_FLAGES}
-)
 
 # 设置链接器选项
 set(CMAKE_EXE_LINKER_FLAGS "/STACK:1900000000 legacy_stdio_definitions.lib")
@@ -51,6 +46,11 @@ set(INCLUDE "-I./ -I./ext -I./libreta_hybrid")
 # 添加可执行文件
 set(EXE "Multiwfn")
 add_executable(${EXE} "Multiwfn.f90" )
+target_compile_options(
+    ${EXE} 
+    PRIVATE
+    ${COMMON_FLAGES}
+)
 
 # 添加源文件
 set(SOURCES

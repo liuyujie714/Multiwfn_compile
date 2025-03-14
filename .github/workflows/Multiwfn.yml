@@ -19,12 +19,12 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      # - name: Cache Code
-      #   id: cache-code
-      #   uses: actions/cache@v4
-      #   with:
-      #     path: ${{github.workflow}}\${{env.Multiwfn_version}}\build
-      #     key: ${{ runner.os }}-ifort-2021.12-code
+      - name: Cache Code
+        id: cache-code
+        uses: actions/cache@v4
+        with:
+          path: ${{github.workflow}}\${{env.Multiwfn_version}}\build
+          key: ${{ runner.os }}-ifort-2021.12-code
 
       - name: Install Fortran compiler and Visual Studio 2022 integration
         run: |
