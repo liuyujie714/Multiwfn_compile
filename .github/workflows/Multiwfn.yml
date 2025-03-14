@@ -42,7 +42,7 @@ jobs:
         run: |
           .github/scripts/activate_env.bat
           # add Path
-          set PATH=%PATH%;"C:\Program Files (x86)\Intel\oneAPI\compiler\latest\bin"
+          echo 'C:\Program Files (x86)\Intel\oneAPI\compiler\latest\bin' | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
 
       # - name: Download Multiwfn source code
       #   run: |
