@@ -62,7 +62,7 @@ jobs:
           copy ..\CMakeLists.txt . /Y
           copy ..\disifl_d.lib . /Y
           md build && cd build
-          cmake .. -DCMAKE_BUILD_TYPE=Release -A x64
+          cmake .. -DCMAKE_BUILD_TYPE=Release -A x64 -DCMAKE_Fortran_COMPILER="C:/Program Files (x86)/Intel/oneAPI/compiler/latest/bin/ifort.exe"
           cmake --build . --config Release --target Multiwfn
           
           dir x64\Release
