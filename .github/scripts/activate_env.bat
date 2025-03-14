@@ -8,3 +8,4 @@ REM Copy libiomp5md.dll to working directory
 copy /Y "C:\Program Files (x86)\Intel\oneAPI\compiler\%LATEST_VERSION%\bin\libiomp5md.dll" .
 
 REM @call "C:\Program Files (x86)\Intel\oneAPI\setvars.bat" intel64 vs2022
+
