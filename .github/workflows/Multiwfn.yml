@@ -64,7 +64,7 @@ jobs:
           sed -i 's/-MD/-MT/g' build.ninja
           ninja Multiwfn -j4 || ninja Multiwfn -j1
           
-          dir x64\Release
+          dir .\Release
 
       - name: Upload Multiwfn
         uses: actions/upload-artifact@v4
@@ -72,6 +72,6 @@ jobs:
         with:
           name: Multwnf_Win_x64
           path: |
-            ${{env.Multiwfn_version}}\build\x64\Release\Multiwfn.exe
+            ${{env.Multiwfn_version}}\build\Release\Multiwfn.exe
             .\libiomp5md.dll
 
