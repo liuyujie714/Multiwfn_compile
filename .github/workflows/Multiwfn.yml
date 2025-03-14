@@ -62,7 +62,7 @@ jobs:
           md build && cd build
           cmake .. -DCMAKE_BUILD_TYPE=Release -G Ninja
           sed -i 's/-MD/-MT/g' build.ninja
-          ninja install -j4 || ninja install -j1
+          ninja Multiwfn -j4 || ninja Multiwfn -j1
           
           dir \Release
 
