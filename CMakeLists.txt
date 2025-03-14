@@ -8,6 +8,9 @@ endif()
 # 打开Fotran支持
 project(Multiwfn Fortran)
 
+# 设置编译器为Intel Visual Fortran
+set(CMAKE_Fortran_COMPILER ifort)
+
 # Release
 if(NOT CMAKE_BUILD_TYPE)
   set(CMAKE_BUILD_TYPE Release CACHE STRING
