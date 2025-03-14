@@ -26,7 +26,7 @@ jobs:
           path: ${{github.workflow}}\${{env.Multiwfn_version}}\build
           key: ${{ runner.os }}-ifort-2021.12-code
 
-      - name: Install Fortran compiler and Visual Studio 2022 integration
+      - name: Install Fortran compiler and Visual Studio 2019 integration
         run: |
           .github/scripts/install_ifort.bat ${{env.WINDOWS_HPCKIT_URL}} ${{env.WINDOWS_FORTRAN_COMPONENTS}}
       - name: Activate compiler environment and Copy libiomp5md.dll to working directory
@@ -55,7 +55,7 @@ jobs:
           cmake --build . --config Release --target Multiwfn || cmake --build . --config Release --target Multiwfn 
           
           dir x64\Release
-          
+
       - name: Upload Multiwfn
         uses: actions/upload-artifact@v4
         if: ${{ success() }}
