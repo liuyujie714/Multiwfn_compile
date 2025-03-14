@@ -7,8 +7,8 @@ on:
 
 env:
   Multiwfn_version:  Multiwfn_3.8_dev_src_Linux
-  WINDOWS_HPCKIT_URL: https://registrationcenter-download.intel.com/akdlm/IRC_NAS/c95a3b26-fc45-496c-833b-df08b10297b9/w_HPCKit_p_2024.1.0.561_offline.exe
-  WINDOWS_FORTRAN_COMPONENTS: intel.oneapi.win.ifort-compiler
+  WINDOWS_HPCKIT_URL: https://registrationcenter-download.intel.com/akdlm/IRC_NAS/7dff44ba-e3af-4448-841c-0d616c8da6e7/w_BaseKit_p_2024.1.0.595_offline.exe
+  WINDOWS_FORTRAN_COMPONENTS: intel.oneapi.win.ifort-compiler:intel.oneapi.win.mkl.devel
 
 jobs:
   Windows:
