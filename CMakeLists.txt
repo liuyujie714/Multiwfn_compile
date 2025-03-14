@@ -24,10 +24,9 @@ add_definitions(
     /D_WIN32
 )
 
-# 设置编译选项 O2 级别
+# 设置编译选项
 set(COMMON_FLAGES
     /fpp
-    /O2
     /QxHost
     /Qopenmp
     /Qmkl:parallel
@@ -128,17 +127,18 @@ set(LIBRETA_SOURCES
 )
 
 # 生成目标文件
+add_library(libreta_hybrid STATIC ${LIBRETA_SOURCES})
+target_include_directories(libreta_hybrid PRIVATE ${INCLUDE})
+target_compile_options(libreta_hybrid PRIVATE ${COMMON_FLAGS} /O1)
+
 add_library(lib_base STATIC ${SOURCES})
 target_include_directories(lib_base PRIVATE ${INCLUDE})
-target_compile_options(lib_base PRIVATE ${COMMON_FLAGES})
+target_compile_options(lib_base PRIVATE ${COMMON_FLAGS} /O2)
+target_link_libraries(lib_base PRIVATE libreta_hybrid)
 
 add_library(lib_gui STATIC ${SOURCES_GUI})
 target_include_directories(lib_gui PRIVATE ${INCLUDE})
-target_compile_options(lib_gui PRIVATE ${COMMON_FLAGES})
-
-add_library(libreta_hybrid STATIC ${LIBRETA_SOURCES})
-target_include_directories(libreta_hybrid PRIVATE ${INCLUDE})
-target_compile_options(libreta_hybrid PRIVATE ${COMMON_FLAGES})
+target_compile_options(lib_gui PRIVATE ${COMMON_FLAGS} /O2)
 
 # 设置包含目录
 target_include_directories(${EXE} PRIVATE ${INCLUDE})
