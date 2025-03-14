@@ -7,12 +7,12 @@ on:
 
 env:
   Multiwfn_version:  Multiwfn_3.8_dev_src_Linux
-  WINDOWS_HPCKIT_URL: https://registrationcenter-download.intel.com/akdlm/IRC_NAS/d91caaa0-7306-46ea-a519-79a0423e1903/w_BaseKit_p_2024.2.1.101_offline.exe
+  WINDOWS_HPCKIT_URL: https://registrationcenter-download.intel.com/akdlm/IRC_NAS/a37c30c3-a846-4371-a85d-603e9a9eb94c/intel-oneapi-hpc-toolkit-2025.0.1.48_offline.exe
   WINDOWS_FORTRAN_COMPONENTS: intel.oneapi.win.ifort-compiler:intel.oneapi.win.mkl.devel
 
 jobs:
   Windows:
-    runs-on: windows-2019
+    runs-on: windows-2022
 
     if: github.event.repository.owner.id == github.event.sender.id
     steps:
@@ -24,9 +24,9 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ${{github.workflow}}\${{env.Multiwfn_version}}\build
-          key: ${{ runner.os }}-ifort-2021.12-code
+          key: ${{ runner.os }}-ifort-2025.0-code
 
-      - name: Install Fortran compiler and Visual Studio 2019 integration
+      - name: Install Fortran compiler and Visual Studio 2022 integration
         run: |
           .github/scripts/install_ifort.bat ${{env.WINDOWS_HPCKIT_URL}} ${{env.WINDOWS_FORTRAN_COMPONENTS}}
       - name: Activate compiler environment and Copy libiomp5md.dll to working directory
