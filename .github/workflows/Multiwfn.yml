@@ -47,11 +47,11 @@ jobs:
       #     curl -L http://sobereva.com/multiwfn/misc/${{env.Multiwfn_version}}.zip -o Multiwfn_src.zip
       #     7z x Multiwfn_src.zip
         
-      - name: Configure build for amd64
-        uses: ilammy/msvc-dev-cmd@v1
-        with:
-          arch: amd64
-          toolset: 14.29
+      # - name: Configure build for amd64
+      #   uses: ilammy/msvc-dev-cmd@v1
+      #   with:
+      #     arch: amd64
+      #     toolset: 14.29
 
       - name: Compile Multiwfn
         shell: cmd
