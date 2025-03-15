@@ -9,7 +9,7 @@ endif()
 project(Multiwfn Fortran)
 
 # 设置编译器为Intel Visual Fortran
-# set(CMAKE_Fortran_COMPILER ifort)
+set(CMAKE_Fortran_COMPILER ifort)
 
 # Release
 if(NOT CMAKE_BUILD_TYPE)
