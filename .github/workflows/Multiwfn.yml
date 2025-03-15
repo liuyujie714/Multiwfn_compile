@@ -51,8 +51,8 @@ jobs:
           copy ..\CMakeLists.txt . /Y
           copy ..\disifl_d.lib . /Y
           md build && cd build
-          cmake .. -DCMAKE_BUILD_TYPE=Release -A x64
-          cmake --build . --config Release --target Multiwfn || cmake --build . --config Debug --target Multiwfn 
+          cmake .. -DCMAKE_BUILD_TYPE=Debug -A x64
+          cmake --build . --config Debug --target Multiwfn || cmake --build . --config Debug --target Multiwfn 
           
           dir x64\Release
 
