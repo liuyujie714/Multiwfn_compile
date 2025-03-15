@@ -26,7 +26,7 @@ add_definitions(
 
 # 设置编译选项
 set(COMMON_FLAGS
-    /O0
+    /Od
     /fpp
     /QxHost
     /Qopenmp
