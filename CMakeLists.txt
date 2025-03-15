@@ -116,7 +116,7 @@ set(LIBRETA_SOURCES
 )
 
 set(HRR_SOURCE
-    # XXXhrr_012345.f90 O2编译非常耗时间
+    # XXXhrr_012345.f90 O2编译非常耗时间且容易报错
     ${LIBRETAPATH}/hrr_012345.f90
     ${LIBRETAPATH}/blockhrr_012345.f90
 )
