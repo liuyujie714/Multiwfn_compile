@@ -7,6 +7,7 @@ on:
 
 env:
   Multiwfn_version:  Multiwfn_3.8_dev_src_Linux
+  BUILD_TYPE: Debug
   WINDOWS_HPCKIT_URL: https://registrationcenter-download.intel.com/akdlm/IRC_NAS/c95a3b26-fc45-496c-833b-df08b10297b9/w_HPCKit_p_2024.1.0.561_offline.exe
   WINDOWS_FORTRAN_COMPONENTS: intel.oneapi.win.ifort-compiler
   WINDOWS_MKL_URL: https://registrationcenter-download.intel.com/akdlm/IRC_NAS/78da61ee-8ded-4aab-8964-fea48243b05e/w_onemkl_p_2024.1.0.696_offline.exe
@@ -55,10 +56,10 @@ jobs:
           copy ..\CMakeLists.txt . /Y
           copy ..\disifl_d.lib . /Y
           md build && cd build
-          cmake .. -DCMAKE_BUILD_TYPE=Debug -A x64
-          cmake --build . --config Debug --target Multiwfn || cmake --build . --config Debug --target Multiwfn 
+          cmake .. -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -A x64
+          cmake --build . --config ${{env.BUILD_TYPE}} --target Multiwfn || cmake --build . --config ${{env.BUILD_TYPE}} --target Multiwfn 
           
-          dir x64\Release
+          dir x64\${{env.BUILD_TYPE}}
 
       - name: Upload Multiwfn
         uses: actions/upload-artifact@v4
@@ -66,5 +67,5 @@ jobs:
         with:
           name: Multwnf_Win_x64
           path: |
-            ${{env.Multiwfn_version}}\build\x64\Release\Multiwfn.exe
+            ${{env.Multiwfn_version}}\build\x64\${{env.BUILD_TYPE}}\Multiwfn.exe
             .\libiomp5md.dll
