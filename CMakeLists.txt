@@ -108,9 +108,6 @@ set(LIBRETAPATH "./libreta_hybrid")
 # 添加libreta的源文件
 set(LIBRETA_SOURCES
     ${LIBRETAPATH}/libreta.f90
-    # XXXhrr_012345.f90 O2编译非常耗时间
-    ${LIBRETAPATH}/hrr_012345.f90
-    ${LIBRETAPATH}/blockhrr_012345.f90
     ${LIBRETAPATH}/ean.f90
     ${LIBRETAPATH}/eanvrr_012345.f90
     ${LIBRETAPATH}/boysfunc.f90
@@ -118,10 +115,24 @@ set(LIBRETA_SOURCES
     ${LIBRETAPATH}/ryspoly.f90
 )
 
+set(HRR_SOURCE
+    # XXXhrr_012345.f90 O2编译非常耗时间
+    ${LIBRETAPATH}/hrr_012345.f90
+    ${LIBRETAPATH}/blockhrr_012345.f90
+)
+
+# 总是O1优化HRR
+add_library(lib_hrr STATIC ${HRR_SOURCE})
+target_compile_options(lib_hrr PRIVATE ${COMMON_FLAGS})
+target_compile_options(lib_hrr PRIVATE "$<$<CONFIG:Debug>:/O1>")
+target_compile_options(lib_hrr PRIVATE "$<$<CONFIG:Release>:/O1>")
+
+
 # 生成目标文件
 add_library(lib_base STATIC ${SOURCES_GUI} ${SOURCES} ${LIBRETA_SOURCES})
 target_include_directories(lib_base PRIVATE ${INCLUDE})
 target_compile_options(lib_base PRIVATE ${COMMON_FLAGS})
+target_link_libraries(lib_base lib_hrr)
 
 # 设置包含目录
 add_executable(${EXE} "Multiwfn.f90" )
