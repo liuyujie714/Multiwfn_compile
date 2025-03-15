@@ -26,7 +26,7 @@ add_definitions(
 
 # 设置编译选项
 set(COMMON_FLAGES
-    /O1
+    /O0
     /fpp
     /QxHost
     /Qopenmp
@@ -36,6 +36,7 @@ set(COMMON_FLAGES
     /threads
     /stand:f08
     /static
+    /Qdiag-disable:10448
 )
 
 # 设置链接器选项
@@ -46,14 +47,7 @@ set(LIB_base "")
 set(LIB_GUI "disifl_d.lib")
 set(INCLUDE "-I./ -I./ext -I./libreta_hybrid")
 
-# 添加可执行文件
 set(EXE "Multiwfn")
-add_executable(${EXE} "Multiwfn.f90" )
-target_compile_options(
-    ${EXE} 
-    PRIVATE
-    ${COMMON_FLAGES}
-)
 
 # 添加源文件
 set(SOURCES
@@ -111,6 +105,7 @@ set(SOURCES
 set(SOURCES_GUI
     dislin_d.f90
 )
+set(GUI_LIB "disifl_d.lib")
 
 set(LIBRETAPATH "./libreta_hybrid")
 
@@ -128,22 +123,18 @@ set(LIBRETA_SOURCES
 )
 
 # 生成目标文件
-add_library(libreta_hybrid STATIC ${LIBRETA_SOURCES})
-target_include_directories(libreta_hybrid PRIVATE ${INCLUDE})
-target_compile_options(libreta_hybrid PRIVATE ${COMMON_FLAGS})
-
-add_library(lib_base STATIC ${SOURCES})
+add_library(lib_base STATIC ${SOURCES_GUI} ${SOURCES} ${LIBRETA_SOURCES})
 target_include_directories(lib_base PRIVATE ${INCLUDE})
 target_compile_options(lib_base PRIVATE ${COMMON_FLAGS})
-target_link_libraries(lib_base PUBLIC libreta_hybrid)
-
-add_library(lib_gui STATIC ${SOURCES_GUI})
-target_include_directories(lib_gui PRIVATE ${INCLUDE})
-target_compile_options(lib_gui PRIVATE ${COMMON_FLAGS})
-target_link_libraries(lib_gui PUBLIC disifl_d.lib )
 
 # 设置包含目录
 target_include_directories(${EXE} PRIVATE ${INCLUDE})
-
+add_executable(${EXE} "Multiwfn.f90" )
+target_compile_options(
+    ${EXE} 
+    PRIVATE
+    ${COMMON_FLAGES}
+)
 # 链接主程序
-target_link_libraries(${EXE} lib_base lib_gui libreta_hybrid)
+target_link_libraries(${EXE} lib_base ${GUI_LIB})
+
