@@ -131,7 +131,7 @@ target_include_directories(${EXE} PRIVATE ${INCLUDE})
 target_compile_options(
     ${EXE} 
     PRIVATE
-    ${COMMON_FLAGES}
+    ${COMMON_FLAGS}
 )
 # 链接主程序
 target_link_libraries(${EXE} lib_base ${LIB_GUI})
