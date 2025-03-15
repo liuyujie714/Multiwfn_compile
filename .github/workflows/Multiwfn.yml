@@ -7,7 +7,7 @@ on:
 
 env:
   Multiwfn_version:  Multiwfn_3.8_dev_src_Linux
-  BUILD_TYPE: Release
+  BUILD_TYPE: Debug
   WINDOWS_HPCKIT_URL: https://registrationcenter-download.intel.com/akdlm/IRC_NAS/c95a3b26-fc45-496c-833b-df08b10297b9/w_HPCKit_p_2024.1.0.561_offline.exe
   WINDOWS_FORTRAN_COMPONENTS: intel.oneapi.win.ifort-compiler
   WINDOWS_MKL_URL: https://registrationcenter-download.intel.com/akdlm/IRC_NAS/78da61ee-8ded-4aab-8964-fea48243b05e/w_onemkl_p_2024.1.0.696_offline.exe

@@ -42,7 +42,7 @@ set(COMMON_FLAGS
 set(CMAKE_EXE_LINKER_FLAGS "/STACK:1900000000 legacy_stdio_definitions.lib")
 
 # 设置库路径和包含路径
-set(LIB_GUI "${CMAKE_SOURCE_DIR}/disifl_d.lib gdi32.lib")
+set(LIB_GUI "${CMAKE_SOURCE_DIR}/disifl_d.lib")
 set(INCLUDE "-I./ -I./ext -I./libreta_hybrid")
 
 set(EXE "Multiwfn")
@@ -133,4 +133,4 @@ target_compile_options(
     ${COMMON_FLAGS}
 )
 # 链接主程序
-target_link_libraries(${EXE} lib_base ${LIB_GUI})
+target_link_libraries(${EXE} lib_base ${LIB_GUI} gdi32.lib)
