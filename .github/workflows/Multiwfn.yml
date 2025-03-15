@@ -59,7 +59,7 @@ jobs:
           cmake .. -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -A x64
           cmake --build . --config ${{env.BUILD_TYPE}} --target Multiwfn || cmake --build . --config ${{env.BUILD_TYPE}} --target Multiwfn 
           
-          dir x64\${{env.BUILD_TYPE}}
+          dir ${{env.BUILD_TYPE}}
 
       - name: Upload Multiwfn
         uses: actions/upload-artifact@v4
@@ -67,5 +67,5 @@ jobs:
         with:
           name: Multwnf_Win_x64
           path: |
-            ${{env.Multiwfn_version}}\build\x64\${{env.BUILD_TYPE}}\Multiwfn.exe
+            ${{env.Multiwfn_version}}\build\${{env.BUILD_TYPE}}\Multiwfn.exe
             .\libiomp5md.dll

@@ -1,12 +1,14 @@
 cmake_minimum_required(VERSION 3.10)
 
 # 只能用于Windows
-if(NOT WIN32)
-  message(FATAL_ERROR "Only Windows build is supported!")
-endif()
+#if(NOT WIN32 AND NOT _MINGW64_)
+#  message(FATAL_ERROR "Only Windows build is supported!")
+#endif()
 
 # 打开Fotran支持
-project(Multiwfn Fortran)
+project(Multiwfn Fortran C)
+
+find_package(LAPACK REQUIRED)
 
 # 设置编译器为Intel Visual Fortran
 # set(CMAKE_Fortran_COMPILER ifort)
@@ -20,28 +22,31 @@ endif()
 
 # 预定义宏
 add_definitions(
-    /DINTEL_MKL
-    /D_WIN32
+#    -DINTEL_MKL
+    -D_WIN32
 )
 
 # 设置编译选项
 set(COMMON_FLAGS
-    /fpp
-    /Qopenmp
-    /Qmkl:parallel
-    /Qmkl
-    /QxCORE-AVX2
-    /threads
-    /stand:f08
-    /static
-    /Qdiag-disable:10448,8290,8291,6371,10316,6178,6916,7416,5268,7342,7373,5120,5144,5082,5112,2554,5183,6182,7352,6843
+#    /Od
+    -cpp
+    -ffree-line-length-none
+    -static
+#    /Qopenmp
+#    /Qmkl:parallel
+#    /Qmkl
+#    /QxCORE-AVX2
+#    /threads
+#    /stand:f08
+#    /static
+#    /Qdiag-disable:10448,8290,8291,6371,10316,6178,6916,7416,5268,7342,7373,5120,5144,5082,5112,2554,5183,6182,7352
 )
 
 # 设置链接器选项
-set(CMAKE_EXE_LINKER_FLAGS "/STACK:1900000000 legacy_stdio_definitions.lib")
+set(CMAKE_EXE_LINKER_FLAGS "-Wl,--stack,1900000000")
 
 # 设置库路径和包含路径
-set(LIB_GUI "${CMAKE_SOURCE_DIR}/disifl_d.lib")
+set(LIB_GUI "${CMAKE_SOURCE_DIR}/dismg_d.a")
 set(INCLUDE "./ext" "./libreta_hybrid")
 
 set(EXE "Multiwfn")
@@ -132,4 +137,4 @@ target_compile_options(
     ${COMMON_FLAGS}
 )
 # 链接主程序
-target_link_libraries(${EXE} lib_base ${LIB_GUI} gdi32)
+target_link_libraries(${EXE} lib_base ${LIB_GUI} gdi32 opengl32 lapack)
