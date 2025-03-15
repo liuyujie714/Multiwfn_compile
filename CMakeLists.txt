@@ -26,6 +26,7 @@ add_definitions(
 
 # 设置编译选项
 set(COMMON_FLAGES
+    /O1
     /fpp
     /QxHost
     /Qopenmp
@@ -129,16 +130,16 @@ set(LIBRETA_SOURCES
 # 生成目标文件
 add_library(libreta_hybrid STATIC ${LIBRETA_SOURCES})
 target_include_directories(libreta_hybrid PRIVATE ${INCLUDE})
-target_compile_options(libreta_hybrid PRIVATE ${COMMON_FLAGS} /O1)
+target_compile_options(libreta_hybrid PRIVATE ${COMMON_FLAGS})
 
 add_library(lib_base STATIC ${SOURCES})
 target_include_directories(lib_base PRIVATE ${INCLUDE})
-target_compile_options(lib_base PRIVATE ${COMMON_FLAGS} /O1)
+target_compile_options(lib_base PRIVATE ${COMMON_FLAGS})
 target_link_libraries(lib_base PUBLIC libreta_hybrid)
 
 add_library(lib_gui STATIC ${SOURCES_GUI})
 target_include_directories(lib_gui PRIVATE ${INCLUDE})
-target_compile_options(lib_gui PRIVATE ${COMMON_FLAGS} /O1)
+target_compile_options(lib_gui PRIVATE ${COMMON_FLAGS})
 target_link_libraries(lib_gui PUBLIC disifl_d.lib )
 
 # 设置包含目录
