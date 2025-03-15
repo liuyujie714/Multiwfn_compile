@@ -25,7 +25,7 @@ add_definitions(
 )
 
 # 设置编译选项
-set(COMMON_FLAGES
+set(COMMON_FLAGS
     /O0
     /fpp
     /QxHost
@@ -43,7 +43,6 @@ set(COMMON_FLAGES
 set(CMAKE_EXE_LINKER_FLAGS "/STACK:1900000000 legacy_stdio_definitions.lib")
 
 # 设置库路径和包含路径
-set(LIB_base "")
 set(LIB_GUI "disifl_d.lib")
 set(INCLUDE "-I./ -I./ext -I./libreta_hybrid")
 
@@ -105,7 +104,6 @@ set(SOURCES
 set(SOURCES_GUI
     dislin_d.f90
 )
-set(GUI_LIB "disifl_d.lib")
 
 set(LIBRETAPATH "./libreta_hybrid")
 
@@ -128,13 +126,13 @@ target_include_directories(lib_base PRIVATE ${INCLUDE})
 target_compile_options(lib_base PRIVATE ${COMMON_FLAGS})
 
 # 设置包含目录
-target_include_directories(${EXE} PRIVATE ${INCLUDE})
 add_executable(${EXE} "Multiwfn.f90" )
+target_include_directories(${EXE} PRIVATE ${INCLUDE})
 target_compile_options(
     ${EXE} 
     PRIVATE
     ${COMMON_FLAGES}
 )
 # 链接主程序
-target_link_libraries(${EXE} lib_base ${GUI_LIB})
+target_link_libraries(${EXE} lib_base ${LIB_GUI})
 
