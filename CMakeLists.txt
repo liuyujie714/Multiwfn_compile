@@ -143,6 +143,7 @@ target_compile_options(lib_hrr PRIVATE "$<$<CONFIG:Release>:/O1>")
 
 # 编译C接口
 add_library(lib_2f2 STATIC ${C_SRC})
+target_include_directories(lib_2f2 PRIVATE ${FLINT_INCLUDE})
 target_link_libraries(lib_2f2 ${FLINT_LIB})
 
 # 生成目标文件
