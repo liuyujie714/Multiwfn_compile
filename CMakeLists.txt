@@ -5,9 +5,10 @@ if(NOT WIN32)
   message(FATAL_ERROR "Only Windows build is supported!")
 endif()
 
-# 需要flint库
+# 需要flint相关库: glint, arb, gmp, mpfr, pthreads 
 set(LIBRARIES
     FLINT
+    ARB
     GMP
     MPFR
     PTHREADS
@@ -116,8 +117,8 @@ target_compile_options(
 
 # 编译C接口
 add_library(lib_2f2 STATIC ${C_SRC})
-target_include_directories(lib_2f2 PRIVATE ${FLINT_INCLUDE} ${GMP_INCLUDE} ${MPFR_INCLUDE} ${PTHREADS_INCLUDE})
-target_link_libraries(lib_2f2 ${FLINT_LIB} ${GMP_LIB} ${MPFR_LIB} ${PTHREADS_LIB})
+target_include_directories(lib_2f2 PRIVATE ${FLINT_INCLUDE} ${GMP_INCLUDE} ${MPFR_INCLUDE} ${PTHREADS_INCLUDE} ${ARB_INCLUDE})
+target_link_libraries(lib_2f2 ${FLINT_LIB} ${GMP_LIB} ${MPFR_LIB} ${PTHREADS_LIB} ${ARB_LIB})
 
 # 生成目标文件
 add_library(lib_base STATIC ${SOURCES_GUI} ${SOURCES} ${LIBRETA_SOURCES})
