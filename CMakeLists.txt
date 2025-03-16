@@ -59,8 +59,58 @@ set(INCLUDE "./ext" "./libreta_hybrid" ${FLINT_INCLUDE})
 set(EXE "Multiwfn")
 
 # 添加源文件
-file(GLOB SOURCES *.f90 *.f ext/2F2.c ext/2F2.f90 ext/frj.f90)
-file(REMOVE "Multiwfn.f90")
+set(SOURCES
+    define.f90
+    util.f90
+    plot.f90
+    Bspline.f90
+    sym.F
+    function.f90
+    GUI.f90
+    sub.f90
+    integral.f90
+    Lebedev-Laikov.F
+    DFTxclib.F
+    edflib.f90
+    fparser.f90
+    fileIO.f90
+    spectrum.f90
+    DOS.f90
+    0123dim.f90
+    LSB.f90
+    population.f90
+    orbcomp.f90
+    bondorder.f90
+    topology.f90
+    excittrans.f90
+    otherfunc.f90
+    otherfunc2.f90
+    otherfunc3.f90
+    O1.f90
+    surfana.f90
+    procgriddata.f90
+    AdNDP.f90
+    fuzzy.f90
+    CDA.f90
+    basin.f90
+    orbloc.f90
+    visweak.f90
+    EDA.f90
+    CDFT.f90
+    ETS_NOCV.f90
+    atmraddens.f90
+    NAONBO.f90
+    grid.f90
+    PBC.f90
+    hyper_polar.f90
+    deloc_aromat.f90
+    cp2kmate.f90
+    minpack.f90
+    ext/2F2.f90
+    ext/frj.f90
+)
+
+set(C_SRC ext/2F2.c)
 
 # 添加GUI源文件
 set(SOURCES_GUI
@@ -91,12 +141,16 @@ target_compile_options(lib_hrr PRIVATE ${COMMON_FLAGS})
 target_compile_options(lib_hrr PRIVATE "$<$<CONFIG:Debug>:/O1>")
 target_compile_options(lib_hrr PRIVATE "$<$<CONFIG:Release>:/O1>")
 
+# 编译C接口
+add_library(lib_2f2 STATIC ${C_SRC})
+target_link_libraries(lib_2f2 ${FLINT_LIB})
+
 # 生成目标文件
 add_library(lib_base STATIC ${SOURCES_GUI} ${SOURCES} ${LIBRETA_SOURCES})
 target_include_directories(lib_base PRIVATE ${INCLUDE})
 target_compile_options(lib_base PRIVATE ${COMMON_FLAGS})
 target_compile_options(lib_base PRIVATE "$<$<CONFIG:Release>:/O2>")
-target_link_libraries(lib_base lib_hrr ${FLINT_LIB})
+target_link_libraries(lib_base lib_hrr lib_2f2)
 
 # 设置包含目录
 add_executable(${EXE} "Multiwfn.f90" )
