@@ -16,8 +16,8 @@ foreach(LIB ${LIBRARIES})
     set(${LIB}_INCLUDE "C:/vcpkg/packages/${LIB}_x64-windows/include" CACHE PATH "${LIB} include path")
     set(${LIB}_LIB "C:/vcpkg/packages/${LIB}_x64-windows/lib/${LIB}.lib" CACHE PATH "${LIB} library")
     # pthreads lib named pthreadVC3.lib
-    if(LIB STREQUAL PTHREADS)
-        set(${LIB}_LIB "C:/vcpkg/packages/${LIB}_x64-windows/lib/pthreadVC3.lib" CACHE PATH "${LIB} library")
+    if("${LIB}" STREQUAL "PTHREADS")
+        set(${LIB}_LIB "C:/vcpkg/packages/${LIB}_x64-windows/lib/pthreadVC3.lib" CACHE PATH "${LIB} library" FORCE)
     endif()
 
     if(NOT EXISTS ${${LIB}_LIB})
@@ -29,7 +29,7 @@ foreach(LIB ${LIBRARIES})
 endforeach()
 
 # 打开Fotran支持
-project(Multiwfn  C)
+project(Multiwfn C)
 
 # 设置编译器为Intel Visual Fortran
 set(CMAKE_Fortran_COMPILER ifort CACHE PATH "Intel Visual Fortran compiler")
