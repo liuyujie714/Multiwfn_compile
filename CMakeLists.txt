@@ -147,30 +147,38 @@ set(HRR_SOURCE
 
 # 总是O1优化HRR
 add_library(lib_hrr STATIC ${HRR_SOURCE})
-target_compile_options(lib_hrr PRIVATE ${COMMON_FLAGS})
-target_compile_options(lib_hrr PRIVATE "$<$<CONFIG:Debug>:/O1>")
-target_compile_options(lib_hrr PRIVATE "$<$<CONFIG:Release>:/O1>")
+target_compile_options(
+        lib_hrr 
+        PRIVATE 
+        ${COMMON_FLAGS}
+        "$<$<CONFIG:Debug>:/O1>"
+        "$<$<CONFIG:Release>:/O1>"
+)
 
 # 编译C接口
 add_library(lib_2f2 STATIC ${C_SRC})
-target_include_directories(lib_2f2 PRIVATE ${FLINT_INCLUDE} ${GMP_INCLUDE} ${MPFR_INCLUDE} ${MPFR_INCLUDE} ${PTHREADS_INCLUDE})
+target_include_directories(lib_2f2 PRIVATE ${FLINT_INCLUDE} ${GMP_INCLUDE} ${MPFR_INCLUDE} ${PTHREADS_INCLUDE})
 target_link_libraries(lib_2f2 ${FLINT_LIB} ${GMP_LIB} ${MPFR_LIB} ${PTHREADS_LIB})
 
 # 生成目标文件
 add_library(lib_base STATIC ${SOURCES_GUI} ${SOURCES} ${LIBRETA_SOURCES})
 target_include_directories(lib_base PRIVATE ${INCLUDE})
-target_compile_options(lib_base PRIVATE ${COMMON_FLAGS})
-target_compile_options(lib_base PRIVATE "$<$<CONFIG:Release>:/O2>")
+target_compile_options(
+        lib_base 
+        PRIVATE 
+        ${COMMON_FLAGS}
+        "$<$<CONFIG:Release>:/O2>"
+)
 target_link_libraries(lib_base lib_hrr lib_2f2)
 
 # 设置包含目录
 add_executable(${EXE} "Multiwfn.f90" )
 target_include_directories(${EXE} PRIVATE ${INCLUDE})
 target_compile_options(
-    ${EXE} 
-    PRIVATE
-    ${COMMON_FLAGS}
-    "$<$<CONFIG:Release>:/O2>"
+        ${EXE} 
+        PRIVATE
+        ${COMMON_FLAGS}
+        "$<$<CONFIG:Release>:/O2>"
 )
 # 链接主程序
 target_link_libraries(${EXE} lib_base ${LIB_GUI} gdi32)
