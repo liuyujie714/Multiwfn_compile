@@ -68,7 +68,7 @@ jobs:
           copy ..\disifl_d.lib . /Y
           md build && cd build
           dir C:\vcpkg\packages\flint_x64-windows-release
-          cmake .. -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DCMAKE_PREFIX_PATH="C:/vcpkg/packages/flint_x64-windows-release" -DCMAKE_TOOLCHAIN_FILE=C:/vcpkg/scripts/buildsystems/vcpkg.cmake -A x64
+          cmake .. -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DCMAKE_PREFIX_PATH=C:\vcpkg\packages\flint_x64-windows-release -DCMAKE_TOOLCHAIN_FILE=C:\vcpkg\scripts\buildsystems\vcpkg.cmake -A x64
           cmake --build . --config ${{env.BUILD_TYPE}} --target Multiwfn 
           
           dir ${{env.BUILD_TYPE}}
