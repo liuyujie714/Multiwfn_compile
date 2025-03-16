@@ -128,7 +128,6 @@ target_compile_options(lib_hrr PRIVATE ${COMMON_FLAGS})
 target_compile_options(lib_hrr PRIVATE "$<$<CONFIG:Debug>:/O1>")
 target_compile_options(lib_hrr PRIVATE "$<$<CONFIG:Release>:/O1>")
 
-
 # 生成目标文件
 add_library(lib_base STATIC ${SOURCES_GUI} ${SOURCES} ${LIBRETA_SOURCES})
 target_include_directories(lib_base PRIVATE ${INCLUDE})
