@@ -29,7 +29,7 @@ foreach(LIB ${LIBRARIES})
 endforeach()
 
 # 打开Fotran支持
-project(Multiwfn C)
+project(Multiwfn Fortran C)
 
 # 设置编译器为Intel Visual Fortran
 set(CMAKE_Fortran_COMPILER ifort CACHE PATH "Intel Visual Fortran compiler")
@@ -77,6 +77,7 @@ file(GLOB SOURCES *.f90 *.F)
 list(APPEND SOURCES ext/2F2.f90 ext/frj.f90)
 list(REMOVE_ITEM SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/Multiwfn.f90")
 message(STATUS "Final source files: ${SOURCES}")
+
 # C接口
 set(C_SRC ext/2F2.c)
 

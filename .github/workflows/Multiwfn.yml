@@ -40,14 +40,14 @@ jobs:
         run: |
           vcpkg install flint --binarysource="clear;x-gha,readwrite"
 
-      # - name: Install Fortran compiler/MKL and Visual Studio 2022 integration
-      #   run: |
-      #     .github/scripts/install_ifort.bat ${{env.WINDOWS_MKL_URL}} ${{env.WINDOWS_MKL_COMPONENTS}}
-      #     .github/scripts/install_ifort.bat ${{env.WINDOWS_HPCKIT_URL}} ${{env.WINDOWS_FORTRAN_COMPONENTS}}
+      - name: Install Fortran compiler/MKL and Visual Studio 2022 integration
+        run: |
+          .github/scripts/install_ifort.bat ${{env.WINDOWS_MKL_URL}} ${{env.WINDOWS_MKL_COMPONENTS}}
+          .github/scripts/install_ifort.bat ${{env.WINDOWS_HPCKIT_URL}} ${{env.WINDOWS_FORTRAN_COMPONENTS}}
 
-      # - name: Activate compiler environment and Copy libiomp5md.dll to working directory
-      #   run: |
-      #     .github/scripts/activate_env.bat
+      - name: Activate compiler environment and Copy libiomp5md.dll to working directory
+        run: |
+          .github/scripts/activate_env.bat
 
       - name: Download Multiwfn source code
         run: |
