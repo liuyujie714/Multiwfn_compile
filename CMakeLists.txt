@@ -6,7 +6,13 @@ if(NOT WIN32)
 endif()
 
 # 需要flint库
-find_package(flint REQUIRED)
+set(FLINT_INCLUDE "C:/vcpkg/packages/flint_x64-windows/include" CACHE PATH "flint include path")
+set(FLINT_LIB "C:/vcpkg/packages/flint_x64-windows/lib/flint.lib" CACHE PATH "flint library path")
+if(NOT EXISTS ${FLINT_LIB})
+    message(FATAL_ERROR "flint librar not found at ${FLINT_LIB}")
+endif()
+message(STATUS "flint include path: ${FLINT_INCLUDE}")
+message(STATUS "flint library path: ${FLINT_LIB}")
 
 # 打开Fotran支持
 project(Multiwfn Fortran C)
