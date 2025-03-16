@@ -59,57 +59,8 @@ set(INCLUDE "./ext" "./libreta_hybrid" ${FLINT_INCLUDE})
 set(EXE "Multiwfn")
 
 # 添加源文件
-set(SOURCES
-    define.f90
-    util.f90
-    plot.f90
-    Bspline.f90
-    sym.F
-    function.f90
-    GUI.f90
-    sub.f90
-    integral.f90
-    Lebedev-Laikov.F
-    DFTxclib.F
-    edflib.f90
-    fparser.f90
-    fileIO.f90
-    spectrum.f90
-    DOS.f90
-    0123dim.f90
-    LSB.f90
-    population.f90
-    orbcomp.f90
-    bondorder.f90
-    topology.f90
-    excittrans.f90
-    otherfunc.f90
-    otherfunc2.f90
-    otherfunc3.f90
-    O1.f90
-    surfana.f90
-    procgriddata.f90
-    AdNDP.f90
-    fuzzy.f90
-    CDA.f90
-    basin.f90
-    orbloc.f90
-    visweak.f90
-    EDA.f90
-    CDFT.f90
-    ETS_NOCV.f90
-    atmraddens.f90
-    NAONBO.f90
-    grid.f90
-    PBC.f90
-    hyper_polar.f90
-    deloc_aromat.f90
-    cp2kmate.f90
-    minpack.f90
-    ext/2F2.f90
-    ext/frj.f90
-    ext/2F2.c
-)
+file(GLOB SOURCES *.f90 *.f ext/2F2.c ext/2F2.f90 ext/frj.f90)
+file(REMOVE "Multiwfn.f90")
 
 # 添加GUI源文件
 set(SOURCES_GUI
