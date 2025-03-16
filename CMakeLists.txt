@@ -54,7 +54,7 @@ set(CMAKE_EXE_LINKER_FLAGS "/STACK:1900000000 legacy_stdio_definitions.lib")
 
 # 设置库路径和包含路径
 set(LIB_GUI "${CMAKE_SOURCE_DIR}/disifl_d.lib")
-set(INCLUDE "./ext" "./libreta_hybrid")
+set(INCLUDE "./ext" "./libreta_hybrid" ${FLINT_INCLUDE})
 
 set(EXE "Multiwfn")
 
