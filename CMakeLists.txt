@@ -26,6 +26,7 @@ add_definitions(
 
 # 设置编译选项
 set(COMMON_FLAGS
+    /Od
     /fpp
     /Qopenmp
     /Qmkl:parallel
