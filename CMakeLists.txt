@@ -6,10 +6,13 @@ if(NOT WIN32)
 endif()
 
 # 打开Fotran支持
-project(Multiwfn Fortran)
+project(Multiwfn Fortran C)
 
 # 设置编译器为Intel Visual Fortran
 set(CMAKE_Fortran_COMPILER ifort)
+
+# 需要flint库
+find_package(flint REQUIRED)
 
 # Release
 if(NOT CMAKE_BUILD_TYPE)
@@ -97,8 +100,9 @@ set(SOURCES
     deloc_aromat.f90
     cp2kmate.f90
     minpack.f90
-    #ext/no2F2.f90
+    ext/2F2.f90
     ext/frj.f90
+    ext/2F2.c
 )
 
 # 添加GUI源文件
