@@ -139,7 +139,7 @@ add_library(lib_base STATIC ${SOURCES_GUI} ${SOURCES} ${LIBRETA_SOURCES})
 target_include_directories(lib_base PRIVATE ${INCLUDE})
 target_compile_options(lib_base PRIVATE ${COMMON_FLAGS})
 target_compile_options(lib_base PRIVATE "$<$<CONFIG:Release>:/O2>")
-target_link_libraries(lib_base lib_hrr)
+target_link_libraries(lib_base lib_hrr flint::flint)
 
 # 设置包含目录
 add_executable(${EXE} "Multiwfn.f90" )
