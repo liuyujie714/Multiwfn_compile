@@ -6,13 +6,23 @@ if(NOT WIN32)
 endif()
 
 # 需要flint库
-set(FLINT_INCLUDE "C:/vcpkg/packages/flint_x64-windows/include" CACHE PATH "flint include path")
-set(FLINT_LIB "C:/vcpkg/packages/flint_x64-windows/lib/flint.lib" CACHE PATH "flint library path")
-if(NOT EXISTS ${FLINT_LIB})
-    message(FATAL_ERROR "flint librar not found at ${FLINT_LIB}")
-endif()
-message(STATUS "Found flint include path: ${FLINT_INCLUDE}")
-message(STATUS "Found flint library: ${FLINT_LIB}")
+set(LIBRARIES
+    FLINT
+    GMP
+    MPFR
+    PTHREADS
+)
+foreach(LIB ${LIBRARIES})
+    set(${LIB}_INCLUDE "C:/vcpkg/packages/${LIB}_x64-windows/include" CACHE PATH "${LIB} include path")
+    set(${LIB}_LIB "C:/vcpkg/packages/${LIB}_x64-windows/lib/${LIB}.lib" CACHE PATH "${LIB} library")
+
+    if(NOT EXISTS ${${LIB}_LIB})
+        message(FATAL_ERROR "${LIB} library not found at ${${LIB}_LIB}")
+    endif()
+
+    message(STATUS "Found ${LIB} include path: ${${LIB}_INCLUDE}")
+    message(STATUS "Found ${LIB} library: ${${LIB}_LIB}")
+endforeach()
 
 # 打开Fotran支持
 project(Multiwfn Fortran C)
@@ -54,7 +64,7 @@ set(CMAKE_EXE_LINKER_FLAGS "/STACK:1900000000 legacy_stdio_definitions.lib")
 
 # 设置库路径和包含路径
 set(LIB_GUI "${CMAKE_SOURCE_DIR}/disifl_d.lib")
-set(INCLUDE "./ext" "./libreta_hybrid" ${FLINT_INCLUDE})
+set(INCLUDE "./ext" "./libreta_hybrid" )
 
 set(EXE "Multiwfn")
 
@@ -143,8 +153,8 @@ target_compile_options(lib_hrr PRIVATE "$<$<CONFIG:Release>:/O1>")
 
 # 编译C接口
 add_library(lib_2f2 STATIC ${C_SRC})
-target_include_directories(lib_2f2 PRIVATE ${FLINT_INCLUDE})
-target_link_libraries(lib_2f2 ${FLINT_LIB})
+target_include_directories(lib_2f2 PRIVATE ${FLINT_INCLUDE} ${GMP_INCLUDE} ${MPFR_INCLUDE} ${MPFR_INCLUDE} ${PTHREADS_INCLUDE})
+target_link_libraries(lib_2f2 ${FLINT_LIB} ${GMP_LIB} ${MPFR_LIB} ${PTHREADS_LIB})
 
 # 生成目标文件
 add_library(lib_base STATIC ${SOURCES_GUI} ${SOURCES} ${LIBRETA_SOURCES})
