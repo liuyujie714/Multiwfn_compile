@@ -40,7 +40,7 @@ jobs:
         run: |
           vcpkg install flint --binarysource="clear;x-gha,readwrite"
           dir C:\vcpkg\packages
-          dir C:\vcpkg\packages\flint_x64-windows\include
+          dir C:\vcpkg\packages\flint_x64-windows\include\flint
 
 
       # - name: Install Fortran compiler/MKL and Visual Studio 2022 integration
