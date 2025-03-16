@@ -5,14 +5,14 @@ if(NOT WIN32)
   message(FATAL_ERROR "Only Windows build is supported!")
 endif()
 
+# 需要flint库
+find_package(flint REQUIRED)
+
 # 打开Fotran支持
 project(Multiwfn Fortran C)
 
 # 设置编译器为Intel Visual Fortran
 set(CMAKE_Fortran_COMPILER ifort)
-
-# 需要flint库
-find_package(flint REQUIRED)
 
 # Release
 if(NOT CMAKE_BUILD_TYPE)
