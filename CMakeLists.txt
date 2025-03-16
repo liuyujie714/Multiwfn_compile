@@ -24,9 +24,11 @@ add_definitions(
     /D_WIN32
 )
 
+# 清除Release模式下的默认优化选项
+set(CMAKE_Fortran_FLAGS_RELEASE "")
+
 # 设置编译选项
 set(COMMON_FLAGS
-    /Od
     /fpp
     /Qopenmp
     /Qmkl:parallel
@@ -132,6 +134,7 @@ target_compile_options(lib_hrr PRIVATE "$<$<CONFIG:Release>:/O1>")
 add_library(lib_base STATIC ${SOURCES_GUI} ${SOURCES} ${LIBRETA_SOURCES})
 target_include_directories(lib_base PRIVATE ${INCLUDE})
 target_compile_options(lib_base PRIVATE ${COMMON_FLAGS})
+target_compile_options(lib_base PRIVATE "$<$<CONFIG:Release>:/O2>")
 target_link_libraries(lib_base lib_hrr)
 
 # 设置包含目录
@@ -141,6 +144,7 @@ target_compile_options(
     ${EXE} 
     PRIVATE
     ${COMMON_FLAGS}
+    "$<$<CONFIG:Release>:/O2>"
 )
 # 链接主程序
 target_link_libraries(${EXE} lib_base ${LIB_GUI} gdi32)
