@@ -73,57 +73,11 @@ set(INCLUDE "./ext" "./libreta_hybrid" )
 set(EXE "Multiwfn")
 
 # 添加源文件
-set(SOURCES
-    define.f90
-    util.f90
-    plot.f90
-    Bspline.f90
-    sym.F
-    function.f90
-    GUI.f90
-    sub.f90
-    integral.f90
-    Lebedev-Laikov.F
-    DFTxclib.F
-    edflib.f90
-    fparser.f90
-    fileIO.f90
-    spectrum.f90
-    DOS.f90
-    0123dim.f90
-    LSB.f90
-    population.f90
-    orbcomp.f90
-    bondorder.f90
-    topology.f90
-    excittrans.f90
-    otherfunc.f90
-    otherfunc2.f90
-    otherfunc3.f90
-    O1.f90
-    surfana.f90
-    procgriddata.f90
-    AdNDP.f90
-    fuzzy.f90
-    CDA.f90
-    basin.f90
-    orbloc.f90
-    visweak.f90
-    EDA.f90
-    CDFT.f90
-    ETS_NOCV.f90
-    atmraddens.f90
-    NAONBO.f90
-    grid.f90
-    PBC.f90
-    hyper_polar.f90
-    deloc_aromat.f90
-    cp2kmate.f90
-    minpack.f90
-    ext/2F2.f90
-    ext/frj.f90
-)
-
+file(GLOB SOURCES *.f90 *.F)
+list(APPEND SOURCES ext/2F2.f90 ext/frj.f90)
+list(REMOVE_ITEM SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/Multiwfn.f90")
+message(STATUS "Final source files: ${SOURCES}")
+# C接口
 set(C_SRC ext/2F2.c)
 
 # 添加GUI源文件
@@ -164,25 +118,25 @@ add_library(lib_2f2 STATIC ${C_SRC})
 target_include_directories(lib_2f2 PRIVATE ${FLINT_INCLUDE} ${GMP_INCLUDE} ${MPFR_INCLUDE} ${PTHREADS_INCLUDE})
 target_link_libraries(lib_2f2 ${FLINT_LIB} ${GMP_LIB} ${MPFR_LIB} ${PTHREADS_LIB})
 
-# # 生成目标文件
-# add_library(lib_base STATIC ${SOURCES_GUI} ${SOURCES} ${LIBRETA_SOURCES})
-# target_include_directories(lib_base PRIVATE ${INCLUDE})
-# target_compile_options(
-#         lib_base 
-#         PRIVATE 
-#         ${COMMON_FLAGS}
-#         "$<$<CONFIG:Release>:/O2>"
-# )
-# target_link_libraries(lib_base lib_hrr lib_2f2)
+# 生成目标文件
+add_library(lib_base STATIC ${SOURCES_GUI} ${SOURCES} ${LIBRETA_SOURCES})
+target_include_directories(lib_base PRIVATE ${INCLUDE})
+target_compile_options(
+        lib_base 
+        PRIVATE 
+        ${COMMON_FLAGS}
+        "$<$<CONFIG:Release>:/O2>"
+)
+target_link_libraries(lib_base lib_hrr lib_2f2)
 
-# # 设置包含目录
-# add_executable(${EXE} "Multiwfn.f90" )
-# target_include_directories(${EXE} PRIVATE ${INCLUDE})
-# target_compile_options(
-#         ${EXE} 
-#         PRIVATE
-#         ${COMMON_FLAGS}
-#         "$<$<CONFIG:Release>:/O2>"
-# )
-# # 链接主程序
-# target_link_libraries(${EXE} lib_base ${LIB_GUI} gdi32)
+# 设置包含目录
+add_executable(${EXE} "Multiwfn.f90" )
+target_include_directories(${EXE} PRIVATE ${INCLUDE})
+target_compile_options(
+        ${EXE} 
+        PRIVATE
+        ${COMMON_FLAGS}
+        "$<$<CONFIG:Release>:/O2>"
+)
+# 链接主程序
+target_link_libraries(${EXE} lib_base ${LIB_GUI} gdi32)
