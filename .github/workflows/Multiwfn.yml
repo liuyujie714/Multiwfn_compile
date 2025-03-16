@@ -39,44 +39,45 @@ jobs:
       - name: Install flint dependencies via vcpkg
         run: |
           vcpkg install flint --binarysource="clear;x-gha,readwrite"
+          dir C:\vcpkg\packages
 
-      - name: Install Fortran compiler/MKL and Visual Studio 2022 integration
-        run: |
-          .github/scripts/install_ifort.bat ${{env.WINDOWS_MKL_URL}} ${{env.WINDOWS_MKL_COMPONENTS}}
-          .github/scripts/install_ifort.bat ${{env.WINDOWS_HPCKIT_URL}} ${{env.WINDOWS_FORTRAN_COMPONENTS}}
+      # - name: Install Fortran compiler/MKL and Visual Studio 2022 integration
+      #   run: |
+      #     .github/scripts/install_ifort.bat ${{env.WINDOWS_MKL_URL}} ${{env.WINDOWS_MKL_COMPONENTS}}
+      #     .github/scripts/install_ifort.bat ${{env.WINDOWS_HPCKIT_URL}} ${{env.WINDOWS_FORTRAN_COMPONENTS}}
 
-      - name: Activate compiler environment and Copy libiomp5md.dll to working directory
-        run: |
-          .github/scripts/activate_env.bat
+      # - name: Activate compiler environment and Copy libiomp5md.dll to working directory
+      #   run: |
+      #     .github/scripts/activate_env.bat
 
-      - name: Download Multiwfn source code
-        run: |
-          curl -L http://sobereva.com/multiwfn/misc/${{env.Multiwfn_version}}.zip -o Multiwfn_src.zip
-          7z x Multiwfn_src.zip
+      # - name: Download Multiwfn source code
+      #   run: |
+      #     curl -L http://sobereva.com/multiwfn/misc/${{env.Multiwfn_version}}.zip -o Multiwfn_src.zip
+      #     7z x Multiwfn_src.zip
         
-      - name: Configure build for amd64
-        uses: ilammy/msvc-dev-cmd@v1
-        with:
-          arch: amd64
-          toolset: 14.29
+      # - name: Configure build for amd64
+      #   uses: ilammy/msvc-dev-cmd@v1
+      #   with:
+      #     arch: amd64
+      #     toolset: 14.29
 
-      - name: Compile Multiwfn
-        shell: cmd
-        run: |
-          cd ${{env.Multiwfn_version}}
-          copy ..\CMakeLists.txt . /Y
-          copy ..\disifl_d.lib . /Y
-          md build && cd build
-          cmake .. -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DFLINT_INCLUDE=C:\vcpkg\packages\flint_x64-windows\include -DFLINT_LIB=C:\vcpkg\packages\flint_x64-windows\lib\flint.lib -A x64
-          cmake --build . --config ${{env.BUILD_TYPE}} --target Multiwfn 
+      # - name: Compile Multiwfn
+      #   shell: cmd
+      #   run: |
+      #     cd ${{env.Multiwfn_version}}
+      #     copy ..\CMakeLists.txt . /Y
+      #     copy ..\disifl_d.lib . /Y
+      #     md build && cd build
+      #     cmake .. -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DFLINT_INCLUDE=C:\vcpkg\packages\flint_x64-windows\include -DFLINT_LIB=C:\vcpkg\packages\flint_x64-windows\lib\flint.lib -A x64
+      #     cmake --build . --config ${{env.BUILD_TYPE}} --target Multiwfn 
           
-          dir ${{env.BUILD_TYPE}}
+      #     dir ${{env.BUILD_TYPE}}
 
-      - name: Upload Multiwfn
-        uses: actions/upload-artifact@v4
-        if: ${{ success() }}
-        with:
-          name: Multiwfn_Win_x64
-          path: |
-            ${{env.Multiwfn_version}}\build\${{env.BUILD_TYPE}}\Multiwfn.exe
-            .\libiomp5md.dll
+      # - name: Upload Multiwfn
+      #   uses: actions/upload-artifact@v4
+      #   if: ${{ success() }}
+      #   with:
+      #     name: Multiwfn_Win_x64
+      #     path: |
+      #       ${{env.Multiwfn_version}}\build\${{env.BUILD_TYPE}}\Multiwfn.exe
+      #       .\libiomp5md.dll
