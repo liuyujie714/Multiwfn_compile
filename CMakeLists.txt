@@ -16,7 +16,7 @@ foreach(LIB ${LIBRARIES})
     set(${LIB}_INCLUDE "C:/vcpkg/packages/${LIB}_x64-windows/include" CACHE PATH "${LIB} include path")
     set(${LIB}_LIB "C:/vcpkg/packages/${LIB}_x64-windows/lib/${LIB}.lib" CACHE PATH "${LIB} library")
     # pthreads lib named pthreadVC3.lib
-    if(LIB STREQUAL "PTHREADS")
+    if(LIB STREQUAL PTHREADS)
         set(${LIB}_LIB "C:/vcpkg/packages/${LIB}_x64-windows/lib/pthreadVC3.lib" CACHE PATH "${LIB} library")
     endif()
 
