@@ -11,8 +11,8 @@ set(FLINT_LIB "C:/vcpkg/packages/flint_x64-windows/lib/flint.lib" CACHE PATH "fl
 if(NOT EXISTS ${FLINT_LIB})
     message(FATAL_ERROR "flint librar not found at ${FLINT_LIB}")
 endif()
-message(STATUS "flint include path: ${FLINT_INCLUDE}")
-message(STATUS "flint library path: ${FLINT_LIB}")
+message(STATUS "Found flint include path: ${FLINT_INCLUDE}")
+message(STATUS "Found flint library: ${FLINT_LIB}")
 
 # 打开Fotran支持
 project(Multiwfn Fortran C)
@@ -145,7 +145,7 @@ add_library(lib_base STATIC ${SOURCES_GUI} ${SOURCES} ${LIBRETA_SOURCES})
 target_include_directories(lib_base PRIVATE ${INCLUDE})
 target_compile_options(lib_base PRIVATE ${COMMON_FLAGS})
 target_compile_options(lib_base PRIVATE "$<$<CONFIG:Release>:/O2>")
-target_link_libraries(lib_base lib_hrr flint::flint)
+target_link_libraries(lib_base lib_hrr ${FLINT_LIB})
 
 # 设置包含目录
 add_executable(${EXE} "Multiwfn.f90" )
