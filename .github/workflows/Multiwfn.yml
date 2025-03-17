@@ -157,10 +157,10 @@ jobs:
           ls -alt
           # time stamp
           OUTPUT_TAR=$(echo ${{env.Multiwfn_version}} | cut -d '_' -f1,2,3)_Win_x64_$(date -u '+%Y.%m.%d')".tar.gz"
-          tar -czvf ${OUTPUT_TAR} *.dll *.exe examples *.ini *.txt *.pdf
+          tar -czvf ${OUTPUT_TAR} -C tempfiles .
           github-release upload --tag ${{ env.RELEASE_TAG }} --replace --name ${OUTPUT_TAR} --file ${OUTPUT_TAR}
 
           # flint-staticlib
           OUTPUT_TAR=flint-static-lib.tar.gz
-          tar -czvf ${OUTPUT_TAR} *windows-static
+          tar -czvf ${OUTPUT_TAR} -C flint_staticlib .
           github-release upload --tag ${{ env.RELEASE_TAG }} --replace --name ${OUTPUT_TAR} --file ${OUTPUT_TAR}
