@@ -111,8 +111,8 @@ target_compile_options(
         lib_hrr 
         PRIVATE 
         ${COMMON_FLAGS}
-        "$<$<CONFIG:Debug>:/O1>"
-        "$<$<CONFIG:Release>:/O1>"
+        "$<$<CONFIG:Debug>:/O2>"
+        "$<$<CONFIG:Release>:/O2>"
 )
 
 # 编译C接口
