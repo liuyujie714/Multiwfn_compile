@@ -55,7 +55,7 @@ jobs:
           7z x Multiwfn_src.zip
 
           # dislin for windows ifort
-          curl -L http://www.dislin.de/downloads/win64/dl_11_ic.zip -o dislin.zip
+          curl -L https://www.dislin.de/downloads/win64/dl_11_ic.zip -o dislin.zip --insecure
           unzip dislin.zip -d temp
           copy-Item -Path "temp\disifl_d.lib"  -Destination  . -Force
           dir
