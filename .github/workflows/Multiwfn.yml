@@ -155,5 +155,6 @@ jobs:
           github-release upload --tag ${{ env.RELEASE_TAG }} --replace --name ${OUTPUT_TAR} --file ${OUTPUT_TAR}
 
           # flint-staticlib
-          tar -czvf flint-static-lib.tar.gz *windows-static
+          OUTPUT_TAR=flint-static-lib.tar.gz
+          tar -czvf ${OUTPUT_TAR} *windows-static
           github-release upload --tag ${{ env.RELEASE_TAG }} --replace --name ${OUTPUT_TAR} --file ${OUTPUT_TAR}
