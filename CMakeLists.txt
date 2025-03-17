@@ -1,8 +1,8 @@
 cmake_minimum_required(VERSION 3.10)
 
-# 只能用于Windows
-if(NOT WIN32)
-  message(FATAL_ERROR "Only Windows build is supported!")
+# 只能用于MSVC build on Windows
+if(NOT MSVC)
+  message(FATAL_ERROR "Only MSVC build on windows is supported!")
 endif()
 
 # 需要flint相关库: flint, arb, gmp, mpfr, pthreads 
