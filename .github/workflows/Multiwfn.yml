@@ -29,25 +29,25 @@ jobs:
       #     path: ${{github.workflow}}\${{env.Multiwfn_version}}\build
       #     key: ${{ runner.os }}-ifort-2025.0-code
 
-      # - name: "Setup cache for dependencies"
-      #   uses: actions/github-script@v7
-      #   with:
-      #     script: |
-      #       core.exportVariable('ACTIONS_CACHE_URL', process.env.ACTIONS_CACHE_URL || '');
-      #       core.exportVariable('ACTIONS_RUNTIME_TOKEN', process.env.ACTIONS_RUNTIME_TOKEN || '');
+      - name: "Setup cache for dependencies"
+        uses: actions/github-script@v7
+        with:
+          script: |
+            core.exportVariable('ACTIONS_CACHE_URL', process.env.ACTIONS_CACHE_URL || '');
+            core.exportVariable('ACTIONS_RUNTIME_TOKEN', process.env.ACTIONS_RUNTIME_TOKEN || '');
 
-      # - name: Install flint dependencies via vcpkg
-      #   run: |
-      #     vcpkg install flint:x64-windows-static arb:x64-windows-static --binarysource="clear;x-gha,readwrite"
+      - name: Install flint dependencies via vcpkg
+        run: |
+          vcpkg install flint:x64-windows-static arb:x64-windows-static --binarysource="clear;x-gha,readwrite"
 
-      # - name: Install Fortran compiler/MKL and Visual Studio 2022 integration
-      #   run: |
-      #     .github/scripts/install_ifort.bat ${{env.WINDOWS_MKL_URL}} ${{env.WINDOWS_MKL_COMPONENTS}}
-      #     .github/scripts/install_ifort.bat ${{env.WINDOWS_HPCKIT_URL}} ${{env.WINDOWS_FORTRAN_COMPONENTS}}
+      - name: Install Fortran compiler/MKL and Visual Studio 2022 integration
+        run: |
+          .github/scripts/install_ifort.bat ${{env.WINDOWS_MKL_URL}} ${{env.WINDOWS_MKL_COMPONENTS}}
+          .github/scripts/install_ifort.bat ${{env.WINDOWS_HPCKIT_URL}} ${{env.WINDOWS_FORTRAN_COMPONENTS}}
 
-      # - name: Activate compiler environment and Copy libiomp5md.dll to working directory
-      #   run: |
-      #     .github/scripts/activate_env.bat
+      - name: Activate compiler environment and Copy libiomp5md.dll to working directory
+        run: |
+          .github/scripts/activate_env.bat
 
       - name: Download Multiwfn and dislin source code 
         run: |
