@@ -76,7 +76,7 @@ jobs:
         shell: pwsh
         run: |
           Copy-Item -Path "${{env.Multiwfn_version}}\build\${{env.BUILD_TYPE}}\Multiwfn.exe"  -Destination "${{github.workspace}}\" -Force
-          Copy-Item -Path "C:\vcpkg\packages\arb_x64-windows-static\bin\*.dll"                       -Destination "${{github.workspace}}\" -Force
+          #Copy-Item -Path "C:\vcpkg\packages\arb_x64-windows-static\bin\*.dll"                       -Destination "${{github.workspace}}\" -Force
 
       - name: Upload Multiwfn
         uses: actions/upload-artifact@v4
