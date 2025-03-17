@@ -7,7 +7,7 @@ on:
 
 env:
   Multiwfn_version:  Multiwfn_3.8_dev_src_Linux
-  BUILD_TYPE: Release
+  BUILD_TYPE: Debug
   WINDOWS_HPCKIT_URL: https://registrationcenter-download.intel.com/akdlm/IRC_NAS/c95a3b26-fc45-496c-833b-df08b10297b9/w_HPCKit_p_2024.1.0.561_offline.exe
   WINDOWS_FORTRAN_COMPONENTS: intel.oneapi.win.ifort-compiler
   WINDOWS_MKL_URL: https://registrationcenter-download.intel.com/akdlm/IRC_NAS/78da61ee-8ded-4aab-8964-fea48243b05e/w_onemkl_p_2024.1.0.696_offline.exe
@@ -38,7 +38,7 @@ jobs:
 
       - name: Install flint dependencies via vcpkg
         run: |
-          vcpkg install flint arb --binarysource="clear;x-gha,readwrite"
+          vcpkg install flint:x64-windows-static arb:x64-windows-static --binarysource="clear;x-gha,readwrite"
 
       - name: Install Fortran compiler/MKL and Visual Studio 2022 integration
         run: |
@@ -67,7 +67,7 @@ jobs:
           copy ..\CMakeLists.txt . /Y
           copy ..\disifl_d.lib . /Y
           md build && cd build
-          cmake .. -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DFLINT_INCLUDE=C:\vcpkg\packages\flint_x64-windows\include -DFLINT_LIB=C:\vcpkg\packages\flint_x64-windows\lib\flint.lib -A x64
+          cmake .. -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DFLINT_INCLUDE=C:\vcpkg\packages\flint_x64-windows-static\include -DFLINT_LIB=C:\vcpkg\packages\flint_x64-windows-static\lib\flint.lib -A x64
           cmake --build . --config ${{env.BUILD_TYPE}} --target Multiwfn 
           
           dir ${{env.BUILD_TYPE}}
@@ -76,7 +76,7 @@ jobs:
         shell: pwsh
         run: |
           Copy-Item -Path "${{env.Multiwfn_version}}\build\${{env.BUILD_TYPE}}\Multiwfn.exe"  -Destination "${{github.workspace}}\" -Force
-          Copy-Item -Path "C:\vcpkg\packages\arb_x64-windows\bin\*.dll"                       -Destination "${{github.workspace}}\" -Force
+          Copy-Item -Path "C:\vcpkg\packages\arb_x64-windows-static\bin\*.dll"                       -Destination "${{github.workspace}}\" -Force
 
       - name: Upload Multiwfn
         uses: actions/upload-artifact@v4
