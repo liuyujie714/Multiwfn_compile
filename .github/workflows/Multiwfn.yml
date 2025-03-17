@@ -49,13 +49,13 @@ jobs:
       #   run: |
       #     .github/scripts/activate_env.bat
 
-      - name: Download Multiwfn source code
+      - name: Download Multiwfn and dislin source code 
         run: |
           curl -L http://sobereva.com/multiwfn/misc/${{env.Multiwfn_version}}.zip -o Multiwfn_src.zip
           7z x Multiwfn_src.zip
 
           # dislin for windows ifort
-          curl -L https://www.dislin.de/downloads/win64/dl_11_ic.zip -o dislin.zip
+          curl -L http://www.dislin.de/downloads/win64/dl_11_ic.zip -o dislin.zip
           unzip dislin.zip -d temp
           copy-Item -Path "temp\disifl_d.lib"  -Destination  . -Force
           dir
