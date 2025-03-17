@@ -149,14 +149,19 @@ if (CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
     set(CMAKE_INSTALL_PREFIX "${CMAKE_SOURCE_DIR}/../flint_staticlib" CACHE STRING "Installation prefix" FORCE)
 endif()
 
-install(DIRECTORY 
-    ${FLINT_INCLUDE}/..
-    ${GMP_INCLUDE}/..
-    ${MPFR_INCLUDE}/..
-    ${PTHREADS_INCLUDE}/..
-    ${ARB_INCLUDE}/..
-    DESTINATION ${CMAKE_INSTALL_PREFIX}
-)
+
+# 设置安装路径
+if (CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
+    set(CMAKE_INSTALL_PREFIX "${CMAKE_SOURCE_DIR}/../flint_staticlib" CACHE STRING "Installation prefix" FORCE)
+endif()
+
+# 安装每个 *_x64-windows-static 文件夹
+foreach(LIB ${LIBRARIES})
+    get_filename_component(${LIB}_PARENT_DIR ${${LIB}_INCLUDE} DIRECTORY)
+    install(DIRECTORY ${${LIB}_PARENT_DIR}
+            DESTINATION ${CMAKE_INSTALL_PREFIX}
+    )
+endforeach()
 
 # Multiwfn.exe
 install(TARGETS ${EXE} DESTINATION ${CMAKE_BINARY_DIR})
