@@ -5,7 +5,7 @@ if(NOT WIN32)
   message(FATAL_ERROR "Only Windows build is supported!")
 endif()
 
-# 需要flint相关库: glint, arb, gmp, mpfr, pthreads 
+# 需要flint相关库: flint, arb, gmp, mpfr, pthreads 
 set(LIBRARIES
     FLINT
     ARB
@@ -55,6 +55,7 @@ set(CMAKE_Fortran_FLAGS_RELEASE "")
 set(COMMON_FLAGS
     /fpp
     /Qopenmp
+    /Qopt-matmul
     /Qmkl:parallel
     /Qmkl
     /QxCORE-AVX2
@@ -97,11 +98,11 @@ set(LIBRETA_SOURCES
     ${LIBRETAPATH}/boysfunc.f90
     ${LIBRETAPATH}/naiveeri.f90
     ${LIBRETAPATH}/ryspoly.f90
+    ${LIBRETAPATH}/hrr_012345.f90
 )
 
 set(HRR_SOURCE
-    # XXXhrr_012345.f90 O2编译非常耗时间且容易报错
-    ${LIBRETAPATH}/hrr_012345.f90
+    # blockhrr_012345.f90 O2编译非常耗时间且容易报错
     ${LIBRETAPATH}/blockhrr_012345.f90
 )
 
@@ -111,8 +112,8 @@ target_compile_options(
         lib_hrr 
         PRIVATE 
         ${COMMON_FLAGS}
-        "$<$<CONFIG:Debug>:/O2>"
-        "$<$<CONFIG:Release>:/O2>"
+        "$<$<CONFIG:Debug>:/O1>"
+        "$<$<CONFIG:Release>:/O1>"
 )
 
 # 编译C接口
