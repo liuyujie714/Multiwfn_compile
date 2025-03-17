@@ -146,7 +146,7 @@ target_link_libraries(${EXE} lib_base ${LIB_GUI} gdi32)
 
 # install all flint lib and include
 if (CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
-    set(CMAKE_INSTALL_PREFIX "${CMAKE_SOURCE_DIR}/../flint_staticlib" CACHE STRING"Installation prefix" FORCE)
+    set(CMAKE_INSTALL_PREFIX "${CMAKE_SOURCE_DIR}/../flint_staticlib" CACHE STRING "Installation prefix" FORCE)
 endif()
 
 install(DIRECTORY 
