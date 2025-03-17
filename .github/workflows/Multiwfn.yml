@@ -149,6 +149,6 @@ jobs:
         run: |
           ls -alt
           # time stamp
-          OUTPUT_TAR=$(echo ${{env.Multiwfn_version}} | cut -d '_' -f1,2,3)_$(date -u '+%Y.%m.%d')".tar.gz"
+          OUTPUT_TAR=$(echo ${{env.Multiwfn_version}} | cut -d '_' -f1,2,3)_Win_x64_$(date -u '+%Y.%m.%d')".tar.gz"
           tar -czvf ${OUTPUT_TAR} *.dll *.exe examples *.ini *.txt *.pdf
           github-release upload --tag ${{ env.RELEASE_TAG }} --replace --name ${OUTPUT_TAR} --file ${OUTPUT_TAR}
