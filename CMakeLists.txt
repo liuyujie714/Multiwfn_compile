@@ -1,8 +1,8 @@
 cmake_minimum_required(VERSION 3.10)
 
-# 只能用于MSVC build on Windows
-if(NOT MSVC)
-  message(FATAL_ERROR "Only MSVC build on windows is supported!")
+# 只能用于Windows系统构建
+if(NOT WIN32)
+  message(FATAL_ERROR "Only windows system is supported!")
 endif()
 
 # 需要flint相关库: flint, arb, gmp, mpfr, pthreads 
@@ -143,3 +143,20 @@ target_compile_options(
 )
 # 链接主程序
 target_link_libraries(${EXE} lib_base ${LIB_GUI} gdi32)
+
+# install all flint lib and include
+if (CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
+    set(CMAKE_INSTALL_PREFIX "${CMAKE_SOURCE_DIR}/../flint_staticlib" CACHE STRING"Installation prefix" FORCE)
+endif()
+
+install(DIRECTORY 
+    ${FLINT_INCLUDE}/..
+    ${GMP_INCLUDE}/..
+    ${MPFR_INCLUDE}/..
+    ${PTHREADS_INCLUDE}/..
+    ${ARB_INCLUDE}/..
+    DESTINATION ${CMAKE_INSTALL_PREFIX}
+)
+
+# Multiwfn.exe
+install(TARGETS ${EXE} DESTINATION ${CMAKE_BINARY_DIR})

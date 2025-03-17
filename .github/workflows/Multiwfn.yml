@@ -68,7 +68,7 @@ jobs:
           copy ..\disifl_d.lib . /Y
           md build && cd build
           cmake .. -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DFLINT_INCLUDE=C:\vcpkg\packages\flint_x64-windows-static\include -DFLINT_LIB=C:\vcpkg\packages\flint_x64-windows-static\lib\flint.lib -A x64
-          cmake --build . --config ${{env.BUILD_TYPE}} --target Multiwfn 
+          cmake --build . --config ${{env.BUILD_TYPE}} --target install 
           
           dir ${{env.BUILD_TYPE}}
 
@@ -92,6 +92,7 @@ jobs:
           name: Multiwfn_Win_x64
           path: |
             .\tempfiles\*
+            .\flint_staticlib\*
 
 
   # refer to https://github.com/endless-sky/endless-sky/blob/master/.github/workflows/cd.yaml
@@ -151,4 +152,8 @@ jobs:
           # time stamp
           OUTPUT_TAR=$(echo ${{env.Multiwfn_version}} | cut -d '_' -f1,2,3)_Win_x64_$(date -u '+%Y.%m.%d')".tar.gz"
           tar -czvf ${OUTPUT_TAR} *.dll *.exe examples *.ini *.txt *.pdf
+          github-release upload --tag ${{ env.RELEASE_TAG }} --replace --name ${OUTPUT_TAR} --file ${OUTPUT_TAR}
+
+          # flint-staticlib
+          tar -czvf flint-static-lib.tar.gz *windows-static
           github-release upload --tag ${{ env.RELEASE_TAG }} --replace --name ${OUTPUT_TAR} --file ${OUTPUT_TAR}
