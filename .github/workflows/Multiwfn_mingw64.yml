@@ -39,6 +39,7 @@ jobs:
           flint:p
 
     - name: Update msys2
+      shell: msys2 {0}
       run: |
         pacman -Syu
 
