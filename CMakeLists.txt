@@ -31,7 +31,7 @@ if(MINGW)
     set(GMP_INCLUDE "${LIBRARY_PATH}")
     set(MPFR_INCLUDE "${LIBRARY_PATH}")
 
-    set(FLINT_LIB "${LIB_PATH}/libflint.dll.a")
+    set(FLINT_LIB "${LIB_PATH}/libflint.a")
     set(GMP_LIB "${LIB_PATH}/libgmp.a")
     set(MPFR_LIB "${LIB_PATH}/libmpfr.a")
     set(LAPACK_LIB "${LIB_PATH}/liblapack.a")
