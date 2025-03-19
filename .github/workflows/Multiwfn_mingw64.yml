@@ -12,7 +12,7 @@ jobs:
  Mingw64Build:
     runs-on: windows-latest
     env:
-      CMAKE_GENERATOR: "MinGW Makefiles"
+      CMAKE_GENERATOR: "Ninja"
 
     steps:
     - name: checkout source
@@ -53,8 +53,8 @@ jobs:
           cp ..\CMakeLists.txt . 
           cp ..\dismg_d.a .
           md build && cd build
-          cmake .. -DCMAKE_BUILD_TYPE=Release -DMINGW=ON
-          make install -j4
+          cmake .. -DCMAKE_BUILD_TYPE=Release -DMINGW=ON -DCMAKE_PREFIX_PATH=
+          ninja install -j4
 
     - name: Test
       run: |
