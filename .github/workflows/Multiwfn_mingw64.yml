@@ -51,6 +51,8 @@ jobs:
 
     - name: Build Multiwfn
       run: |
+          # remove system mingw
+          Remove-Item -Path "C:\mingw64" -Recurse -Force
           cd ${{env.Multiwfn_version}}
           cp ..\CMakeLists.txt . 
           cp ..\dismg_d.a .
