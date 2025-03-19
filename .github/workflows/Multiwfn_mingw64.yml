@@ -20,6 +20,7 @@ jobs:
 
     - name: Set up Msys2
       uses: msys2/setup-msys2@v2
+      id: msys2
       with:
         msystem: mingw64
         update: true
@@ -53,7 +54,7 @@ jobs:
           cp ..\CMakeLists.txt . 
           cp ..\dismg_d.a .
           md build && cd build
-          cmake .. -DCMAKE_BUILD_TYPE=Release -DMINGW=ON -DCMAKE_PREFIX_PATH=C:\msys64\mingw64
+          cmake .. -DCMAKE_BUILD_TYPE=Release -DMINGW=ON -DCMAKE_PREFIX_PATH=${{steps.msys2.outputs.msys2-location}}\mingw64
           ninja install -j4
 
     - name: Test
