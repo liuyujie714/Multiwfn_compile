@@ -38,6 +38,10 @@ jobs:
           gmp:p
           flint:p
 
+    - name: Update msys2
+      run: |
+        pacman -Syu
+
     - name: Download Multiwfn and dislin source code 
       run: |
         curl -L http://sobereva.com/multiwfn/misc/${{env.Multiwfn_version}}.zip -o Multiwfn_src.zip
