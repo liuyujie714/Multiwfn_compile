@@ -53,7 +53,7 @@ jobs:
           cp ..\CMakeLists.txt . 
           cp ..\dismg_d.a .
           md build && cd build
-          cmake .. -DCMAKE_BUILD_TYPE=Release -DMINGW=ON -DFLINT_DIR=C:\msys64\mingw64\lib\cmake\flint\flintConfig.cmake
+          cmake .. -DCMAKE_BUILD_TYPE=Release -DMINGW=ON -DFLINT_DIR=C:\msys64\mingw64\lib\cmake\flint
           ninja install -j4
 
     - name: Test
