@@ -1,4 +1,4 @@
-name: Build Mutiwfn on MINGW64
+name: Build latest Mutiwfn using mingw64 on Windows
 
 on:
   push:
@@ -51,7 +51,7 @@ jobs:
           cp ..\CMakeLists.txt . 
           cp ..\dismg_d.a .
           md build && cd build
-          cmake .. -DCMAKE_BUILD_TYPE=Release 
+          cmake .. -DCMAKE_BUILD_TYPE=Release -DMINGW=ON
           make install -j4
 
     - name: Test

@@ -1,4 +1,4 @@
-name: Build latest Multiwfn on Windows
+name: Build latest Multiwfn using ifort on Windows
 
 on:
   push:
