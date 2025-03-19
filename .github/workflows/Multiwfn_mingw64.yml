@@ -53,7 +53,7 @@ jobs:
     - name: Build Multiwfn
       shell: msys2 {0}
       run: |
-          rm -rf "C:/mingw64"
+          which make
           cd ${{env.Multiwfn_version}}
           cp ../CMakeLists.txt . 
           cp ../dismg_d.a .
