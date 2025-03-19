@@ -23,10 +23,6 @@ jobs:
       id: msys2
       with:
         msystem: mingw64
-        update: true
-        install: >-
-          git
-          make
         pacboy: >-
           toolchain:p
           gcc-fortran:p
@@ -53,7 +49,6 @@ jobs:
     - name: Build Multiwfn
       shell: msys2 {0}
       run: |
-          which make
           cd ${{env.Multiwfn_version}}
           cp ../CMakeLists.txt . 
           cp ../dismg_d.a .
