@@ -27,6 +27,7 @@ jobs:
           toolchain:p
           gcc-fortran:p
           cmake:p
+          make:p
           7zip:p
           blas:p
           openblas:p
