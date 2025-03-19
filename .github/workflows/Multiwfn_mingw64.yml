@@ -44,9 +44,9 @@ jobs:
         7z x Multiwfn_src.zip
 
         # dislin for windows mingw
-        curl -L https://www.dislin.de/downloads/win64/dl_11_mg.zip -o dislin.zip --insecure
-        unzip dislin.zip -d temp
-        cp ./temp/dismg_d.a .
+        # curl -L https://www.dislin.de/downloads/win64/dl_11_mg.zip -o dislin.zip --insecure
+        # unzip dislin.zip -d temp
+        # cp ./temp/dismg_d.a .
         ls
 
     - name: Build Multiwfn
