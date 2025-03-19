@@ -25,6 +25,7 @@ jobs:
         msystem: ucrt64
         install: >-
           make
+          curl
         pacboy: >-
           toolchain:p
           cmake:p
@@ -35,7 +36,17 @@ jobs:
           lapack:p
           mpfr:p
           gmp:p
-          flint:p
+
+    - name: Build static flint
+      shell: msys2 {0}
+      run: |
+        curl -L https://github.com/flintlib/flint/releases/download/v3.2.1/flint-3.2.1.tar.gz -o flint.tar.gz
+        tar -xvf flint.tar.gz 
+        rm -rf flint.tar.gz
+        cd flint*
+        ./configure --enable-static --enable-avx2 --prefix="${{steps.msys2.outputs.msys2-location}}/ucrt64
+        make -j4
+        make install
 
     - name: Download Multiwfn and dislin source code 
       run: |
