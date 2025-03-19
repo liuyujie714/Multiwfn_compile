@@ -33,6 +33,7 @@ jobs:
           7zip:p
           blas:p
           openblas:p
+          lapack:p
           mpfr:p
           gmp:p
           flint:p
