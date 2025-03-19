@@ -35,6 +35,7 @@ jobs:
           mpfr:p
           gmp:p
           flint:p
+          ninja:p
 
     - name: Download Multiwfn and dislin source code 
       run: |
