@@ -41,7 +41,8 @@ jobs:
     - name: Update msys2 gcc
       shell: msys2 {0}
       run: |
-        pacman -S mingw-w64-x86_64-gcc
+        gcc --version
+        pacman -S mingw-w64-x86_64-gcc --noconfirm
 
     - name: Download Multiwfn and dislin source code 
       run: |
