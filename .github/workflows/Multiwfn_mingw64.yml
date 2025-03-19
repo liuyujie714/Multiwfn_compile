@@ -53,10 +53,10 @@ jobs:
       shell: msys2 {0}
       run: |
           cd ${{env.Multiwfn_version}}
-          cp ..\CMakeLists.txt . 
-          cp ..\dismg_d.a .
+          cp ../CMakeLists.txt . 
+          cp ../dismg_d.a .
           mkdir build && cd build
-          cmake .. -DCMAKE_BUILD_TYPE=Release -DMINGW=ON -DCMAKE_PREFIX_PATH=${{steps.msys2.outputs.msys2-location}}\mingw64
+          cmake .. -DCMAKE_BUILD_TYPE=Release -DMINGW=ON -DCMAKE_PREFIX_PATH="${{steps.msys2.outputs.msys2-location}}/mingw64"
           make install -j4
 
     - name: Test
