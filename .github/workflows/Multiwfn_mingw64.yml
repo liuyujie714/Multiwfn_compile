@@ -11,6 +11,8 @@ env:
 jobs:
  Mingw64Build:
     runs-on: windows-latest
+    env:
+      CMAKE_GENERATOR: "MinGW Makefiles"
 
     steps:
     - name: checkout source
