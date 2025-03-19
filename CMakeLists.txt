@@ -53,7 +53,7 @@ if(MINGW)
     # OPT_O1 只用于blockhrr_012345.f90
     set(OPT_O1 "-O2")
     set(OPT_O2 "-O2")
-    set(LIB_GUI "${CMAKE_SOURCE_DIR}/dismg_d.a")    
+    set(LIB_GUI "${CMAKE_SOURCE_DIR}/dismgu_d.a")    
 
 else()
     # for MSVC and Ifort
