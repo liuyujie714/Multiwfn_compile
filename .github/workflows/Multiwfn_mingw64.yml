@@ -29,6 +29,7 @@ jobs:
           make
         pacboy: >-
           toolchain:p
+          gcc-fortran:p
           cmake:p
           7zip:p
           blas:p
