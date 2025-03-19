@@ -25,10 +25,10 @@ jobs:
         msystem: mingw64
         install: >-
           make
+          cmake
         pacboy: >-
           toolchain:p
           gcc-fortran:p
-          cmake:p
           7zip:p
           blas:p
           openblas:p
