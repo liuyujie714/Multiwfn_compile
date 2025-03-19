@@ -12,7 +12,7 @@ jobs:
  Mingw64Build:
     runs-on: windows-latest
     env:
-      CMAKE_GENERATOR: "Ninja"
+      CMAKE_GENERATOR: "MSYS Makefiles"
 
     steps:
     - name: checkout source
@@ -35,7 +35,6 @@ jobs:
           mpfr:p
           gmp:p
           flint:p
-          ninja:p
 
     - name: Download Multiwfn and dislin source code 
       run: |
