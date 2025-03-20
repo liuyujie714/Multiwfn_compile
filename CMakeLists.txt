@@ -56,7 +56,7 @@ if(MINGW)
     # 使用ucrt版本的库 dismg_d.a有链接bug
     set(LIB_GUI "${CMAKE_SOURCE_DIR}/dismgu_d.a") 
 
-    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -static-libgcc -static-libstdc++ -static-libgfortran -Wl,-Bstatic,--whole-archive -lwinpthread -Wl,--no-whole-archive")  
+    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -static-libgcc -static-libstdc++ -static-libgfortran -Wl,-Bstatic,--whole-archive -lwinpthread -lquadmath -Wl,--no-whole-archive")  
     
 else()
     # for MSVC and Ifort
