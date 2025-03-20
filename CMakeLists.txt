@@ -21,7 +21,7 @@ if(MINGW)
         message(FATAL_ERROR "FLINT version must be >= 3.0")
     endif()
     find_package(GMP REQUIRED)
-    #find_package(MPFR REQUIRED)
+    find_package(MPFR REQUIRED)
 
     find_package(lapack REQUIRED)
 
@@ -112,19 +112,14 @@ else()
 
     # install all flint lib and include
     if (CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
-    set(CMAKE_INSTALL_PREFIX "${CMAKE_SOURCE_DIR}/../flint_staticlib" CACHE STRING "Installation prefix" FORCE)
-    endif()
-
-    # 设置安装路径
-    if (CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
-    set(CMAKE_INSTALL_PREFIX "${CMAKE_SOURCE_DIR}/../flint_staticlib" CACHE STRING "Installation prefix" FORCE)
+      set(CMAKE_INSTALL_PREFIX "${CMAKE_SOURCE_DIR}/../flint_staticlib" CACHE STRING "Installation prefix" FORCE)
     endif()
 
     # 安装每个 *_x64-windows-static 文件夹
     foreach(LIB ${LIBRARIES})
-    get_filename_component(${LIB}_PARENT_DIR ${${LIB}_INCLUDE} DIRECTORY)
-    install(DIRECTORY ${${LIB}_PARENT_DIR}
-            DESTINATION ${CMAKE_INSTALL_PREFIX}
+      get_filename_component(${LIB}_PARENT_DIR ${${LIB}_INCLUDE} DIRECTORY)
+      install(DIRECTORY ${${LIB}_PARENT_DIR}
+              DESTINATION ${CMAKE_INSTALL_PREFIX}
     )
     endforeach()
 
