@@ -182,7 +182,7 @@ target_compile_options(
 # 编译C接口
 add_library(lib_2f2 STATIC ${C_SRC})
 target_include_directories(lib_2f2 PRIVATE ${FLINT_INCLUDE} ${GMP_INCLUDE} ${MPFR_INCLUDE} ${PTHREADS_INCLUDE} ${ARB_INCLUDE})
-target_link_libraries(lib_2f2 PRIVATE ${FLINT_LIB} ${GMP_LIB} ${MPFR_LIB} ${PTHREADS_LIB} ${ARB_LIB})
+target_link_libraries(lib_2f2 PUBLIC ${FLINT_LIB} ${GMP_LIB} ${MPFR_LIB} ${PTHREADS_LIB} ${ARB_LIB})
 
 # 生成目标文件
 add_library(lib_base STATIC ${SOURCES_GUI} ${SOURCES} ${LIBRETA_SOURCES})
