@@ -22,7 +22,8 @@ jobs:
       uses: msys2/setup-msys2@v2
       id: msys2
       with:
-        msystem: ucrt64
+        msystem: mingw64
+        update: true
         install: >-
           make
           curl
@@ -41,6 +42,7 @@ jobs:
     - name: Build static flint
       shell: msys2 {0}
       run: |
+        # replace mingw flint(it's is dll.a) by compile from source code
         curl -L https://github.com/flintlib/flint/releases/download/v3.2.1/flint-3.2.1.tar.gz -o flint.tar.gz
         tar -xvf flint.tar.gz 
         rm -rf flint.tar.gz
@@ -57,14 +59,14 @@ jobs:
         # dislin for windows mingw
         curl -L https://www.dislin.de/downloads/win64/dl_11_mg.zip -o dislin.zip --insecure
         unzip dislin.zip -d temp
-        cp ./temp/dismgu_d.a .
+        cp ./temp/dismg_d.a .
         ls
 
     - name: Build Multiwfn
       run: |
           cd ${{env.Multiwfn_version}}
           cp ../CMakeLists.txt . 
-          cp ../dismgu_d.a .
+          cp ../dismg_d.a .
           md build && cd build
           cmake .. -DCMAKE_BUILD_TYPE=Release -DMINGW=ON -DCMAKE_PREFIX_PATH="${{steps.msys2.outputs.msys2-location}}/ucrt64"
           make install -j4

@@ -53,7 +53,7 @@ if(MINGW)
     # OPT_O1 只用于blockhrr_012345.f90
     set(OPT_O1 "-O2")
     set(OPT_O2 "-O2")
-    set(LIB_GUI "${CMAKE_SOURCE_DIR}/dismgu_d.a") 
+    set(LIB_GUI "${CMAKE_SOURCE_DIR}/dismg_d.a") 
 
     set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -static-libgcc -static-libstdc++ -static-libgfortran")  
     
@@ -209,7 +209,7 @@ target_compile_options(
 
 # 链接主程序
 if(MINGW)
-    target_link_libraries(${EXE} lib_base ${LIB_GUI} opengl32 gdi32 gomp user32 ucrt)
+    target_link_libraries(${EXE} lib_base ${LIB_GUI} opengl32 gdi32 gomp user32 msvcrt)
 else()
     target_link_libraries(${EXE} lib_base ${LIB_GUI} opengl32 gdi32)
 endif()
