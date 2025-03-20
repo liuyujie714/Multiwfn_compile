@@ -55,7 +55,7 @@ if(MINGW)
     set(OPT_O2 "-O2")
     set(LIB_GUI "${CMAKE_SOURCE_DIR}/dismg_d.a") 
 
-    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -static-libgcc -static-libstdc++ -static-libgfortran")  
+    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -static-libgcc -static-libstdc++ -static-libgfortran -Wl,-Bstatic,--whole-archive -lwinpthread -Wl,--no-whole-archive")  
     
 else()
     # for MSVC and Ifort
@@ -171,13 +171,12 @@ set(HRR_SOURCE
     ${LIBRETAPATH}/blockhrr_012345.f90
 )
 
-# 总是OPT_O1优化HRR
+# Release总是OPT_O1优化HRR
 add_library(lib_hrr STATIC ${HRR_SOURCE})
 target_compile_options(
         lib_hrr 
         PRIVATE 
         ${COMMON_FLAGS}
-        "$<$<CONFIG:Debug>:${OPT_O1}>"
         "$<$<CONFIG:Release>:${OPT_O1}>"
 )
 
