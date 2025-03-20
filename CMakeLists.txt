@@ -28,12 +28,12 @@ if(MINGW)
     get_filename_component(LIB_PATH ${GMP_LIBRARY} DIRECTORY)
     set(LIBRARY_PATH ${GMP_INCLUDE_DIRS})
     set(FLINT_INCLUDE "${LIBRARY_PATH}")
-    #set(GMP_INCLUDE "${LIBRARY_PATH}")
-    #set(MPFR_INCLUDE "${LIBRARY_PATH}")
+    set(GMP_INCLUDE "${LIBRARY_PATH}")
+    set(MPFR_INCLUDE "${LIBRARY_PATH}")
 
     set(FLINT_LIB "${LIB_PATH}/libflint.a")
-    #set(GMP_LIB "${LIB_PATH}/libgmp.a")
-    #set(MPFR_LIB "${LIB_PATH}/libmpfr.a")
+    set(GMP_LIB "${LIB_PATH}/libgmp.a")
+    set(MPFR_LIB "${LIB_PATH}/libmpfr.a")
     set(LAPACK_LIB "${LIB_PATH}/liblapack.a")
     set(BLAS_LIB "${LIB_PATH}/libblas.a")
 
@@ -187,7 +187,7 @@ target_compile_options(
 # 编译C接口
 add_library(lib_2f2 STATIC ${C_SRC})
 target_include_directories(lib_2f2 PRIVATE ${FLINT_INCLUDE} ${GMP_INCLUDE} ${MPFR_INCLUDE} ${PTHREADS_INCLUDE} ${ARB_INCLUDE})
-target_link_libraries(lib_2f2 ${FLINT_LIB} ${GMP_LIB} ${MPFR_LIB} ${PTHREADS_LIB} ${ARB_LIB})
+target_link_libraries(lib_2f2 PRIVATE ${FLINT_LIB} ${GMP_LIB} ${MPFR_LIB} ${PTHREADS_LIB} ${ARB_LIB})
 
 # 生成目标文件
 add_library(lib_base STATIC ${SOURCES_GUI} ${SOURCES} ${LIBRETA_SOURCES})
@@ -198,7 +198,7 @@ target_compile_options(
         ${COMMON_FLAGS}
         "$<$<CONFIG:Release>:${OPT_O2}>"
 )
-target_link_libraries(lib_base lib_hrr lib_2f2 ${LAPACK_LIB} ${BLAS_LIB})
+target_link_libraries(lib_base PUBLIC lib_hrr lib_2f2 ${LAPACK_LIB} ${BLAS_LIB})
 
 # 设置包含目录
 add_executable(${EXE} "Multiwfn.f90" )
