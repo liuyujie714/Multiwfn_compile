@@ -10,7 +10,7 @@ env:
 
 jobs:
  Mingw64Build:
-    runs-on: windows-latest
+    runs-on: windows-2019
     env:
       CMAKE_GENERATOR: "MinGW Makefiles"
 
