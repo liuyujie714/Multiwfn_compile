@@ -22,7 +22,7 @@ jobs:
       uses: msys2/setup-msys2@v2
       id: msys2
       with:
-        msystem: mingw64
+        msystem: ucrt64
         update: true
         install: >-
           make
@@ -47,7 +47,7 @@ jobs:
         tar -xvf flint.tar.gz 
         rm -rf flint.tar.gz
         cd flint*
-        ./configure --enable-static --enable-avx2 --prefix="${{steps.msys2.outputs.msys2-location}}/mingw64"
+        ./configure --enable-static --enable-avx2 --prefix="${{steps.msys2.outputs.msys2-location}}/ucrt64"
         make -j4
         make install
 
@@ -59,16 +59,16 @@ jobs:
         # dislin for windows mingw
         curl -L https://www.dislin.de/downloads/win64/dl_11_mg.zip -o dislin.zip --insecure
         unzip dislin.zip -d temp
-        cp ./temp/dismg_d.a .
+        cp ./temp/dismgu_d.a .
         ls
 
     - name: Build Multiwfn
       run: |
           cd ${{env.Multiwfn_version}}
           cp ../CMakeLists.txt . 
-          cp ../dismg_d.a .
+          cp ../dismgu_d.a .
           md build && cd build
-          cmake .. -DCMAKE_BUILD_TYPE=Release -DMINGW=ON -DCMAKE_PREFIX_PATH="${{steps.msys2.outputs.msys2-location}}/mingw64"
+          cmake .. -DCMAKE_BUILD_TYPE=Release -DMINGW=ON -DCMAKE_PREFIX_PATH="${{steps.msys2.outputs.msys2-location}}/ucrt64"
           make install -j4
 
     - name: Test
