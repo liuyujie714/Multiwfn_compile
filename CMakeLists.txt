@@ -20,8 +20,8 @@ if(MINGW)
     if(${FLINT_VERSION_MAJOR} LESS 3)
         message(FATAL_ERROR "FLINT version must be >= 3.0")
     endif()
-    find_package(GMP REQUIRED)
     find_package(MPFR REQUIRED)
+    find_package(GMP REQUIRED)
 
     find_package(lapack REQUIRED)
 
@@ -181,8 +181,8 @@ target_compile_options(
 
 # 编译C接口
 add_library(lib_2f2 STATIC ${C_SRC})
-target_include_directories(lib_2f2 PRIVATE ${FLINT_INCLUDE} ${GMP_INCLUDE} ${MPFR_INCLUDE} ${PTHREADS_INCLUDE} ${ARB_INCLUDE})
-target_link_libraries(lib_2f2 PUBLIC ${FLINT_LIB} ${GMP_LIB} ${MPFR_LIB} ${PTHREADS_LIB} ${ARB_LIB})
+target_include_directories(lib_2f2 PRIVATE ${FLINT_INCLUDE} ${MPFR_INCLUDE} ${GMP_INCLUDE} ${PTHREADS_INCLUDE} ${ARB_INCLUDE})
+target_link_libraries(lib_2f2 PRIVATE ${FLINT_LIB} ${MPFR_LIB} ${GMP_LIB} ${PTHREADS_LIB} ${ARB_LIB})
 
 # 生成目标文件
 add_library(lib_base STATIC ${SOURCES_GUI} ${SOURCES} ${LIBRETA_SOURCES})
@@ -193,7 +193,7 @@ target_compile_options(
         ${COMMON_FLAGS}
         "$<$<CONFIG:Release>:${OPT_O2}>"
 )
-target_link_libraries(lib_base PUBLIC lib_hrr lib_2f2 ${LAPACK_LIB} ${BLAS_LIB})
+target_link_libraries(lib_base PRIVATE lib_hrr lib_2f2 ${LAPACK_LIB} ${BLAS_LIB})
 
 # 设置包含目录
 add_executable(${EXE} "Multiwfn.f90" )
