@@ -68,7 +68,7 @@ jobs:
           cp ../CMakeLists.txt . 
           cp ../dismg_d.a .
           md build && cd build
-          cmake .. -DCMAKE_BUILD_TYPE=Release -DMINGW=ON -DCMAKE_PREFIX_PATH="${{steps.msys2.outputs.msys2-location}}/ucrt64"
+          cmake .. -DCMAKE_BUILD_TYPE=Release -DMINGW=ON -DCMAKE_PREFIX_PATH="${{steps.msys2.outputs.msys2-location}}/mingw64"
           make install -j4
 
     - name: Test
