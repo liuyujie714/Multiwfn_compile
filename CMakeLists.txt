@@ -207,7 +207,7 @@ target_compile_options(
 
 # 链接主程序
 if(MINGW)
-    target_link_libraries(${EXE} lib_base ${LIB_GUI} opengl32 gdi32 gomp user32 ucrt mpfr gmp flint )
+    target_link_libraries(${EXE} lib_base ${LIB_GUI} opengl32 gdi32 gomp user32 ucrt)
 else()
     target_link_libraries(${EXE} lib_base ${LIB_GUI} opengl32 gdi32)
 endif()
