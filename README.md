@@ -1,9 +1,12 @@
-<center><font size=5>基于Multiwfn 3.8(dev)源码编译Windows二进制程序</font></center>
+<p style="text-align: center; color: blue; font-size: 20px;">基于Multiwfn 3.8(dev)源码编译Windows二进制程序</p>
+
+
 
 # 声明
+
 此自动编译流程总是下载**最新Multiwfn源码**构建，仅限于测试，本人不保证完全正确。特别对于需要进行二次开发或者增添自定义功能的用户有很大帮助，自动化构建流程非常方便。
 
-<font color=red>使用此软件请严格按照要求正文引用原作者的文献: </font>
+<p style="color:red;">使用此软件请严格按照要求正文引用原作者的文献: </p>
 
 > Tian Lu, Feiwu Chen, Multiwfn: A Multifunctional Wavefunction Analyzer, J. Comput. Chem. 33, 580-592 (2012) DOI: 10.1002/jcc.22885
 
@@ -40,5 +43,4 @@ MingW64 + GNU Fortran + lapack
 
 
 此方案编译出的二进制程序性能比方案1略差，因为采用的是Mingw64下的gfortran本身就有性能问题，注意链接的是ucrt64库
-
 
