@@ -115,7 +115,7 @@ else()
     set(LIB_GUI "${CMAKE_SOURCE_DIR}/disifl_d.lib")
 
     # 设置链接器选项
-    set(CMAKE_EXE_LINKER_FLAGS ${CMAKE_EXE_LINKER_FLAGS} "/STACK:1900000000 legacy_stdio_definitions.lib")
+    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /STACK:1900000000 legacy_stdio_definitions.lib")
 
     # install all flint lib and include
     if (CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
