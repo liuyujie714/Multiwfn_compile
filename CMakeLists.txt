@@ -51,7 +51,6 @@ if(MINGW)
         -fopenmp
         -static
         -ffree-line-length-none
-        #-fmax-stack-var-size=1900000000
     )
 
     # OPT_O1 只用于blockhrr_012345.f90
@@ -60,7 +59,7 @@ if(MINGW)
     # 使用ucrt版本的库 dismg_d.a有链接bug
     set(LIB_GUI "${CMAKE_SOURCE_DIR}/dismgu_d.a") 
 
-    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -static-libgcc -static-libstdc++ -static-libgfortran -Wl,-Bstatic,--whole-archive -lwinpthread -lquadmath -Wl,--no-whole-archive")  
+    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -static-libgcc -static-libstdc++ -static-libgfortran -Wl,--stack,1900000000 -Wl,-Bstatic,--whole-archive -lwinpthread -lquadmath -Wl,--no-whole-archive")  
     
 else()
     # for MSVC and Ifort
