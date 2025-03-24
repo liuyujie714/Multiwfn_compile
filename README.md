@@ -23,7 +23,7 @@
 
 ## 方案1
 
-Visual Studio 2022 + Inter Fortran compiler and MKL (from Intel oneAPI).
+Visual Studio 2022 + Intel Fortran compiler and MKL (from Intel oneAPI).
 
 原生编译，官方推荐的编译方式，性能好。
 
