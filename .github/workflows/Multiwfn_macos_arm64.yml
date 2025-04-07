@@ -45,6 +45,7 @@ jobs:
 
     - name: Build 
       run: |
+        ls $PWD/dislin
         cd ${{env.Multiwfn_version}}
         cp ../CMakeLists_macos_arm64.txt CMakeLists.txt
         mkdir build && cd build
