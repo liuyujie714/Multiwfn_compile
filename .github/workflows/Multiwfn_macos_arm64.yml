@@ -1,0 +1,53 @@
+name: Build latest Mutiwfn using MacOS-14-arm64
+
+on:
+  push:
+    branches:
+      - master
+
+env:
+  Multiwfn_version:  Multiwfn_3.8_dev_src_Linux
+
+jobs:
+  MacOS-Arm64:
+    runs-on: macOS-14-arm64
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: Download source
+      run: |
+        wget http://sobereva.com/multiwfn/misc/${{env.Multiwfn_version}}.zip
+        unzip ${{env.Multiwfn_version}}.zip
+        rm ${{env.Multiwfn_version}}.zip
+        wget http://sobereva.com/multiwfn/misc/Multiwfn_3.8_dev_bin_Linux_noGUI.zip
+        unzip -o -j Multiwfn_3.8_dev_bin_Linux_noGUI.zip Multiwfn_3.8_dev_bin_Linux_noGUI/{settings.ini,LICENSE.txt,examples/phenol.xyz}
+        rm Multiwfn_3.8_dev_bin_Linux_noGUI.zip 
+        ls
+
+    - name: Install libraries
+      run: |
+        brew install openmotif mesa arb flint
+        wget https://www.dislin.de/downloads/macOS/dislin-11.5.macOS.arm.64.tar.gz
+        tar -xvf dislin-11.5.macOS.arm.64.tar.gz
+        export DISLIN=$PWD/dislin
+        cd dislin-11.5
+        ./INSTALL
+        cd ..
+        install_name_tool -id $DISLIN/libdislin_d.dylib $DISLIN/libdislin_d.dylib
+        install_name_tool -change /usr/X11/lib/libGL.1.dylib /usr/local/lib/libGL.dylib $DISLIN/libdislin_d.dylib
+
+    - name: Build 
+      run: |
+        cd ${{env.Multiwfn_version}} && mkdir build
+        cp ../../CMakeLists_macos_arm64.txt CMakeLists.txt
+        cmake .. -DWITH_OpenMP=ON -DWITH_GUI=ON -DDISLIN_DIR=$PWD/dislin -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=$PWD
+        make install -j4
+      env:
+        FC: gfortran-12
+        CC: gcc-12        
+
+    - name: Test
+      run: |
+        cp settings.ini ${{env.Multiwfn_version}}/build
+        ./${{env.Multiwfn_version}}/build/Multiwfn phenol.xyz <<< "q"      
