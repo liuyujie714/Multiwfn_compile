@@ -15,6 +15,12 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v3
 
+    - name: Check system
+      run: |
+        echo "macOS version: $(sw_vers -productVersion)"
+        echo "macOS kernel: $(uname -r)"
+        echo "macOS arch: $(uname -m)"
+
     - name: Download source
       run: |
         wget http://sobereva.com/multiwfn/misc/${{env.Multiwfn_version}}.zip
@@ -27,7 +33,7 @@ jobs:
 
     - name: Install libraries
       run: |
-        brew install openmotif mesa arb flint
+        brew install openmotif mesa flint
         wget https://www.dislin.de/downloads/macOS/dislin-11.5.macOS.arm.64.tar.gz
         tar -xvf dislin-11.5.macOS.arm.64.tar.gz
         export DISLIN=$PWD/dislin
