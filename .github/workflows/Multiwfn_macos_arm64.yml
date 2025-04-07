@@ -49,7 +49,7 @@ jobs:
         cd ${{env.Multiwfn_version}}
         cp ../CMakeLists_macos_arm64.txt CMakeLists.txt
         mkdir build && cd build
-        cmake .. -DWITH_OpenMP=ON -DWITH_GUI=ON -DDISLIN_DIR=$PWD/dislin/lib -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=$PWD
+        cmake .. -DWITH_OpenMP=ON -DWITH_GUI=ON -DDISLIN_DIR=$PWD/dislin -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=$PWD
         make install -j4
       env:
         FC: gfortran-12
