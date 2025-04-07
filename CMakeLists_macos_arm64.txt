@@ -34,8 +34,16 @@ endif()
 if(WITH_GUI)
   find_library(
     dislin
-    NAMES libdislin_d
-    PATHS ${DISLIN_DIR} REQUIRED)
+    NAMES
+    dislin_d.11.5.2   
+    dislin_d.11       
+    dislin_d          
+    libdislin_d.11.5.2
+    libdislin_d.11    
+    libdislin_d       
+    PATHS 
+    ${DISLIN_DIR} ${DISLIN_DIR}/lib 
+    REQUIRED)
   find_library(Xm NAMES Xm REQUIRED)
   message("-- Found DISLIN: ${dislin}")
   message("-- Found OpenMotif: ${Xm}")
