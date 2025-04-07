@@ -45,7 +45,7 @@ jobs:
 
     - name: Build 
       run: |
-        cd ${{env.Multiwfn_version}} && mkdir build
+        cd ${{env.Multiwfn_version}} && mkdir build && cd build
         cp ../../CMakeLists_macos_arm64.txt CMakeLists.txt
         cmake .. -DWITH_OpenMP=ON -DWITH_GUI=ON -DDISLIN_DIR=$PWD/dislin -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=$PWD
         make install -j4
