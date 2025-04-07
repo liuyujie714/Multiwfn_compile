@@ -10,7 +10,7 @@ env:
 
 jobs:
   MacOS-Arm64:
-    runs-on: macOS-14-arm64
+    runs-on: macos-14-xlarge
     steps:
     - name: Checkout
       uses: actions/checkout@v3
