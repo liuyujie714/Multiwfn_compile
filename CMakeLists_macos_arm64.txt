@@ -34,7 +34,7 @@ endif()
 if(WITH_GUI)
   find_library(
     dislin
-    NAMES dislin_d.11
+    NAMES libdislin_d
     PATHS ${DISLIN_DIR} REQUIRED)
   find_library(Xm NAMES Xm REQUIRED)
   message("-- Found DISLIN: ${dislin}")
