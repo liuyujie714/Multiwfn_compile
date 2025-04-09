@@ -45,7 +45,7 @@ jobs:
         make -j4
         make install
         
-        rm -rf /opt/homebrew/opt/flint/lib/*.dylib
+        #rm -rf /opt/homebrew/opt/flint/lib/*.dylib
         ls /opt/homebrew/opt/flint/lib/
         ls /opt/homebrew/opt/mpfr/lib/
         ls /opt/homebrew/opt/gmp/lib
@@ -77,7 +77,7 @@ jobs:
         -DWITH_OpenMP=ON \
         -DWITH_GUI=ON \
         -DDISLIN_DIR=$DISLIN \
-        -DCMAKE_BUILD_TYPE=Release \
+        -DCMAKE_BUILD_TYPE=Debug \
         -DCMAKE_INSTALL_PREFIX=$PWD \
         -DCMAKE_PREFIX_PATH=/opt/homebrew/opt/flint \
         -DBUILD_SHARED_LIBS=OFF
@@ -87,7 +87,7 @@ jobs:
         FC: gfortran-13
         CC: gcc-13      
 
-    - name: Test
+    - name: Test Command
       run: |
         cp settings.ini ${{env.Multiwfn_version}}/build
         cp dislin/libdislin_d.dylib ${{env.Multiwfn_version}}/build
@@ -102,4 +102,34 @@ jobs:
           ./${{env.Multiwfn_version}}/build/Multiwfn
           ./${{env.Multiwfn_version}}/build/libdislin_d.dylib
 
- 
+    - name: Test GUI
+      run: | 
+        brew install --cask xquartz
+        brew install ffmpeg pv cliclick 
+        sudo /opt/X11/libexec/privileged_startx || true
+
+        cp ./${{env.Multiwfn_version}}/build/libdislin_d.dylib .
+        cp ./${{env.Multiwfn_version}}/build/Multiwfn .
+        chmod a+x Multiwfn
+        # fix path
+        install_name_tool -change /Users/runner/work/Multiwfn_compile/Multiwfn_compile/dislin/libdislin_d.dylib @loader_path/libdislin_d.dylib Multiwfn
+
+        ffmpeg -f avfoundation -framerate 30 -video_size 1920x1080 -i "0"  -t 15 -c:v libx264 output.mp4 &
+        sleep 2
+        {
+          ./Multiwfn misc/examples/phenylalanineresiduestrimer.xyz <<< "0" &
+          sleep 2
+          for i in `seq 1000 1400`
+          do 
+              cliclick c:$i,150
+              cliclick c:$i,170
+          done
+          pkill -f "Multiwfn" 
+        }
+        sleep 30
+
+    - name: Upload recording
+      uses: actions/upload-artifact@v4
+      with:
+        name: gui-recording
+        path: ./output.mp4
