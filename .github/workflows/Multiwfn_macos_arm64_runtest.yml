@@ -14,22 +14,6 @@ jobs:
       run: |
         echo "macOS version: $(sw_vers -productVersion)"
         echo "macOS kernel: $(uname -r)"
-        echo "macOS arch: $(uname -m)"
-
-    - name: Fix Multiwfn path
-      run: |
-        unzip -o Multiwfn3.8_latest_MacOS.zip
-        chmod a+x Multiwfn
-        install_name_tool -change /Users/runner/work/Multiwfn_compile/Multiwfn_compile/dislin/libdislin_d.dylib @loader_path/libdislin_d.dylib Multiwfn
-        
-    - name: Install dependencies
-      run: | 
-        brew install ffmpeg pv
-
-    - name: Test with recording
-      uses: GabrielBB/xvfb-action@v1.7
-      with:
-        run: |
-          echo $DISPLAY
-          which xvfb-run
+        echo "macOS arch: $(uname -m)
+        brew install xvfb
           
