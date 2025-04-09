@@ -124,7 +124,7 @@ jobs:
               cliclick c:$i,150
               cliclick c:$i,170
           done
-          pkill -f "Multiwfn" 
+          #pkill -f "Multiwfn" 
         }
         sleep 30
 
