@@ -14,6 +14,6 @@ jobs:
       run: |
         echo "macOS version: $(sw_vers -productVersion)"
         echo "macOS kernel: $(uname -r)"
-        echo "macOS arch: $(uname -m)
+        echo "macOS arch: $(uname -m)"
         brew install xvfb
           
