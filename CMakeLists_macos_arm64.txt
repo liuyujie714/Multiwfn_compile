@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.18)
-project(my_proj LANGUAGES C Fortran) # C is needed to discover Homebrew OpenBLAS
+project(my_proj LANGUAGES C Fortran)
 
 # Options
 option(WITH_OpenMP "Build with OpenMP")
@@ -8,7 +8,7 @@ option(WITH_GUI "Build with GUI")
 set(CMAKE_FIND_LIBRARY_SUFFIXES ".a")
 set(CMAKE_FIND_LIBRARY_PREFIXES "lib")
 
-# Find BLAS and LAPACK
+# Find BLAS and LAPACK libraries
 include(CMakeFindDependencyMacro)
 find_dependency(BLAS)
 find_dependency(LAPACK)
