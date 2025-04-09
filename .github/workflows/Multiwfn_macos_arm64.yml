@@ -114,20 +114,20 @@ jobs:
         # fix path
         #install_name_tool -change /Users/runner/work/Multiwfn_compile/Multiwfn_compile/dislin/libdislin_d.dylib @loader_path/libdislin_d.dylib Multiwfn
 
-        ffmpeg -f avfoundation -framerate 30 -video_size 1920x1080 -i "0"  -t 15 -c:v libx264 output.mp4 &
+        ffmpeg -f avfoundation -framerate 30 -video_size 1920x1080 -i "0"  -t 30 -c:v libx264 output.mp4 &
         sleep 2
         {
           ./${{env.Multiwfn_version}}/build/Multiwfn misc/examples/phenylalanineresiduestrimer.xyz <<< "0" &
           sleep 2
-          for i in `seq 1000 1600`
+          for i in `seq 1000 20 1600`
           do 
+              echo "Pressing $i"
               cliclick c:$i,140
               cliclick c:$i,150
               cliclick c:$i,170
           done
           #pkill -f "Multiwfn" 
         }
-        sleep 30
 
     - name: Upload recording
       uses: actions/upload-artifact@v4
