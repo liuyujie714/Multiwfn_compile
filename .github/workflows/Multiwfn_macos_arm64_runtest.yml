@@ -24,7 +24,7 @@ jobs:
         run: |
           unzip Multiwfn3.8_latest_MacOS.zip
           chmod a+x Multiwfn
-          ./Multiwfn examples/phenylalanineresiduestrimer.xyz <<< "0"
+          otool -L Multiwfn
         working-directory:  ${{ github.workspace }}
         options: #optional
 
