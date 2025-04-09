@@ -119,7 +119,7 @@ jobs:
         {
           ./${{env.Multiwfn_version}}/build/Multiwfn misc/examples/phenylalanineresiduestrimer.xyz <<< "0" &
           sleep 2
-          for i in `seq 1000 20 1600`
+          for i in `seq 1200 20 2000`
           do 
               echo "Pressing $i"
               cliclick c:$i,140
