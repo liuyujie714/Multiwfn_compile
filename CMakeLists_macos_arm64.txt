@@ -84,7 +84,7 @@ target_include_directories(lib_multiwfn PRIVATE ${GMP_INCLUDE_DIRS} ${FLINT_INCL
 target_compile_options(
   lib_multiwfn
   PRIVATE
-  $<$<AND:$<COMPILE_LANGUAGE:Fortran>,$<STREQUAL:$<Fortran_COMPILER_ID>,GNU>>:-ffree-line-length-none -fcheck=all -ffpe-summary=invalid,zero,overflow -fbacktrace -g>
+  $<$<AND:$<COMPILE_LANGUAGE:Fortran>,$<STREQUAL:$<Fortran_COMPILER_ID>,GNU>>:-ffree-line-length-none -fcheck=all -ffpe-summary=invalid,zero,overflow -fbacktrace -g -fsanitize=address -fno-omit-frame-pointer>
 )
 
 # Add executable
@@ -108,7 +108,7 @@ target_link_libraries(
 target_compile_options(
   Multiwfn
   PRIVATE
-  $<$<AND:$<COMPILE_LANGUAGE:Fortran>,$<STREQUAL:$<Fortran_COMPILER_ID>,GNU>>:-ffree-line-length-none -fcheck=all -ffpe-summary=invalid,zero,overflow -fbacktrace -g>
+  $<$<AND:$<COMPILE_LANGUAGE:Fortran>,$<STREQUAL:$<Fortran_COMPILER_ID>,GNU>>:-ffree-line-length-none -fcheck=all -ffpe-summary=invalid,zero,overflow -fbacktrace -g -fsanitize=address -fno-omit-frame-pointer>
 )
 
 # Install

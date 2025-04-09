@@ -118,7 +118,7 @@ jobs:
         sleep 2
         {
           export MallocStackLogging=1
-          leaks --list --atExit -- ./${{env.Multiwfn_version}}/build/Multiwfn misc/examples/phenylalanineresiduestrimer.xyz <<< "0" &
+          ./${{env.Multiwfn_version}}/build/Multiwfn misc/examples/phenylalanineresiduestrimer.xyz <<< "0" &
           sleep 2
           for i in `seq 1200 10 2000`
           do 
