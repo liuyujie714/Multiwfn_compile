@@ -42,8 +42,8 @@ jobs:
             sleep 2
             for i in `seq 1000 1400`
             do 
-                cliclick c:$i,120
                 cliclick c:$i,150
+                cliclick c:$i,170
             done
             pkill -f "Multiwfn"  # 强制结束程序
           }
