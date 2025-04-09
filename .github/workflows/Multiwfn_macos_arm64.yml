@@ -105,7 +105,8 @@ jobs:
     - name: Test GUI
       run: | 
         brew install --cask xquartz
-        brew install ffmpeg pv cliclick valgrind
+        brew install --HEAD valgrind
+        brew install ffmpeg cliclick
         sudo /opt/X11/libexec/privileged_startx || true
 
         cp ./${{env.Multiwfn_version}}/build/libdislin_d.dylib .
