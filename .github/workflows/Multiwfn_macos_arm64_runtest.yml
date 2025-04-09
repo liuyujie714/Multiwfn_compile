@@ -30,7 +30,10 @@ jobs:
       uses: GabrielBB/xvfb-action@v1
       with:
         run: |
-          ffmpeg -video_size 1280x1024 -framerate 25 -f x11grab -i :99 -t 15 out.mp4 &
+          SERVERNUM=$(Xvfb --auto-servernum 2>&1 | grep -oP "Server number: \K\d+")
+          export DISPLAY=:${SERVERNUM}
+          echo $DISPLAY
+          ffmpeg -video_size 1280x1024 -framerate 25 -f x11grab -i $DISPLAY -t 15 out.mp4 &
           
           # 运行程序并自动结束
           {
@@ -42,7 +45,6 @@ jobs:
           # 确保录制完成
           sleep 5
         working-directory: ${{ github.workspace }}
-        options:  --server-num 99
 
     - name: Upload recording
       uses: actions/upload-artifact@v4
