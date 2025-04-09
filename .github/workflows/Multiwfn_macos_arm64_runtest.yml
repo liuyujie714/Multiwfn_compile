@@ -15,7 +15,35 @@ jobs:
         echo "macOS version: $(sw_vers -productVersion)"
         echo "macOS kernel: $(uname -r)"
         echo "macOS arch: $(uname -m)"
-        brew install xquartz
-        Xvfb :99 -ac -screen 0 1024x768x8 
+
+    - name: Fix Multiwfn path
+      run: |
+        unzip -o Multiwfn3.8_latest_MacOS.zip
+        chmod a+x Multiwfn
+        install_name_tool -change /Users/runner/work/Multiwfn_compile/Multiwfn_compile/dislin/libdislin_d.dylib @loader_path/libdislin_d.dylib Multiwfn
         
+    - name: Install dependencies
+      run: | 
+        brew install ffmpeg pv
+
+    - name: Test
+      run: |
+          ffmpeg -f x11grab -framerate 30 -video_size 1920x1080 -i :0.0 -c:v libx264 -crf 18 output.mp4 &
+          # ffmpeg -video_size 1280x1024 -framerate 25 -f x11grab -i :99.0 -t 15 out.mp4 &
           
+          # 运行程序并自动结束
+          {
+            ./Multiwfn misc/examples/phenylalanineresiduestrimer.xyz <<< "0" &
+            sleep 5
+            pkill -f "Multiwfn"  # 强制结束程序
+          }
+
+          # 确保录制完成
+          sleep 5
+
+    - name: Upload recording
+      uses: actions/upload-artifact@v4
+      with:
+        name: gui-recording
+        path: out.mp4
+        
