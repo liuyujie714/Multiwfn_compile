@@ -24,13 +24,13 @@ jobs:
         
     - name: Install dependencies
       run: | 
-        brew install ffmpeg pv 
+        brew install ffmpeg pv
 
     - name: Test with recording
       uses: GabrielBB/xvfb-action@v1
       with:
         run: |
-          SERVERNUM=$(Xvfb --auto-servernum 2>&1 | grep -oP "Server number: \K\d+")
+          SERVERNUM=$(xvfb --auto-servernum 2>&1 | grep -oP "Server number: \K\d+")
           export DISPLAY=:${SERVERNUM}
           echo $DISPLAY
           ffmpeg -video_size 1280x1024 -framerate 25 -f x11grab -i $DISPLAY -t 15 out.mp4 &
