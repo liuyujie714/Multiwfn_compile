@@ -74,7 +74,7 @@ jobs:
         cp ../CMakeLists_macos_arm64.txt CMakeLists.txt
         mkdir build && cd build
         cmake .. \
-        -DWITH_OpenMP=OFF \
+        -DWITH_OpenMP=ON \
         -DWITH_GUI=ON \
         -DDISLIN_DIR=$DISLIN \
         -DCMAKE_BUILD_TYPE=Debug \
@@ -120,6 +120,7 @@ jobs:
           export MallocStackLogging=1
           ./${{env.Multiwfn_version}}/build/Multiwfn misc/examples/phenylalanineresiduestrimer.xyz <<< "0" &
           sleep 2
+          leaks --list --fullStacks $!
           for i in `seq 1200 10 2000`
           do 
               cliclick c:$i,140
