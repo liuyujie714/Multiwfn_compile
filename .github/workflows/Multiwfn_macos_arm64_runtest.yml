@@ -15,6 +15,12 @@ jobs:
         echo "macOS version: $(sw_vers -productVersion)"
         echo "macOS kernel: $(uname -r)"
         echo "macOS arch: $(uname -m)"
+
+    - name: Fix Multiwfn path
+      run: |
+        unzip -o Multiwfn3.8_latest_MacOS.zip
+        chmod a+x Multiwfn
+        install_name_tool -change /Users/runner/work/Multiwfn_compile/Multiwfn_compile/dislin/libdislin_d.dylib @loader_path/libdislin_d.dylib Multiwfn
         
     - name: Install dependencies
       run: | 
@@ -24,10 +30,6 @@ jobs:
       uses: GabrielBB/xvfb-action@v1
       with:
         run: |
-          unzip -o Multiwfn3.8_latest_MacOS.zip
-          chmod a+x Multiwfn
-          install_name_tool -change /Users/runner/work/Multiwfn_compile/Multiwfn_compile/dislin/libdislin_d.dylib @loader_path/libdislin_d.dylib Multiwfn
-
           ffmpeg -video_size 1280x1024 -framerate 25 -f x11grab -i :99.0 -t 15 out.mp4 &
 
           # 运行程序并自动结束
