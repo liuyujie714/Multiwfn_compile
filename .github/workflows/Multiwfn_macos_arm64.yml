@@ -31,32 +31,32 @@ jobs:
         rm Multiwfn_3.8_dev_bin_Linux_noGUI.zip 
         ls
         
-    - name: Build static flint
-      run: |
-        curl -L https://github.com/flintlib/flint/releases/download/v3.2.1/flint-3.2.1.tar.gz -o flint.tar.gz
-        tar -xf flint.tar.gz 
-        rm -rf flint.tar.gz  
-        cd flint*
-        ./configure \
-        --enable-static \
-        --with-gmp=$(brew --prefix) \
-        --with-mpfr=$(brew --prefix) \
-        --prefix="/opt/homebrew/opt/flint"
-        make -j4
-        make install
+    # - name: Build static flint
+    #   run: |
+    #     curl -L https://github.com/flintlib/flint/releases/download/v3.2.1/flint-3.2.1.tar.gz -o flint.tar.gz
+    #     tar -xf flint.tar.gz 
+    #     rm -rf flint.tar.gz  
+    #     cd flint*
+    #     ./configure \
+    #     --enable-static \
+    #     --with-gmp=$(brew --prefix) \
+    #     --with-mpfr=$(brew --prefix) \
+    #     --prefix="/opt/homebrew/opt/flint"
+    #     make -j4
+    #     make install
         
-        #rm -rf /opt/homebrew/opt/flint/lib/*.dylib
-        ls /opt/homebrew/opt/flint/lib/
-        ls /opt/homebrew/opt/mpfr/lib/
-        ls /opt/homebrew/opt/gmp/lib
-      env:
-        FC: gfortran-13
-        CC: gcc-13
+    #     #rm -rf /opt/homebrew/opt/flint/lib/*.dylib
+    #     ls /opt/homebrew/opt/flint/lib/
+    #     ls /opt/homebrew/opt/mpfr/lib/
+    #     ls /opt/homebrew/opt/gmp/lib
+    #   env:
+    #     FC: gfortran-13
+    #     CC: gcc-13
 
 
     - name: Install libraries
       run: |
-        brew install openmotif mesa
+        brew install openmotif mesa flint
         wget https://www.dislin.de/downloads/macOS/dislin-11.5.macOS.arm.64.tar.gz
         tar -xvf dislin-11.5.macOS.arm.64.tar.gz
         export DISLIN=$PWD/dislin
