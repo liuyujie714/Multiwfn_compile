@@ -30,8 +30,8 @@ jobs:
       uses: GabrielBB/xvfb-action@v1
       with:
         run: |
-          #ffmpeg -video_size 1280x1024 -framerate 25 -t 15 out.mp4 &
-          ffmpeg -f x11grab -s 1920x1080 -i :0.0 -r 25 -t 15 output.mp4
+          ffmpeg -video_size 1280x1024 -framerate 25 -f x11gfab -i:99.0 -t 15 out.mp4 &
+          
           # 运行程序并自动结束
           {
             ./Multiwfn misc/examples/phenylalanineresiduestrimer.xyz <<< "0" &
@@ -42,6 +42,7 @@ jobs:
           # 确保录制完成
           sleep 5
         working-directory: ${{ github.workspace }}
+        options: :99
 
     - name: Upload recording
       uses: actions/upload-artifact@v4
