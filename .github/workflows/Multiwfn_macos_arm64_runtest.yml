@@ -24,11 +24,17 @@ jobs:
         
     - name: Install dependencies
       run: | 
-        brew install ffmpeg pv
+        brew install --cask xquartz
+        brew install ffmpeg pv 
+       
+    - name: Start XQuartz (X11 server)
+      run: |
+        sudo /opt/X11/libexec/privileged_startx || true
+        export DISPLAY=:0 
 
     - name: Test
       run: |
-          ffmpeg -f x11grab -framerate 30 -video_size 1920x1080 -i :0.0 -c:v libx264 -crf 18 output.mp4 &
+          ffmpeg -f x11grab -framerate 30 -video_size 1920x1080 -i :0 -c:v libx264 -crf 18 output.mp4 &
           # ffmpeg -video_size 1280x1024 -framerate 25 -f x11grab -i :99.0 -t 15 out.mp4 &
           
           # 运行程序并自动结束
