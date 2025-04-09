@@ -103,7 +103,7 @@ target_link_libraries(
     ${GMP_LINK_LIBRARIES} 
     $<$<BOOL:${OpenMP_Fortran_FOUND}>:OpenMP::OpenMP_Fortran>
     $<$<BOOL:${WITH_GUI}>:${dislin}>
-    $<$<BOOL:${WITH_GUI}>:${Xm}>)
+    $<$<BOOL:${WITH_GUI}>:${Xm}>
     )
 target_compile_options(
   Multiwfn
