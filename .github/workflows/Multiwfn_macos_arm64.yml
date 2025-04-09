@@ -121,13 +121,14 @@ jobs:
           sleep 2
           for i in `seq 1200 20 2000`
           do 
-              echo "Pressing $i"
               cliclick c:$i,140
               cliclick c:$i,150
               cliclick c:$i,170
+              cliclick c:$i,180
           done
           #pkill -f "Multiwfn" 
         }
+        sleep 30
 
     - name: Upload recording
       uses: actions/upload-artifact@v4
