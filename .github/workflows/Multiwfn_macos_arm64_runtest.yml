@@ -43,7 +43,7 @@ jobs:
           }
 
           # 确保录制完成
-          sleep 5
+          sleep 15
 
     - name: Upload recording
       uses: actions/upload-artifact@v4
