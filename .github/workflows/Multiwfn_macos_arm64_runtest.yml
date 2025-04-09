@@ -25,7 +25,7 @@ jobs:
     - name: Install dependencies
       run: | 
         brew install --cask xquartz
-        brew install ffmpeg pv 
+        brew install ffmpeg pv cliclick 
        
     - name: Start XQuartz (X11 server)
       run: |
@@ -40,6 +40,8 @@ jobs:
           {
             ./Multiwfn misc/examples/phenylalanineresiduestrimer.xyz <<< "0" &
             sleep 5
+            cliclick c:500,300 
+            cliclick dc:600,300
             pkill -f "Multiwfn"  # 强制结束程序
           }
 
