@@ -45,7 +45,7 @@ jobs:
         make -j4
         make install
         
-        #rm -rf /opt/homebrew/opt/flint/lib/*.dylib
+        rm -rf /opt/homebrew/opt/flint/lib/*.dylib
         ls /opt/homebrew/opt/flint/lib/
         ls /opt/homebrew/opt/mpfr/lib/
         ls /opt/homebrew/opt/gmp/lib
@@ -80,7 +80,7 @@ jobs:
         -DCMAKE_BUILD_TYPE=Debug \
         -DCMAKE_INSTALL_PREFIX=$PWD \
         -DCMAKE_PREFIX_PATH=/opt/homebrew/opt/flint \
-        -DBUILD_SHARED_LIBS=ON
+        -DBUILD_SHARED_LIBS=OFF
         make install -j4
         otool -L Multiwfn
       env:
