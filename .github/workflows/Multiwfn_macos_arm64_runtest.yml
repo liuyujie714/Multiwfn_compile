@@ -15,5 +15,7 @@ jobs:
         echo "macOS version: $(sw_vers -productVersion)"
         echo "macOS kernel: $(uname -r)"
         echo "macOS arch: $(uname -m)"
-        brew install xvfb
+        brew install xquartz
+        Xvfb :99 -ac -screen 0 1024x768x8 
+        
           
