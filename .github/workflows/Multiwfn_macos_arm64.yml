@@ -74,7 +74,7 @@ jobs:
         cp ../CMakeLists_macos_arm64.txt CMakeLists.txt
         mkdir build && cd build
         cmake .. \
-        -DWITH_OpenMP=ON \
+        -DWITH_OpenMP=OFF \
         -DWITH_GUI=ON \
         -DDISLIN_DIR=$DISLIN \
         -DCMAKE_BUILD_TYPE=Debug \
