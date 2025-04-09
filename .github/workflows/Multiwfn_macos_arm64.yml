@@ -117,10 +117,8 @@ jobs:
         ffmpeg -f avfoundation -framerate 30 -video_size 1920x1080 -i "0"  -t 30 -c:v libx264 output.mp4 &
         sleep 2
         {
-          export MallocStackLogging=1
           ./${{env.Multiwfn_version}}/build/Multiwfn misc/examples/phenylalanineresiduestrimer.xyz <<< "0" &
           sleep 2
-          leaks --list --fullStacks $!
           for i in `seq 1200 10 2000`
           do 
               cliclick c:$i,140
