@@ -35,8 +35,6 @@ endif()
 
 # Find graphics libraries
 if(WITH_GUI)
-  find_library(Xm NAMES Xm REQUIRED)
-
   set(CMAKE_FIND_LIBRARY_SUFFIXES ".dylib")
   find_library(
     dislin
@@ -44,7 +42,6 @@ if(WITH_GUI)
     PATHS ${DISLIN_DIR}
     REQUIRED)
   message("-- Found DISLIN: ${dislin}")
-  message("-- Found OpenMotif: ${Xm}")
 endif()
 
 # Turn on preprocessor
@@ -76,8 +73,7 @@ target_link_libraries(
           ${ARB_LINK_LIBRARIES}
           ${GMP_LINK_LIBRARIES}
           $<$<BOOL:${OpenMP_Fortran_FOUND}>:OpenMP::OpenMP_Fortran>
-          $<$<BOOL:${WITH_GUI}>:${dislin}>
-          $<$<BOOL:${WITH_GUI}>:${Xm}>)
+          $<$<BOOL:${WITH_GUI}>:${dislin}>)
 target_include_directories(lib_multiwfn PRIVATE ${GMP_INCLUDE_DIRS} ${FLINT_INCLUDE_DIRS} ${ARB_INCLUDE_DIRS})
 
 # Add compiler flags to GFortran
