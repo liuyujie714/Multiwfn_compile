@@ -39,9 +39,10 @@ jobs:
           # 运行程序并自动结束
           {
             ./Multiwfn misc/examples/phenylalanineresiduestrimer.xyz <<< "0" &
-            sleep 5
+            sleep 2
             cliclick c:500,300 
             cliclick dc:600,300
+            sleep 5
             pkill -f "Multiwfn"  # 强制结束程序
           }
 
