@@ -30,5 +30,5 @@ jobs:
       uses: GabrielBB/xvfb-action@v1
       with:
         run: |
-          echo $DISPALY
+          echo $DISPLAY
           
