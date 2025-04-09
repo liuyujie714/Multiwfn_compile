@@ -31,6 +31,7 @@ jobs:
       run: |
         sudo /opt/X11/libexec/privileged_startx || true
         export DISPLAY=:99
+        ffmpeg -f avfoundation -list_devices true -i ""
 
     - name: Test
       run: |
