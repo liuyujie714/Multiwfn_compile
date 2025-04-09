@@ -21,15 +21,19 @@ jobs:
     - name: FFMPEG
       run: | 
         brew install ffmpeg
-        unzip Multiwfn3.8_latest_MacOS.zip
-        chmod a+x Multiwfn
-        install_name_tool -change /Users/runner/work/Multiwfn_compile/Multiwfn_compile/dislin/libdislin_d.dylib @loader_path/libdislin_d.dylib Multiwfn
 
-    - name: Start recording
-      run: |
-        ./Multiwfn misc/examples/phenylalanineresiduestrimer.xyz <<< "0" &
-        sleep 2
-        ffmpeg -video_size 1280x1024 -framerate 25 -f x11grab -i :99.0 -t 5 out.mp4
+    - name: Test
+      uses: GabrielBB/xvfb-action@v1
+      with:
+        run: |
+          unzip Multiwfn3.8_latest_MacOS.zip
+          chmod a+x Multiwfn
+          install_name_tool -change /Users/runner/work/Multiwfn_compile/Multiwfn_compile/dislin/libdislin_d.dylib @loader_path/libdislin_d.dylib Multiwfn
+          ./Multiwfn misc/examples/phenylalanineresiduestrimer.xyz <<< "0" &
+          sleep 2
+          ffmpeg -video_size 1280x1024 -framerate 25 -f x11grab -i :99.0 -t 5 out.mp4
+        working-directory:  ${{ github.workspace }}
+        options: #optional
 
     - name: Upload recording
       uses: actions/upload-artifact@v4
@@ -37,13 +41,3 @@ jobs:
         name: gui-recording
         path: out.mp4
 
-    # - name: Test
-    #   uses: GabrielBB/xvfb-action@v1
-    #   with:
-    #     run: |
-    #       unzip Multiwfn3.8_latest_MacOS.zip
-    #       chmod a+x Multiwfn
-    #       install_name_tool -change /Users/runner/work/Multiwfn_compile/Multiwfn_compile/dislin/libdislin_d.dylib @loader_path/libdislin_d.dylib Multiwfn
-    #       ./Multiwfn misc/examples/phenylalanineresiduestrimer.xyz <<< "0"
-    #     working-directory:  ${{ github.workspace }}
-    #     options: #optional
