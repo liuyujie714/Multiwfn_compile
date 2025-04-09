@@ -40,10 +40,10 @@ jobs:
           {
             ./Multiwfn misc/examples/phenylalanineresiduestrimer.xyz <<< "0" &
             sleep 2
-            for i in `seq 600 1200`
+            for i in `seq 1200 1800`
             do 
-                cliclick c:$i,100
                 cliclick c:$i,120
+                cliclick c:$i,150
             done
             sleep 10
             pkill -f "Multiwfn"  # 强制结束程序
