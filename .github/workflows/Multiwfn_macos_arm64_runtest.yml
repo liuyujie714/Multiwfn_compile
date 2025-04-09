@@ -1,0 +1,32 @@
+name: Test Mutiwfn MacOS-14-arm64
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  MacOS-Arm64:
+    runs-on: macos-14
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: Check system
+      run: |
+        echo "macOS version: $(sw_vers -productVersion)"
+        echo "macOS kernel: $(uname -r)"
+        echo "macOS arch: $(uname -m)"
+
+    - name: Test
+      uses: GabrielBB/xvfb-action@v1
+      with:
+        run: |
+          unzip Multiwfn3.8_latest_MacOS.zip
+          mv Multiwfn libdislin_d.dylib misc/
+          cd misc/
+          chmod +x Multiwfn
+          ./Multiwfn examples/phenylalanineresiduestrimer.xyz <<< "0"
+        working-directory: ./ #optional
+        options: #optional
+
