@@ -30,8 +30,7 @@ jobs:
     - name: Start XQuartz (X11 server)
       run: |
         sudo /opt/X11/libexec/privileged_startx || true
-        export DISPLAY=:99
-        ffmpeg -f avfoundation -list_devices true -i ""
+        export DISPLAY=:0
 
     - name: Test
       run: |
