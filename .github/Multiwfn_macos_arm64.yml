@@ -7,7 +7,7 @@ on:
 
 env:
   Multiwfn_version:  Multiwfn_3.8_dev_src_Linux
-
+  
 jobs:
   MacOS-Arm64:
     runs-on: macos-14
@@ -30,10 +30,33 @@ jobs:
         unzip -o -j Multiwfn_3.8_dev_bin_Linux_noGUI.zip Multiwfn_3.8_dev_bin_Linux_noGUI/{settings.ini,LICENSE.txt,examples/phenol.xyz}
         rm Multiwfn_3.8_dev_bin_Linux_noGUI.zip 
         ls
+        
+    - name: Build static flint
+      run: |
+        curl -L https://github.com/flintlib/flint/releases/download/v3.2.1/flint-3.2.1.tar.gz -o flint.tar.gz
+        tar -xf flint.tar.gz 
+        rm -rf flint.tar.gz  
+        cd flint*
+        ./configure \
+        --enable-static \
+        --with-gmp=$(brew --prefix) \
+        --with-mpfr=$(brew --prefix) \
+        --prefix="/opt/homebrew/opt/flint"
+        make -j4
+        make install
+        
+        rm -rf /opt/homebrew/opt/flint/lib/*.dylib
+        ls /opt/homebrew/opt/flint/lib/
+        ls /opt/homebrew/opt/mpfr/lib/
+        ls /opt/homebrew/opt/gmp/lib
+      env:
+        FC: gfortran-13
+        CC: gcc-13
+
 
     - name: Install libraries
       run: |
-        brew install openmotif mesa flint
+        brew install openmotif mesa
         wget https://www.dislin.de/downloads/macOS/dislin-11.5.macOS.arm.64.tar.gz
         tar -xvf dislin-11.5.macOS.arm.64.tar.gz
         export DISLIN=$PWD/dislin
@@ -43,19 +66,40 @@ jobs:
         install_name_tool -id $DISLIN/libdislin_d.dylib $DISLIN/libdislin_d.dylib
         install_name_tool -change /usr/X11/lib/libGL.1.dylib /usr/local/lib/libGL.dylib $DISLIN/libdislin_d.dylib
 
-    - name: Build 
+
+    - name: Build Multiwfn
       run: |
-        ls $PWD/dislin
+        export DISLIN=$PWD/dislin
         cd ${{env.Multiwfn_version}}
         cp ../CMakeLists_macos_arm64.txt CMakeLists.txt
         mkdir build && cd build
-        cmake .. -DWITH_OpenMP=ON -DWITH_GUI=ON -DDISLIN_DIR=$PWD/dislin -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=$PWD
+        cmake .. \
+        -DWITH_OpenMP=ON \
+        -DWITH_GUI=ON \
+        -DDISLIN_DIR=$DISLIN \
+        -DCMAKE_BUILD_TYPE=Release \
+        -DCMAKE_INSTALL_PREFIX=$PWD \
+        -DCMAKE_PREFIX_PATH=/opt/homebrew/opt/flint \
+        -DBUILD_SHARED_LIBS=OFF
         make install -j4
+        otool -L Multiwfn
       env:
-        FC: gfortran-12
-        CC: gcc-12        
+        FC: gfortran-13
+        CC: gcc-13      
 
     - name: Test
       run: |
         cp settings.ini ${{env.Multiwfn_version}}/build
+        cp dislin/libdislin_d.dylib ${{env.Multiwfn_version}}/build
         ./${{env.Multiwfn_version}}/build/Multiwfn phenol.xyz <<< "q"      
+
+    - name: Upload MacOS artifact
+      uses: actions/upload-artifact@v4
+      if: ${{ success() }}
+      with:
+        name: Multiwfn3.8_latest_MacOS
+        path: |
+          ./${{env.Multiwfn_version}}/build/Multiwfn
+          ./${{env.Multiwfn_version}}/build/libdislin_d.dylib
+
+ 

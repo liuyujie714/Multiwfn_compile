@@ -5,6 +5,9 @@ project(my_proj LANGUAGES C Fortran) # C is needed to discover Homebrew OpenBLAS
 option(WITH_OpenMP "Build with OpenMP")
 option(WITH_GUI "Build with GUI")
 
+set(CMAKE_FIND_LIBRARY_SUFFIXES ".a")
+set(CMAKE_FIND_LIBRARY_PREFIXES "lib")
+
 # Find BLAS and LAPACK
 include(CMakeFindDependencyMacro)
 find_dependency(BLAS)
@@ -32,19 +35,14 @@ endif()
 
 # Find graphics libraries
 if(WITH_GUI)
+  find_library(Xm NAMES Xm REQUIRED)
+
+  set(CMAKE_FIND_LIBRARY_SUFFIXES ".dylib")
   find_library(
     dislin
-    NAMES
-    dislin_d.11.5.2   
-    dislin_d.11       
-    dislin_d          
-    libdislin_d.11.5.2
-    libdislin_d.11    
-    libdislin_d       
-    PATHS 
-    ${DISLIN_DIR} ${DISLIN_DIR}/lib 
+    NAMES dislin_d
+    PATHS ${DISLIN_DIR}
     REQUIRED)
-  find_library(Xm NAMES Xm REQUIRED)
   message("-- Found DISLIN: ${dislin}")
   message("-- Found OpenMotif: ${Xm}")
 endif()
@@ -66,11 +64,11 @@ file(
 if(NOT WITH_GUI)
   list(APPEND srcs ${PROJECT_SOURCE_DIR}/noGUI/dislin_d_empty.f90)
 endif()
+list(REMOVE_ITEM srcs "${CMAKE_CURRENT_SOURCE_DIR}/Multiwfn.f90")
 
-# Add executable
-add_executable(Multiwfn ${srcs})
+add_library(lib_multiwfn STATIC ${srcs})
 target_link_libraries(
-  Multiwfn
+  lib_multiwfn
   PRIVATE ${BLAS_LIBRARIES}
           ${LAPACK_LIBRARIES}
           ${FLINT_BUG_LIB}
@@ -80,16 +78,34 @@ target_link_libraries(
           $<$<BOOL:${OpenMP_Fortran_FOUND}>:OpenMP::OpenMP_Fortran>
           $<$<BOOL:${WITH_GUI}>:${dislin}>
           $<$<BOOL:${WITH_GUI}>:${Xm}>)
-target_include_directories(Multiwfn PRIVATE ${GMP_INCLUDE_DIRS} ${FLINT_INCLUDE_DIRS} ${ARB_INCLUDE_DIRS})
+target_include_directories(lib_multiwfn PRIVATE ${GMP_INCLUDE_DIRS} ${FLINT_INCLUDE_DIRS} ${ARB_INCLUDE_DIRS})
 
 # Add compiler flags to GFortran
 target_compile_options(
+  lib_multiwfn
+  PRIVATE
+  $<$<AND:$<COMPILE_LANGUAGE:Fortran>,$<STREQUAL:$<Fortran_COMPILER_ID>,GNU>>:-ffree-line-length-none -ffpe-summary=none>
+)
+
+# Add executable
+add_executable(Multiwfn ${PROJECT_SOURCE_DIR}/Multiwfn.f90)
+set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -static-libquadmath -static-libgcc -static-libstdc++ -static-libgfortran")
+target_include_directories(Multiwfn PRIVATE "./ext" "./libreta_hybrid" ${GMP_INCLUDE_DIRS} ${FLINT_INCLUDE_DIRS} ${ARB_INCLUDE_DIRS} )
+target_link_libraries(
+    Multiwfn
+    PRIVATE 
+    lib_multiwfn
+    ${BLAS_LIBRARIES}
+    ${LAPACK_LIBRARIES}
+    ${FLINT_BUG_LIB}
+    ${FLINT_LINK_LIBRARIES}
+    ${ARB_LINK_LIBRARIES}
+    ${GMP_LINK_LIBRARIES} )
+target_compile_options(
   Multiwfn
   PRIVATE
-    $<$<AND:$<COMPILE_LANGUAGE:Fortran>,$<STREQUAL:$<Fortran_COMPILER_ID>,GNU>>:-ffree-line-length-none>
+  $<$<AND:$<COMPILE_LANGUAGE:Fortran>,$<STREQUAL:$<Fortran_COMPILER_ID>,GNU>>:-ffree-line-length-none -ffpe-summary=none>
 )
 
 # Install
 install(TARGETS Multiwfn)
-install(FILES settings.ini DESTINATION ${CMAKE_INSTALL_PREFIX}/etc/Multiwfn)
-
