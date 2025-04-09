@@ -105,8 +105,6 @@ jobs:
     - name: Test GUI
       run: | 
         brew install --cask xquartz
-        brew tap LouisBrunner/valgrind
-        brew install --HEAD LouisBrunner/valgrind/valgrind
         brew install ffmpeg cliclick
         sudo /opt/X11/libexec/privileged_startx || true
 
@@ -119,7 +117,7 @@ jobs:
         ffmpeg -f avfoundation -framerate 30 -video_size 1920x1080 -i "0"  -t 30 -c:v libx264 output.mp4 &
         sleep 2
         {
-          valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes --verbose ./${{env.Multiwfn_version}}/build/Multiwfn misc/examples/phenylalanineresiduestrimer.xyz <<< "0" &
+          leaks --list --atExit -- ./${{env.Multiwfn_version}}/build/Multiwfn misc/examples/phenylalanineresiduestrimer.xyz <<< "0" &
           sleep 2
           for i in `seq 1200 10 2000`
           do 
