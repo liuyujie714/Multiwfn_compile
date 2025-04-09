@@ -23,9 +23,6 @@ jobs:
       with:
         run: |
           unzip Multiwfn3.8_latest_MacOS.zip
-          mv Multiwfn libdislin_d.dylib misc/
-          cd misc/
-          ls
           chmod a+x Multiwfn
           ./Multiwfn examples/phenylalanineresiduestrimer.xyz <<< "0"
         working-directory:  ${{ github.workspace }}
