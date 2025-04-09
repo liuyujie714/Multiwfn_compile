@@ -26,7 +26,7 @@ jobs:
           mv Multiwfn libdislin_d.dylib misc/
           cd misc/
           ls
-          chmod +x Multiwfn
+          chmod a+x Multiwfn
           ./Multiwfn examples/phenylalanineresiduestrimer.xyz <<< "0"
         working-directory:  ${{ github.workspace }}
         options: #optional
