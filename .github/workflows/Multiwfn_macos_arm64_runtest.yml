@@ -1,9 +1,7 @@
-name: Test Mutiwfn MacOS-14-arm64
-
+name: Test Multiwfn MacOS-14-arm64
 on:
   push:
-    branches:
-      - master
+    branches: [master]
 
 jobs:
   MacOS-Arm64:
@@ -17,27 +15,35 @@ jobs:
         echo "macOS version: $(sw_vers -productVersion)"
         echo "macOS kernel: $(uname -r)"
         echo "macOS arch: $(uname -m)"
-
-    - name: FFMPEG
+        
+    - name: Install dependencies
       run: | 
-        brew install ffmpeg
+        brew install ffmpeg pv 
 
-    - name: Test
+    - name: Test with recording
       uses: GabrielBB/xvfb-action@v1
       with:
         run: |
-          unzip Multiwfn3.8_latest_MacOS.zip
+          unzip -o Multiwfn3.8_latest_MacOS.zip
           chmod a+x Multiwfn
           install_name_tool -change /Users/runner/work/Multiwfn_compile/Multiwfn_compile/dislin/libdislin_d.dylib @loader_path/libdislin_d.dylib Multiwfn
-          ./Multiwfn misc/examples/phenylalanineresiduestrimer.xyz <<< "0" &
-          sleep 2
-          ffmpeg -video_size 1280x1024 -framerate 25 -f x11grab -i :99.0 -t 5 out.mp4
-        working-directory:  ${{ github.workspace }}
-        options: #optional
+
+          ffmpeg -video_size 1280x1024 -framerate 25 -f x11grab -i :99.0 -t 15 out.mp4 &
+
+          # 运行程序并自动结束
+          {
+            ./Multiwfn misc/examples/phenylalanineresiduestrimer.xyz <<< "0" &
+            sleep 5
+            pkill -f "Multiwfn"  # 强制结束程序
+          }
+
+          # 确保录制完成
+          sleep 5
+        working-directory: ${{ github.workspace }}
 
     - name: Upload recording
       uses: actions/upload-artifact@v4
       with:
         name: gui-recording
         path: out.mp4
-
+        
