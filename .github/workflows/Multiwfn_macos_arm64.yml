@@ -105,7 +105,8 @@ jobs:
     - name: Test GUI
       run: | 
         brew install --cask xquartz
-        brew install --HEAD valgrind
+        brew tap LouisBrunner/valgrind
+        brew install --HEAD LouisBrunner/valgrind/valgrind
         brew install ffmpeg cliclick
         sudo /opt/X11/libexec/privileged_startx || true
 
