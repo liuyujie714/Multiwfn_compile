@@ -69,6 +69,7 @@ jobs:
       run: |
         export DISLIN=$PWD/dislin
         cd ${{env.Multiwfn_version}}
+        sed -i 's/idisgraph/idisgraph+1/g' plot.f90
         cp ../CMakeLists_macos_arm64.txt CMakeLists.txt
         mkdir build && cd build
         cmake .. \
