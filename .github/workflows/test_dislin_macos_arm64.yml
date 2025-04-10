@@ -38,26 +38,16 @@ jobs:
     - name: Test GUI
       run: | 
         brew install --cask xquartz
-        brew install ffmpeg cliclick
         sudo /opt/X11/libexec/privileged_startx || true
 
         install_name_tool -change $PWD/dislin/libdislin_d.dylib @loader_path/libdislin_d.dylib program_test
 
-        ffmpeg -f avfoundation -framerate 30 -video_size 1920x1080 -i "0" -t 30 -c:v libx264 output.mp4 &
+        ffmpeg -f avfoundation -framerate 30 -video_size 1920x1080 -i "0" -t 15 -c:v libx264 output.mp4 &
         sleep 2
-        {
-          sudo ulimit -s unlimited
-          program_test &
-          sleep 2
-          for i in `seq 600 10 2000`
-          do 
-              for j in `seq 140 20 600`
-              do
-                  cliclick c:$i,$j
-              done
-          done
-        }
-        sleep 30
+        chmod a+x program_test
+        ./program_test &
+        sleep 2
+        sleep 15
 
     - name: Upload recording
       uses: actions/upload-artifact@v4
