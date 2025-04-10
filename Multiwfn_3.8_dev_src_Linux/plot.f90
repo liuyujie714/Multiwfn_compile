@@ -203,6 +203,7 @@ if (idrawmol==1.or.ishowatmlab==1) then
 	end if
 end if
 
+write(*,*) "***************************************Draw atoms*************************************"
 if (idrawmol==1) then
 	do ilight=2,8
 		call litmod(ilight,'off')
@@ -269,6 +270,7 @@ if (idrawmol==1) then
     end if
 end if
 
+write(*,*) "***************************************Draw critical points*************************************"
 !Draw critical points
 if (ishow3n3==1.or.ishow3n1==1.or.ishow3p1==1.or.ishow3p3==1) then
 	numcp_tmp=numcp
@@ -312,6 +314,7 @@ end if
 ! 	call tube3D(attx,atty,attz,orgx+(trjgrid(igrd-1,1)-1)*dx,orgy+(trjgrid(igrd-1,2)-1)*dy,orgz+(trjgrid(igrd-1,3)-1)*dx,0.015D0,30,30)
 ! end do
 
+write(*,*) "***************************************basin integration analysis*************************************"
 !For basin integration analysis
 if (numatt>0.and.ishowatt==1) then
 	!Draw attractors
@@ -363,6 +366,7 @@ if (numatt>0.and.ishowatt==1) then
 	end if
 end if
 
+write(*,*) "***************************************Draw domain*************************************"
 !Draw domain defined by isosurface as grids
 if (idrawdomain==1.and.idrawdomainidx/=0) then
 	CALL MATOP3(0D0, 0.8D0, 0D0, 'diffuse') !Green
@@ -373,6 +377,7 @@ if (idrawdomain==1.and.idrawdomainidx/=0) then
 	end do
 end if
 
+write(*,*) "***************************************Draw topology paths*************************************"
 !Draw topology paths
 if (idrawpath==1) then
 	numpath_tmp=numpath
@@ -406,6 +411,7 @@ end if
 !From now on, all objects plotted below use ambient of (1,1,1), which makes objects brighter than default (0.2,0.2,0.2)
 call MATOP3(1D0,1D0,1D0,'ambient')
 
+write(*,*) "***************************************Draw interbasin surfaces*************************************"
 !Draw interbasin surfaces
 if (idrawbassurf==1.and.numbassurf>0) then
 	if (isurfstyle==1) then !A bunch of paths to represent the interbasin surface
@@ -487,6 +493,7 @@ end if
 !When one of isosur1style and isosur2style is unequal to 5, then another must not be 5. Overall, we ensure that the circumstance that only one isosurface is transparent will not occured
 if (isosur1style==5) CALL ZBFFIN
 
+write(*,*) "***************************************Draw idrawisosur*************************************"
 if (idrawisosur==1) then
 	!Set lighting parameter for showing both isosurface 1 and 2
  	call litpos(1,XVU,YVU,ZVU,'ANGLE')
@@ -589,6 +596,7 @@ if (idrawisosur==1) then
 	end if
 end if
 
+write(*,*) "***************************************Draw a 3D rectangle box*************************************"
 !Draw a 3D rectangle box to show spatial range of present grid data or grid data to be calculated
 tubethk=0.07D0
 if (ishowdatarange==1) then
@@ -655,6 +663,7 @@ end if
 
 if (isosur1style/=5) CALL ZBFFIN !Ending of Z-buffer
 
+write(*,*) "***************************************Draw label*************************************"
 !Draw label of atom name and index of atoms/CPs/paths/surface extremes/real attractors in 3D plot
 if ((ishowatmlab==1.or.ishowCPlab==1.or.ishowpathlab==1.or.ishowlocminlab==1.or.ishowlocmaxlab==1.or.(ishowattlab==1.and.numatt>0)).and.textheigh>0) then
     textheighmod=textheigh+155*plot2abs**1.3D0 !Change text size according to molecule size
