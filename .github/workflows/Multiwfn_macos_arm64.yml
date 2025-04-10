@@ -10,7 +10,7 @@ env:
   
 jobs:
   MacOS-Arm64:
-    runs-on: macos-14
+    runs-on: macos-13
     steps:
     - name: Checkout
       uses: actions/checkout@v3
@@ -43,7 +43,7 @@ jobs:
         --with-mpfr=$(brew --prefix) \
         --prefix="/opt/homebrew/opt/flint"
         make -j4
-        make install
+        sudo make install
         
         #rm -rf /opt/homebrew/opt/flint/lib/*.dylib
         ls /opt/homebrew/opt/flint/lib/
