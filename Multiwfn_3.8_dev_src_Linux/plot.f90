@@ -105,6 +105,7 @@ plot2abs=abslenx/plotlenx !The relationship between molecular coordinate and abs
 if (isavepic==0) then
 	call METAFL('CONS')
 	if (GUI_mode==6) call METAFL('CONS') !Namely showing basin, using opengl by default to accelerate displaying, however when savepic, if still use opengl, things cannot be properly shown
+	write(*,*) "***************************************setxid*************************************"
 	CALL setxid(idisgraph,'WIDGET')
 else if (isavepic==1) then
     if (iorbvis==0) then
@@ -117,8 +118,11 @@ else if (isavepic==1) then
 	call METAFL(graphformat)
 	call winsiz(graph3Dwidth,graph3Dheight) !Actual image size is set by this routine, namely 770*770
 end if
+write(*,*) "***************************************SCRMOD)*************************************"
 CALL SCRMOD('revers')
+write(*,*) "***************************************PAGE*************************************"
 CALL PAGE(3000,3000)
+write(*,*) "***************************************IMGFMT*************************************"
 CALL IMGFMT("RGB") !If don't call this routine, the saved picture use palette color mode by default, the color is not smooth
 write(*,*) "***************************************CALL DISINI*************************************"
 CALL DISINI

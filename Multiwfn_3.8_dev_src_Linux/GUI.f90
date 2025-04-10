@@ -343,7 +343,7 @@ call SWGCBK(idisisosurscl,setisosurscl)
 CALL SWGSPC(4D0,0.5D0) !Reset the default widget spacing
 call swgtyp("HORI","SCALE") !Reset the default mode for list widget
 idrawisosur=0 !Don't draw the cubmat in memory at first time go into the GUI
-call drawmol !Directly show image in Windows GUI
+if (isys==1) call drawmol !Directly show image in Windows GUI
 !However, in linux, "draw" widget is available only after WGFIN subroutine so we need a mouse event to active it, before this, the draw widget cannot be used, this is why "if (isys==1)"
 CALL WGFIN
 idrawisosur=0 !After ending this GUI, recover to initial setting
