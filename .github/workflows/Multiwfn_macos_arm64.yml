@@ -121,7 +121,7 @@ jobs:
           sleep 2
           for i in `seq 600 10 2000`
           do 
-              for j in `seq 140 10 1000`
+              for j in `seq 140 10 600`
               do
                   cliclick c:$i,$j
               done
