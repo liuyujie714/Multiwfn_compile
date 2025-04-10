@@ -1659,6 +1659,8 @@ integer id,iorb
 real*8 molxlen,molylen,molzlen
 character(len=3) :: orbtype(0:2)=(/ "A+B"," A "," B " /)
 character :: symstr*6,tmpstr*10
+
+write(*,*) "***************************************call showorbsel*************************************"
 !Set grid for calculating cube data
 if (aug3D_main0>=0) then !Normal case 
     molxlen=(maxval(a%x)-minval(a%x))+2*aug3D_main0
@@ -1762,6 +1764,7 @@ else
 	call SWGTXT(iorbseltext,"Orbitals:")
 	call SWGFGD(iorbseltext,0D0,0D0,0D0)
 end if
+write(*,*) "***************************************END showorbsel*************************************"
 call drawmol
 end subroutine
 
