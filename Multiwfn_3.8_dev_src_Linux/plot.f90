@@ -193,7 +193,7 @@ if (idrawmol==1.or.ishowatmlab==1) then
 	if (ishowboundaryatom==1.and.ifPBC>0) then
 		call construct_atmp_withbound(ncenter_tmp)
 	else
-		if (allocated(a_tmp)) deallocate(a_tmp)
+		if (allocated(a_tmp)) deallocate(a_tmp, a_tmp_idx)
 		ncenter_tmp=ncenter
 		allocate(a_tmp(ncenter),a_tmp_idx(ncenter))
 		a_tmp=a
