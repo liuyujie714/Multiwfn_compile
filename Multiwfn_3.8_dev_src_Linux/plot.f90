@@ -128,8 +128,11 @@ write(*,*) "***************************************IMGFMT***********************
 CALL IMGFMT("RGB") !If don't call this routine, the saved picture use palette color mode by default, the color is not smooth
 write(*,*) "***************************************CALL DISINI*************************************"
 CALL DISINI
+
 if (iorthoview==0) then
+	write(*,*) "***************************************CALL PROJ3D*************************************"
 	CALL PROJ3D("PERSPECTIVE")
+	write(*,*) "***************************************CALL VANG3D*************************************"
 	call VANG3D(VANG3DANG)
 else if (iorthoview==1) then
 	CALL PROJ3D("ORTHO")
