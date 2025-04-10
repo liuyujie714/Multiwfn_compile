@@ -51,11 +51,20 @@ contains
 
     subroutine myplot(id)
         integer, intent(in) :: id
+        integer :: lev
 
         if (id == id_scl1) then
             call gwgscl(id, xrot1)
         else if (id == id_scl2) then
             call gwgscl(id, xrot2)
+        end if
+        
+        
+        CALL GETLEV(lev)
+        write(*, "('Current level: ', I4)") lev
+        if (lev /= 0) then
+            write(*,*) "**************call disfin()************"
+            call disfin()
         end if
         
         write(*,*) "**************call metafl()************"
@@ -66,8 +75,7 @@ contains
         CALL IMGFMT("RGB")
         write(*,*) "**************call disini()************"
 
-        CALL GETLEV(lev)
-        write(*, "('Current level: ', I4)") lev
+
         call disini()
         call erase()
         call hwfont()
@@ -84,8 +92,8 @@ contains
         call height(40)
         call graf3d(0.0D0, 360D0, 0D0, 90D0, 0D0, 360D0, 0D0, 90D0, -3D0, 3D0, -3D0, 1D0)
         call surshd(xray, N, yray, N, zmat)
-        write(*,*) "**************call disfin()************"
-        call disfin()
+        
+        
     end subroutine myplot
 
 end program dislin_3d_plot

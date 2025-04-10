@@ -100,6 +100,12 @@ else !Other cases, determine displayed spatial scope by boundary atoms of the sy
     zhigh=zlow+plotlenz
 end if
 
+CALL GETLEV(lev)
+write(*, "('Current level: ', I4)") lev
+if (lev /= 0) then
+	CALL DISFIN
+end if
+
 !Initialize DISLIN
 abslenx=2D0 !Absolute length in DISLIN
 absleny=abslenx*plotleny/plotlenx
@@ -128,10 +134,6 @@ CALL PAGE(3000,3000)
 write(*,*) "***************************************IMGFMT*************************************"
 CALL IMGFMT("RGB") !If don't call this routine, the saved picture use palette color mode by default, the color is not smooth
 write(*,*) "***************************************CALL DISINI*************************************"
-
-
-CALL GETLEV(lev)
-write(*, "('Current level: ', I4)") lev
 CALL DISINI
 
 if (iorthoview==0) then
