@@ -18,7 +18,7 @@ jobs:
         echo "macOS kernel: $(uname -r)"
         echo "macOS arch: $(uname -m)"
 
-    - name: Install libraries
+    - name: Install Dislin libraries
       run: |
         wget https://www.dislin.de/downloads/macOS/dislin-11.5.macOS.arm.64.tar.gz
         tar -xf dislin-11.5.macOS.arm.64.tar.gz
@@ -32,7 +32,7 @@ jobs:
     - name: Build Test
       run: |
         export DISLIN=$PWD/dislin
-        gfortran-14 ./test/test_dislin_gui.f90 ./test/dislin_d.f90 dismg_d.a -L$DISLIN -ldislin -framework cocoa -o program_test
+        gfortran-14 ./test/test_dislin_gui.f90 ./test/dislin_d.f90 -L$DISLIN -ldislin -framework cocoa -o program_test
         otool -L program_test
 
     - name: Test GUI
