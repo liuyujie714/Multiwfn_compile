@@ -121,9 +121,9 @@ jobs:
           sleep 2
           for i in `seq 600 10 2000`
           do 
-            cliclick c:$i,140
-            cliclick c:$i,150
-            cliclick c:$i,170
+            cliclick -w 100 c:$i,140
+            cliclick -w 100 c:$i,150
+            cliclick -w 100 c:$i,170
           done
           #pkill -f "Multiwfn" 
         }
