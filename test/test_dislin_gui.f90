@@ -26,6 +26,7 @@ program dislin_3d_plot
     call swgtit('DISLIN 3D Plot')
     call swgopt('track', 'scroll')
     call swgopt('center', 'position')
+    CALL SWGOPT("TRACK","SCROLL")
     
     call wgini('hori', ip)
     call swgwth(-60)
@@ -43,6 +44,7 @@ program dislin_3d_plot
     call wgscl(ip2, ' ', -90.0d0, 90.0d0, 40.0d0, -1, id_scl2)
     call swgcbk(id_scl1, myplot) 
     call swgcbk(id_scl2, myplot) 
+    call REAWGT
 
     call myplot(id_scl1) 
     call wgfin()
@@ -92,8 +94,48 @@ contains
         call height(40)
         call graf3d(0.0D0, 360D0, 0D0, 90D0, 0D0, 360D0, 0D0, 90D0, -3D0, 3D0, -3D0, 1D0)
         call surshd(xray, N, yray, N, zmat)
-        
+        call disfin()
         
     end subroutine myplot
 
 end program dislin_3d_plot
+
+
+
+! PROGRAM pgbar
+!     use dislin
+!     INTEGER ip,idbut,idpause,ival,idquit,idpr,isstop
+!     isstop = 0
+!     CALL SWGWTH(50)
+!     CALL SWGTIT("PGBAR TEST")
+!     CALL WGINI('VERT', ip)  
+!     call swgopt("smooth", "pbar");
+!     call swgopt("label", "pbar");  
+!     call swgclr(0D0, 1D0, 0D0, "pbar");
+!     CALL WGPBAR(ip,0D0,100D0,1D0,idscal)
+!     CALL wgbut(ip, 'Start', 0, idbut)
+!     CALL wgbut(ip, 'STOP', isstop, idpause)
+!     CALL swgcbk(idbut, runprog)
+!     CALL swgcbk(idpause, runprog)
+!     CALL wgquit(ip, idquit)
+!     CALL WGFIN
+
+!     CONTAINS
+
+!     SUBROUTINE runprog(id)
+!     integer,intent (in) :: id
+!     INTEGER*4 I,NIT
+!     REAL*8 ipr
+!     NIT = 1000000
+!     DO I=1,NIT
+!         IF (modulo(I,CEILING(REAL(NIT)/100.0)) == 0) THEN 
+!             ipr = 100.0*i/NIT
+!             write(*,*) ipr
+!             CALL swgval(idscal,ipr)
+!             call doevnt
+!             call sleep(1)
+!         END IF       
+!     END DO
+!     END SUBROUTINE runprog
+! END PROGRAM PGBAR
+

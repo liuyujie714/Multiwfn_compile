@@ -15,14 +15,13 @@ use surfvertex
 use basinintmod
 implicit real*8 (a-h,o-z)
 integer i,j,idxtmp,iret,screenx,screeny,ipath,ipathp1,ipt,icp1,icp2,ipathtype,ipathmidpt,isurf,interval
-integer :: lev
 real*8 abslenx,absleny,abslenz,plotlenx,plotleny,plotlenz !absolute and real 3D coordinate
 real*8 plot2abs,xplotcoor,yplotcoor,absx,absy,absz,dist,textheighmod,extsiz,augplotlen
 real*8 trianglex(3),triangley(3),trianglez(3)
 real*8 arrayx(nx),arrayy(ny),arrayz(nz)
 character ctemp*5,c80tmp*80
 
-write(*,*) "***************************************call drawmol*************************************"
+CALL DOEVNT
 
 !Set viewpoint
 !Note that due to limitation of DISLIN, it is not possible to view molecule in all viewpoints. The YVU should be limited to between -90 and 90, else the viewpoint will suddently flip
@@ -100,12 +99,6 @@ else !Other cases, determine displayed spatial scope by boundary atoms of the sy
     zhigh=zlow+plotlenz
 end if
 
-CALL GETLEV(lev)
-write(*, "('Current level: ', I4)") lev
-if (lev /= 0) then
-	CALL DISFIN
-end if
-
 !Initialize DISLIN
 abslenx=2D0 !Absolute length in DISLIN
 absleny=abslenx*plotleny/plotlenx
@@ -114,7 +107,6 @@ plot2abs=abslenx/plotlenx !The relationship between molecular coordinate and abs
 if (isavepic==0) then
 	call METAFL('CONS')
 	if (GUI_mode==6) call METAFL('CONS') !Namely showing basin, using opengl by default to accelerate displaying, however when savepic, if still use opengl, things cannot be properly shown
-	write(*,*) "***************************************setxid*************************************"
 	CALL setxid(idisgraph,'WIDGET')
 else if (isavepic==1) then
     if (iorbvis==0) then
@@ -127,27 +119,19 @@ else if (isavepic==1) then
 	call METAFL(graphformat)
 	call winsiz(graph3Dwidth,graph3Dheight) !Actual image size is set by this routine, namely 770*770
 end if
-write(*,*) "***************************************SCRMOD)*************************************"
 CALL SCRMOD('revers')
-write(*,*) "***************************************PAGE*************************************"
 CALL PAGE(3000,3000)
-write(*,*) "***************************************IMGFMT*************************************"
 CALL IMGFMT("RGB") !If don't call this routine, the saved picture use palette color mode by default, the color is not smooth
-write(*,*) "***************************************CALL DISINI*************************************"
 CALL DISINI
-
 if (iorthoview==0) then
-	write(*,*) "***************************************CALL PROJ3D*************************************"
 	CALL PROJ3D("PERSPECTIVE")
-	write(*,*) "***************************************CALL VANG3D*************************************"
 	call VANG3D(VANG3DANG)
 else if (iorthoview==1) then
 	CALL PROJ3D("ORTHO")
 end if
-write(*,*) "***************************************CALL VFOC3D*************************************"
 CALL VFOC3D(XFOC,YFOC,ZFOC,"ABS")
 CALL VUP3D(camrotang)
-call ERRMOD("ALL","ON")
+call ERRMOD("ALL","OFF")
 ! call linmod("ON","SMOOTH") !It seems that Anti-aliased doesn't take effect
 CALL LABDIG(1,"X")
 CALL LABDIG(1,"Y")
@@ -155,7 +139,6 @@ CALL LABDIG(1,"Z")
 if (ishowaxis==0) call NOGRAF
 CALL VIEW3D(XVU,YVU,ZVU,"ANGLE")
 if (iorthoview==1) call vscl3d(XFAC)
-write(*,*) "***************************************CALL erase*************************************"
 CALL erase
 
 !Set font
@@ -177,7 +160,6 @@ else
 	CALL HNAME(50)
 end if
 
-write(*,*) "***************************************CALL NAME*************************************"
 !Set axis
 CALL NAME('X-axis (Bohr)','X')
 CALL NAME('Y-axis (Bohr)','Y')
@@ -199,27 +181,23 @@ shiftz=mod(zlow,spcz)
 ! CALL FLAB3D !If use this, the starting label of Y and Z axis will be plotted, however this may suppress the starting label of X axis
 CALL GRAF3D(xlow,xhigh,xlow-shiftx,spcx, ylow,yhigh,ylow-shifty,spcy, zlow,zhigh,zlow-shiftz,spcz)
 if (ishowaxis==1) CALL GRID3D (2,2,'bottom')
-write(*,*) "***************************************CALL ZBFINI*************************************"
 CALL ZBFINI(IRET) !Enable Z-buffer to determine visibility
 call litpos(1,XVU,YVU,ZVU,'ANGLE')
 call litmod(1,'on') !Dislin default light 1 is on, and off for others
 
 !Construct global array a_tmp, for non-PBC system it is the same as a, while for PBC case it contains real atoms and replicated boundary atoms
-write(*,*) "***************************************idrawmol==1.or.ishowatmlab==1*************************************"
 if (idrawmol==1.or.ishowatmlab==1) then
 	if (ishowboundaryatom==1.and.ifPBC>0) then
 		call construct_atmp_withbound(ncenter_tmp)
 	else
-		if (allocated(a_tmp)) deallocate(a_tmp, a_tmp_idx)
+		if (allocated(a_tmp)) deallocate(a_tmp)
 		ncenter_tmp=ncenter
 		allocate(a_tmp(ncenter),a_tmp_idx(ncenter))
 		a_tmp=a
-		write(*,*) "***************************************forall(i=1:ncenter) a_tmp_idx(i)=i*************************************"
         forall(i=1:ncenter) a_tmp_idx(i)=i
 	end if
 end if
 
-write(*,*) "***************************************Draw atoms*************************************"
 if (idrawmol==1) then
 	do ilight=2,8
 		call litmod(ilight,'off')
@@ -286,7 +264,6 @@ if (idrawmol==1) then
     end if
 end if
 
-write(*,*) "***************************************Draw critical points*************************************"
 !Draw critical points
 if (ishow3n3==1.or.ishow3n1==1.or.ishow3p1==1.or.ishow3p3==1) then
 	numcp_tmp=numcp
@@ -330,7 +307,6 @@ end if
 ! 	call tube3D(attx,atty,attz,orgx+(trjgrid(igrd-1,1)-1)*dx,orgy+(trjgrid(igrd-1,2)-1)*dy,orgz+(trjgrid(igrd-1,3)-1)*dx,0.015D0,30,30)
 ! end do
 
-write(*,*) "***************************************basin integration analysis*************************************"
 !For basin integration analysis
 if (numatt>0.and.ishowatt==1) then
 	!Draw attractors
@@ -382,7 +358,6 @@ if (numatt>0.and.ishowatt==1) then
 	end if
 end if
 
-write(*,*) "***************************************Draw domain*************************************"
 !Draw domain defined by isosurface as grids
 if (idrawdomain==1.and.idrawdomainidx/=0) then
 	CALL MATOP3(0D0, 0.8D0, 0D0, 'diffuse') !Green
@@ -393,7 +368,6 @@ if (idrawdomain==1.and.idrawdomainidx/=0) then
 	end do
 end if
 
-write(*,*) "***************************************Draw topology paths*************************************"
 !Draw topology paths
 if (idrawpath==1) then
 	numpath_tmp=numpath
@@ -427,7 +401,6 @@ end if
 !From now on, all objects plotted below use ambient of (1,1,1), which makes objects brighter than default (0.2,0.2,0.2)
 call MATOP3(1D0,1D0,1D0,'ambient')
 
-write(*,*) "***************************************Draw interbasin surfaces*************************************"
 !Draw interbasin surfaces
 if (idrawbassurf==1.and.numbassurf>0) then
 	if (isurfstyle==1) then !A bunch of paths to represent the interbasin surface
@@ -509,7 +482,6 @@ end if
 !When one of isosur1style and isosur2style is unequal to 5, then another must not be 5. Overall, we ensure that the circumstance that only one isosurface is transparent will not occured
 if (isosur1style==5) CALL ZBFFIN
 
-write(*,*) "***************************************Draw idrawisosur*************************************"
 if (idrawisosur==1) then
 	!Set lighting parameter for showing both isosurface 1 and 2
  	call litpos(1,XVU,YVU,ZVU,'ANGLE')
@@ -612,7 +584,6 @@ if (idrawisosur==1) then
 	end if
 end if
 
-write(*,*) "***************************************Draw a 3D rectangle box*************************************"
 !Draw a 3D rectangle box to show spatial range of present grid data or grid data to be calculated
 tubethk=0.07D0
 if (ishowdatarange==1) then
@@ -679,7 +650,6 @@ end if
 
 if (isosur1style/=5) CALL ZBFFIN !Ending of Z-buffer
 
-write(*,*) "***************************************Draw label*************************************"
 !Draw label of atom name and index of atoms/CPs/paths/surface extremes/real attractors in 3D plot
 if ((ishowatmlab==1.or.ishowCPlab==1.or.ishowpathlab==1.or.ishowlocminlab==1.or.ishowlocmaxlab==1.or.(ishowattlab==1.and.numatt>0)).and.textheigh>0) then
     textheighmod=textheigh+155*plot2abs**1.3D0 !Change text size according to molecule size
@@ -807,7 +777,6 @@ if ((ishowatmlab==1.or.ishowCPlab==1.or.ishowpathlab==1.or.ishowlocminlab==1.or.
 		end do
 	end if
 end if
-write(*,*) "***************************************CALL DISFIN*************************************"
 CALL DISFIN
 XVU=XVUold
 YVU=YVUold
