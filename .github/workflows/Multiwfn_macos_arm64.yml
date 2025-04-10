@@ -114,7 +114,7 @@ jobs:
         ffmpeg -f avfoundation -framerate 30 -video_size 1920x1080 -i "0"  -t 30 -c:v libx264 output.mp4 &
         sleep 2
         {
-          ulimit -s unlimited
+          sudo ulimit -s unlimited
           export OMP_STACKSIZE=200M
           ./${{env.Multiwfn_version}}/build/Multiwfn misc/examples/phenylalanineresiduestrimer.xyz <<< "0" &
           sleep 2
