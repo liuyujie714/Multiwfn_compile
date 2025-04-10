@@ -119,11 +119,10 @@ jobs:
           export OMP_STACKSIZE=200M
           ./${{env.Multiwfn_version}}/build/Multiwfn misc/examples/phenylalanineresiduestrimer.xyz <<< "0" &
           sleep 2
-          for i in `seq 600 10 2000`
+          for i in `seq 800 10 2000`
           do 
-            cliclick -w 400 c:$i,140
-            cliclick -w 400 c:$i,150
-            cliclick -w 400 c:$i,170
+            cliclick -w 1000 c:$i,140
+            cliclick -w 1000 c:$i,170
           done
           #pkill -f "Multiwfn" 
         }
