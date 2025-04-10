@@ -14,14 +14,12 @@ use topo
 use surfvertex
 use basinintmod
 implicit real*8 (a-h,o-z)
-integer i,j,idxtmp,iret,screenx,screeny,ipath,ipathp1,ipt,icp1,icp2,ipathtype,ipathmidpt,isurf,interval
+integer i,j,idxtmp,iret,screenx,screeny,ipath,ipathp1,ipt,icp1,icp2,ipathtype,ipathmidpt,isurf,interval, ilevel
 real*8 abslenx,absleny,abslenz,plotlenx,plotleny,plotlenz !absolute and real 3D coordinate
 real*8 plot2abs,xplotcoor,yplotcoor,absx,absy,absz,dist,textheighmod,extsiz,augplotlen
 real*8 trianglex(3),triangley(3),trianglez(3)
 real*8 arrayx(nx),arrayy(ny),arrayz(nz)
 character ctemp*5,c80tmp*80
-
-CALL DOEVNT
 
 !Set viewpoint
 !Note that due to limitation of DISLIN, it is not possible to view molecule in all viewpoints. The YVU should be limited to between -90 and 90, else the viewpoint will suddently flip
@@ -99,7 +97,12 @@ else !Other cases, determine displayed spatial scope by boundary atoms of the sy
     zhigh=zlow+plotlenz
 end if
 
-!Initialize DISLIN
+!Initialize DISLIN, MacOS Arm64 has bug for disini, maybe exit after disfin
+call GETLEV(ilevel)
+if (ilevel /= 0) then
+	CALL DISFIN
+	CALL DOEVNT
+end if
 abslenx=2D0 !Absolute length in DISLIN
 absleny=abslenx*plotleny/plotlenx
 abslenz=abslenx*plotlenz/plotlenx
