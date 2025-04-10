@@ -134,6 +134,7 @@ if (iorthoview==0) then
 else if (iorthoview==1) then
 	CALL PROJ3D("ORTHO")
 end if
+write(*,*) "***************************************CALL VFOC3D*************************************"
 CALL VFOC3D(XFOC,YFOC,ZFOC,"ABS")
 CALL VUP3D(camrotang)
 call ERRMOD("ALL","ON")
@@ -144,6 +145,7 @@ CALL LABDIG(1,"Z")
 if (ishowaxis==0) call NOGRAF
 CALL VIEW3D(XVU,YVU,ZVU,"ANGLE")
 if (iorthoview==1) call vscl3d(XFAC)
+write(*,*) "***************************************CALL erase*************************************"
 CALL erase
 
 !Set font
@@ -165,6 +167,7 @@ else
 	CALL HNAME(50)
 end if
 
+write(*,*) "***************************************CALL NAME*************************************"
 !Set axis
 CALL NAME('X-axis (Bohr)','X')
 CALL NAME('Y-axis (Bohr)','Y')
@@ -186,11 +189,13 @@ shiftz=mod(zlow,spcz)
 ! CALL FLAB3D !If use this, the starting label of Y and Z axis will be plotted, however this may suppress the starting label of X axis
 CALL GRAF3D(xlow,xhigh,xlow-shiftx,spcx, ylow,yhigh,ylow-shifty,spcy, zlow,zhigh,zlow-shiftz,spcz)
 if (ishowaxis==1) CALL GRID3D (2,2,'bottom')
+write(*,*) "***************************************CALL ZBFINI*************************************"
 CALL ZBFINI(IRET) !Enable Z-buffer to determine visibility
 call litpos(1,XVU,YVU,ZVU,'ANGLE')
 call litmod(1,'on') !Dislin default light 1 is on, and off for others
 
 !Construct global array a_tmp, for non-PBC system it is the same as a, while for PBC case it contains real atoms and replicated boundary atoms
+write(*,*) "***************************************idrawmol==1.or.ishowatmlab==1*************************************"
 if (idrawmol==1.or.ishowatmlab==1) then
 	if (ishowboundaryatom==1.and.ifPBC>0) then
 		call construct_atmp_withbound(ncenter_tmp)
@@ -199,6 +204,7 @@ if (idrawmol==1.or.ishowatmlab==1) then
 		ncenter_tmp=ncenter
 		allocate(a_tmp(ncenter),a_tmp_idx(ncenter))
 		a_tmp=a
+		write(*,*) "***************************************forall(i=1:ncenter) a_tmp_idx(i)=i*************************************"
         forall(i=1:ncenter) a_tmp_idx(i)=i
 	end if
 end if
