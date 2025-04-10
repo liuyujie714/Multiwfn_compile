@@ -105,8 +105,8 @@ absleny=abslenx*plotleny/plotlenx
 abslenz=abslenx*plotlenz/plotlenx
 plot2abs=abslenx/plotlenx !The relationship between molecular coordinate and absolute coordinate
 if (isavepic==0) then
-	call METAFL('CONS')
-	if (GUI_mode==6) call METAFL('CONS') !Namely showing basin, using opengl by default to accelerate displaying, however when savepic, if still use opengl, things cannot be properly shown
+	call METAFL('XWIN')
+	if (GUI_mode==6) call METAFL('XWIN') !Namely showing basin, using opengl by default to accelerate displaying, however when savepic, if still use opengl, things cannot be properly shown
 	write(*,*) "***************************************setxid*************************************"
 	CALL setxid(idisgraph,'WIDGET')
 else if (isavepic==1) then
