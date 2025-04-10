@@ -57,11 +57,17 @@ contains
         else if (id == id_scl2) then
             call gwgscl(id, xrot2)
         end if
-
+        
+        write(*,*) "**************call metafl()************"
         call metafl('cons')
         call setxid(id_draw, 'widget')
         call scrmod('revers')
+        CALL PAGE(3000,3000)
+        CALL IMGFMT("RGB")
+        write(*,*) "**************call disini()************"
 
+        CALL GETLEV(lev)
+        write(*, "('Current level: ', I4)") lev
         call disini()
         call erase()
         call hwfont()
@@ -78,6 +84,7 @@ contains
         call height(40)
         call graf3d(0.0D0, 360D0, 0D0, 90D0, 0D0, 360D0, 0D0, 90D0, -3D0, 3D0, -3D0, 1D0)
         call surshd(xray, N, yray, N, zmat)
+        write(*,*) "**************call disfin()************"
         call disfin()
     end subroutine myplot
 

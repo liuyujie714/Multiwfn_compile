@@ -15,6 +15,7 @@ use surfvertex
 use basinintmod
 implicit real*8 (a-h,o-z)
 integer i,j,idxtmp,iret,screenx,screeny,ipath,ipathp1,ipt,icp1,icp2,ipathtype,ipathmidpt,isurf,interval
+integer :: lev
 real*8 abslenx,absleny,abslenz,plotlenx,plotleny,plotlenz !absolute and real 3D coordinate
 real*8 plot2abs,xplotcoor,yplotcoor,absx,absy,absz,dist,textheighmod,extsiz,augplotlen
 real*8 trianglex(3),triangley(3),trianglez(3)
@@ -105,8 +106,8 @@ absleny=abslenx*plotleny/plotlenx
 abslenz=abslenx*plotlenz/plotlenx
 plot2abs=abslenx/plotlenx !The relationship between molecular coordinate and absolute coordinate
 if (isavepic==0) then
-	call METAFL('XWIN')
-	if (GUI_mode==6) call METAFL('XWIN') !Namely showing basin, using opengl by default to accelerate displaying, however when savepic, if still use opengl, things cannot be properly shown
+	call METAFL('CONS')
+	if (GUI_mode==6) call METAFL('CONS') !Namely showing basin, using opengl by default to accelerate displaying, however when savepic, if still use opengl, things cannot be properly shown
 	write(*,*) "***************************************setxid*************************************"
 	CALL setxid(idisgraph,'WIDGET')
 else if (isavepic==1) then
@@ -127,6 +128,10 @@ CALL PAGE(3000,3000)
 write(*,*) "***************************************IMGFMT*************************************"
 CALL IMGFMT("RGB") !If don't call this routine, the saved picture use palette color mode by default, the color is not smooth
 write(*,*) "***************************************CALL DISINI*************************************"
+
+
+CALL GETLEV(lev)
+write(*, "('Current level: ', I4)") lev
 CALL DISINI
 
 if (iorthoview==0) then
