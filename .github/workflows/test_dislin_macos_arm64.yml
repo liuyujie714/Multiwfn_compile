@@ -32,7 +32,8 @@ jobs:
     - name: Build Test
       run: |
         export DISLIN=$PWD/dislin
-        gfortran-14 ./test/test_dislin_gui.f90 ./test/dislin_d.f90 -L$DISLIN -ldislin -framework cocoa -o program_test
+        gfortran-14 -c ./test/dislin_d.f90 
+        gfortran-14 ./test/test_dislin_gui.f90  -Idislin.mod -L$DISLIN -ldislin -framework cocoa -o program_test
         otool -L program_test
 
     - name: Test GUI
