@@ -27,13 +27,13 @@ jobs:
         ./INSTALL
         cd ..
         ls $DISLIN/
-        install_name_tool -id $DISLIN/libdislin.11.dylib $DISLIN/libdislin.11.dylib
+        install_name_tool -id $DISLIN/libdislin_d.dylib $DISLIN/libdislin_d.dylib
 
     - name: Build Test
       run: |
         export DISLIN=$PWD/dislin
         gfortran-14 -c ./test/dislin_d.f90 
-        gfortran-14 ./test/test_dislin_gui.f90 -L$DISLIN -ldislin -framework cocoa -o program_test
+        gfortran-14 ./test/test_dislin_gui.f90 -L$DISLIN -ldislin_d -framework cocoa -o program_test
         otool -L program_test
 
     - name: Test GUI
@@ -42,7 +42,7 @@ jobs:
         brew install ffmpeg
         sudo /opt/X11/libexec/privileged_startx || true
 
-        install_name_tool -change $PWD/dislin/libdislin.11.dylib @loader_path/libdislin.11.dylib program_test
+        install_name_tool -change $PWD/dislin/libdislin_d.dylib @loader_path/libdislin_d.dylib program_test
 
         ffmpeg -f avfoundation -framerate 30 -video_size 1920x1080 -i "0" -t 15 -c:v libx264 output.mp4 &
         sleep 2
