@@ -23,9 +23,9 @@ jobs:
 
     - name: Download source
       run: |
-        wget http://sobereva.com/multiwfn/misc/${{env.Multiwfn_version}}.zip
-        unzip ${{env.Multiwfn_version}}.zip
-        rm ${{env.Multiwfn_version}}.zip
+        # wget http://sobereva.com/multiwfn/misc/${{env.Multiwfn_version}}.zip
+        # unzip ${{env.Multiwfn_version}}.zip
+        # rm ${{env.Multiwfn_version}}.zip
         wget http://sobereva.com/multiwfn/misc/Multiwfn_3.8_dev_bin_Linux_noGUI.zip
         unzip -o -j Multiwfn_3.8_dev_bin_Linux_noGUI.zip Multiwfn_3.8_dev_bin_Linux_noGUI/{settings.ini,LICENSE.txt,examples/phenol.xyz}
         rm Multiwfn_3.8_dev_bin_Linux_noGUI.zip 
@@ -87,7 +87,7 @@ jobs:
 
     - name: Test Command
       run: |
-        #cp settings.ini ${{env.Multiwfn_version}}/build
+        cp settings.ini ${{env.Multiwfn_version}}/build
         cp dislin/libdislin_d.dylib ${{env.Multiwfn_version}}/build
         ./${{env.Multiwfn_version}}/build/Multiwfn phenol.xyz <<< "q"      
 

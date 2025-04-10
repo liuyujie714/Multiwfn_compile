@@ -120,6 +120,7 @@ end if
 CALL SCRMOD('revers')
 CALL PAGE(3000,3000)
 CALL IMGFMT("RGB") !If don't call this routine, the saved picture use palette color mode by default, the color is not smooth
+write(*,*) "***************************************CALL DISINI*************************************"
 CALL DISINI
 if (iorthoview==0) then
 	CALL PROJ3D("PERSPECTIVE")
@@ -129,7 +130,7 @@ else if (iorthoview==1) then
 end if
 CALL VFOC3D(XFOC,YFOC,ZFOC,"ABS")
 CALL VUP3D(camrotang)
-call ERRMOD("ALL","OFF")
+call ERRMOD("ALL","ON")
 ! call linmod("ON","SMOOTH") !It seems that Anti-aliased doesn't take effect
 CALL LABDIG(1,"X")
 CALL LABDIG(1,"Y")
