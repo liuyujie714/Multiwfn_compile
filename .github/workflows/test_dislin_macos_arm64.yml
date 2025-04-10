@@ -1,0 +1,66 @@
+name: Test Dislin GUI using MacOS-14-arm64
+
+on:
+  push:
+    branches:
+      - master
+  
+jobs:
+  MacOS-Arm64:
+    runs-on: macos-15
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: Check system
+      run: |
+        echo "macOS version: $(sw_vers -productVersion)"
+        echo "macOS kernel: $(uname -r)"
+        echo "macOS arch: $(uname -m)"
+
+    - name: Install libraries
+      run: |
+        wget https://www.dislin.de/downloads/macOS/dislin-11.5.macOS.arm.64.tar.gz
+        tar -xf dislin-11.5.macOS.arm.64.tar.gz
+        export DISLIN=$PWD/dislin
+        cd dislin-11.5
+        ./INSTALL
+        cd ..
+        ls $DISLIN/
+        install_name_tool -id $DISLIN/libdislin_d.dylib $DISLIN/libdislin_d.dylib
+
+    - name: Build Test
+      run: |
+        export DISLIN=$PWD/dislin
+        gfortran-14 ./test/test_dislin_gui.f90 ./test/dislin_d.f90 dismg_d.a -L$DISLIN -ldislin -framework cocoa -o program_test
+        otool -L program_test
+
+    - name: Test GUI
+      run: | 
+        brew install --cask xquartz
+        brew install ffmpeg cliclick
+        sudo /opt/X11/libexec/privileged_startx || true
+
+        install_name_tool -change $PWD/dislin/libdislin_d.dylib @loader_path/libdislin_d.dylib program_test
+
+        ffmpeg -f avfoundation -framerate 30 -video_size 1920x1080 -i "0" -t 30 -c:v libx264 output.mp4 &
+        sleep 2
+        {
+          sudo ulimit -s unlimited
+          program_test &
+          sleep 2
+          for i in `seq 600 10 2000`
+          do 
+              for j in `seq 140 20 600`
+              do
+                  cliclick c:$i,$j
+              done
+          done
+        }
+        sleep 30
+
+    - name: Upload recording
+      uses: actions/upload-artifact@v4
+      with:
+        name: gui-recording
+        path: ./output.mp4
