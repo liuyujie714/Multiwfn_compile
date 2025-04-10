@@ -21,6 +21,8 @@ real*8 trianglex(3),triangley(3),trianglez(3)
 real*8 arrayx(nx),arrayy(ny),arrayz(nz)
 character ctemp*5,c80tmp*80
 
+write(*,*) "***************************************call drawmol*************************************"
+
 !Set viewpoint
 !Note that due to limitation of DISLIN, it is not possible to view molecule in all viewpoints. The YVU should be limited to between -90 and 90, else the viewpoint will suddently flip
 XVUold=XVU

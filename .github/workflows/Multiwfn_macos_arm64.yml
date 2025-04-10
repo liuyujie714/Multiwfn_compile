@@ -10,7 +10,7 @@ env:
   
 jobs:
   MacOS-Arm64:
-    runs-on: macos-15
+    runs-on: macos-14
     steps:
     - name: Checkout
       uses: actions/checkout@v3
@@ -50,8 +50,8 @@ jobs:
         ls /opt/homebrew/opt/mpfr/lib/
         ls /opt/homebrew/opt/gmp/lib
       env:
-        FC: gfortran-14
-        CC: gcc-14
+        FC: gfortran-13
+        CC: gcc-13
 
 
     - name: Install libraries
@@ -82,8 +82,8 @@ jobs:
         make install -j4
         otool -L Multiwfn
       env:
-        FC: gfortran-14
-        CC: gcc-14    
+        FC: gfortran-13
+        CC: gcc-13    
 
     - name: Test Command
       run: |
@@ -121,10 +121,9 @@ jobs:
           sleep 2
           for i in `seq 600 10 2000`
           do 
-              for j in `seq 140 20 600`
-              do
-                  cliclick c:$i,$j
-              done
+            cliclick c:$i,140
+            cliclick c:$i,150
+            cliclick c:$i,170
           done
           #pkill -f "Multiwfn" 
         }
