@@ -29,9 +29,9 @@ program dislin_3d_plot
     CALL SWGOPT("TRACK","SCROLL")
     
     call wgini('hori', ip)
-    call swgwth(-60)
+    call swgwth(70)
     call wgbas(ip, 'vert', ip1)
-    call swgwth(-15)
+    call swgwth(20)
     call wgbas(ip, 'vert', ip2)
 
     call swgdrw(2100D0/2970D0)
