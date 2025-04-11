@@ -31,12 +31,13 @@ program dislin_3d_plot
     call swgwth(70)
     call wgini('hori', ip)
     call wgbas(ip, 'vert', ip1)
-    call swgwth(20)
-    call wgbas(ip, 'vert', ip2)
-
     call swgdrw(2100D0/2970D0)
     call wglab(ip1, 'DISLIN 3D Plot:', id_lab2)
     call wgdraw(ip1, id_draw)
+    
+    
+    call swgwth(20)
+    call wgbas(ip, 'vert', ip2)
 
     call wglab(ip2, 'Azimuthal Rotation Angle:', id_lab1)
     call wgscl(ip2, ' ', 0.0d0, 360.0d0, 50.0d0, -1, id_scl1)
