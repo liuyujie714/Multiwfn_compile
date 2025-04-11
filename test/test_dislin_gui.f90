@@ -44,7 +44,7 @@ program dislin_3d_plot
     call wgpbut(ip2, 'Polar', id_but2)
     call swgcbk(id_but1, myplot) 
     call swgcbk(id_but2, myplot) 
-    CALL REAWGT
+!     CALL REAWGT
     call myplot(id_but1)
     call wgfin()
 
