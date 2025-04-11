@@ -48,7 +48,7 @@ jobs:
         chmod a+x program_test
         ./program_test &
         sleep 2
-        for i in `seq 1000 1400`
+        for i in `seq 1200 10 1600`
         do 
             cliclick c:$i,400
             cliclick c:$i,450
