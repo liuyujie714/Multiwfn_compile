@@ -38,9 +38,7 @@ jobs:
 
     - name: Test GUI
       run: | 
-        brew install --cask xquartz
         brew install ffmpeg
-        sudo /opt/X11/libexec/privileged_startx || true
 
         install_name_tool -change $PWD/dislin/libdislin_d.dylib @loader_path/libdislin_d.dylib program_test
         cp $PWD/dislin/libdislin_d.dylib .

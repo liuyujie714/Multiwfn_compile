@@ -46,11 +46,18 @@ program dislin_3d_plot
     call swgcbk(id_scl2, myplot) 
     call REAWGT
 
-    call myplot(id_scl1) 
+    do i = 1, N
+        step = dble(i)*10
+        if (step <= 360D0) then
+            call swgscl(id_scl1, step)
+            call myplot(id_scl1) 
+!             call doevnt
+        end if 
+    end do
+    
     call wgfin()
 
 contains
-
     subroutine myplot(id)
         integer, intent(in) :: id
         integer :: lev
@@ -65,19 +72,16 @@ contains
         CALL GETLEV(lev)
         write(*, "('Current level: ', I4)") lev
         if (lev /= 0) then
-            write(*,*) "**************call disfin()************"
-            call disfin()
+            write(*, *) "*******************Level ERROR*******************"
         end if
         
-        write(*,*) "**************call metafl()************"
         call metafl('cons')
         call setxid(id_draw, 'widget')
         call scrmod('revers')
         CALL PAGE(3000,3000)
         CALL IMGFMT("RGB")
+        
         write(*,*) "**************call disini()************"
-
-
         call disini()
         call erase()
         call hwfont()
@@ -87,14 +91,15 @@ contains
         call name('Z-axis', 'z')
         call labdig(-1, 'xyz')
 
-        call axspos(585, 1800)
-        call axslen(1800, 1800)
+        call axspos(700, 2800)
+        call axslen(2100, 2100)
 
         call view3d(xrot1, xrot2, 6.0D0, 'angle')
         call height(40)
         call graf3d(0.0D0, 360D0, 0D0, 90D0, 0D0, 360D0, 0D0, 90D0, -3D0, 3D0, -3D0, 1D0)
         call surshd(xray, N, yray, N, zmat)
         call disfin()
+        write(*,*) "**************call disfin()************"
         
     end subroutine myplot
 
