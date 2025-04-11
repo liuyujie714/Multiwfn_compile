@@ -28,8 +28,8 @@ program dislin_3d_plot
     call swgopt('center', 'position')
     CALL SWGOPT("TRACK","SCROLL")
     
-    call wgini('hori', ip)
     call swgwth(70)
+    call wgini('hori', ip)
     call wgbas(ip, 'vert', ip1)
     call swgwth(20)
     call wgbas(ip, 'vert', ip2)
