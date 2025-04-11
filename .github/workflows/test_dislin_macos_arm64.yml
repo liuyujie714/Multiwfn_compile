@@ -50,8 +50,8 @@ jobs:
         sleep 2
         for i in `seq 1000 1400`
         do 
-            cliclick c:$i,500
-            cliclick c:$i,600
+            cliclick c:$i,400
+            cliclick c:$i,450
         done
         sleep 15
 
