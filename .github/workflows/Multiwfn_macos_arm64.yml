@@ -46,9 +46,9 @@ jobs:
         sudo make install
         
         #rm -rf /opt/homebrew/opt/flint/lib/*.dylib
-        ls /opt/homebrew/opt/flint/lib/
-        ls /opt/homebrew/opt/mpfr/lib/
-        ls /opt/homebrew/opt/gmp/lib
+        #ls /opt/homebrew/opt/flint/lib/
+        #ls /opt/homebrew/opt/mpfr/lib/
+        #ls /opt/homebrew/opt/gmp/lib
       env:
         FC: gfortran-13
         CC: gcc-13
