@@ -50,8 +50,8 @@ jobs:
         #ls /opt/homebrew/opt/mpfr/lib/
         #ls /opt/homebrew/opt/gmp/lib
       env:
-        FC: gfortran-13
-        CC: gcc-13
+        FC: gfortran-14
+        CC: gcc-14
 
 
     - name: Install libraries
@@ -84,8 +84,8 @@ jobs:
         make install -j4
         otool -L Multiwfn
       env:
-        FC: gfortran-13
-        CC: gcc-13    
+        FC: gfortran-14
+        CC: gcc-14  
 
     - name: Test Command
       run: |
