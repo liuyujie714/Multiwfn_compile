@@ -107,7 +107,6 @@ abslenx=2D0 !Absolute length in DISLIN
 absleny=abslenx*plotleny/plotlenx
 abslenz=abslenx*plotlenz/plotlenx
 plot2abs=abslenx/plotlenx !The relationship between molecular coordinate and absolute coordinate
-isavepic = 1
 if (isavepic==0) then
 	call METAFL('CONS')
 	if (GUI_mode==6) call METAFL('CONS') !Namely showing basin, using opengl by default to accelerate displaying, however when savepic, if still use opengl, things cannot be properly shown
@@ -126,6 +125,11 @@ else if (isavepic==1) then
 end if
 CALL SCRMOD('revers')
 CALL PAGE(3000,3000)
+
+call GETLEV(ilevel)
+write(*,*) "#############+#+++++++++#############$$#$$$$"
+write(*,*) ilevel
+
 CALL DISINI
 if (iorthoview==0) then
 	CALL PROJ3D("PERSPECTIVE")
@@ -135,7 +139,7 @@ else if (iorthoview==1) then
 end if
 CALL VFOC3D(XFOC,YFOC,ZFOC,"ABS")
 CALL VUP3D(camrotang)
-call ERRMOD("ALL","OFF")
+call ERRMOD("ALL","ON")
 ! call linmod("ON","SMOOTH") !It seems that Anti-aliased doesn't take effect
 CALL LABDIG(1,"X")
 CALL LABDIG(1,"Y")
