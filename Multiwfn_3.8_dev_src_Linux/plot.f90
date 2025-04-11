@@ -120,11 +120,11 @@ else if (isavepic==1) then
     end if
 	CALL setxid(0,'NONE')
 	call METAFL(graphformat)
+        CALL IMGFMT("RGB") !If don't call this routine, the saved picture use palette color mode by default, the color is not smooth
 	call winsiz(graph3Dwidth,graph3Dheight) !Actual image size is set by this routine, namely 770*770
 end if
 CALL SCRMOD('revers')
 CALL PAGE(3000,3000)
-CALL IMGFMT("RGB") !If don't call this routine, the saved picture use palette color mode by default, the color is not smooth
 CALL DISINI
 if (iorthoview==0) then
 	CALL PROJ3D("PERSPECTIVE")
