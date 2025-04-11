@@ -107,8 +107,9 @@ abslenx=2D0 !Absolute length in DISLIN
 absleny=abslenx*plotleny/plotlenx
 abslenz=abslenx*plotlenz/plotlenx
 plot2abs=abslenx/plotlenx !The relationship between molecular coordinate and absolute coordinate
+isavepic = 1
 if (isavepic==0) then
-	call METAFL('GL')
+	call METAFL('CONS')
 	if (GUI_mode==6) call METAFL('CONS') !Namely showing basin, using opengl by default to accelerate displaying, however when savepic, if still use opengl, things cannot be properly shown
 	CALL setxid(idisgraph,'WIDGET')
 else if (isavepic==1) then
