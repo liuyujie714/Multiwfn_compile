@@ -45,16 +45,17 @@ program dislin_3d_plot
     call wgscl(ip2, ' ', -90.0d0, 90.0d0, 40.0d0, -1, id_scl2)
     call swgcbk(id_scl1, myplot) 
     call swgcbk(id_scl2, myplot) 
-    call REAWGT
+    call myplot(id_scl1)
+!     call REAWGT
 
-    do i = 1, N
-        step = dble(i)*10
-        if (step <= 360D0) then
-            call swgscl(id_scl1, step)
-            call myplot(id_scl1) 
+!     do i = 1, N
+!         step = dble(i)*10
+!         if (step <= 360D0) then
+!             call swgscl(id_scl1, step)
+!             call myplot(id_scl1) 
 !             call doevnt
-        end if 
-    end do
+!         end if 
+!     end do
     
     call wgfin()
 
