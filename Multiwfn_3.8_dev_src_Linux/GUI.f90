@@ -1687,6 +1687,8 @@ gridv3=0;gridv3(3)=dz
 nx=nint(molxlen/dx)+1
 ny=nint(molylen/dy)+1
 nz=nint(molzlen/dz)+1
+write(*,*) "*****************************iorb******************#####"
+write(*,*) iorb
 if (iorb==0) then !Namely "None" in the orbital list
 	if (isosursec==0) then
 		idrawisosur=0
