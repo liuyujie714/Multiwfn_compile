@@ -45,7 +45,6 @@ jobs:
                 cliclick c:$i,150
                 cliclick c:$i,170
             done
-            pkill -f "Multiwfn"  # 强制结束程序
           }
 
           # 确保录制完成

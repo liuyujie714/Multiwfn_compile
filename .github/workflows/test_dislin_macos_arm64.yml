@@ -38,7 +38,7 @@ jobs:
 
     - name: Test GUI
       run: | 
-        brew install ffmpeg
+        brew install ffmpeg cliclick
 
         install_name_tool -change $PWD/dislin/libdislin_d.dylib @loader_path/libdislin_d.dylib program_test
         cp $PWD/dislin/libdislin_d.dylib .
@@ -48,6 +48,11 @@ jobs:
         chmod a+x program_test
         ./program_test &
         sleep 2
+        for i in `seq 1000 1400`
+        do 
+            cliclick c:$i,500
+            cliclick c:$i,600
+        done
         sleep 15
 
     - name: Upload recording

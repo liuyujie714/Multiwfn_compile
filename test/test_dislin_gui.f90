@@ -3,10 +3,10 @@ program dislin_3d_plot
     implicit none
 
     integer, parameter :: N = 50
-    integer :: id_draw, id_but, id_lab1, id_lab2, id_scl1, id_scl2
+    integer :: id_draw, id_but1, id_but2, id_lab2
     double precision :: xrot1 = 50.0d0, xrot2 = 40.0d0
     double precision :: xray(N), yray(N), zmat(N,N)
-    integer :: ip, ip1, ip2, i, j
+    integer :: ip, ip1, ip2, i, j, ival
     double precision :: step, x, y
     double precision, parameter :: fpi = 3.14159265358979323846d0 / 180.0d0
 
@@ -37,26 +37,14 @@ program dislin_3d_plot
     
     
     call swgwth(20)
-    call wgbas(ip, 'vert', ip2)
-
-    call wglab(ip2, 'Azimuthal Rotation Angle:', id_lab1)
-    call wgscl(ip2, ' ', 0.0d0, 360.0d0, 50.0d0, -1, id_scl1)
-    call wglab(ip2, 'Polar Rotation Angle:', id_lab1)
-    call wgscl(ip2, ' ', -90.0d0, 90.0d0, 40.0d0, -1, id_scl2)
-    call swgcbk(id_scl1, myplot) 
-    call swgcbk(id_scl2, myplot) 
-    call myplot(id_scl1)
-!     call REAWGT
-
-!     do i = 1, N
-!         step = dble(i)*10
-!         if (step <= 360D0) then
-!             call swgscl(id_scl1, step)
-!             call myplot(id_scl1) 
-!             call doevnt
-!         end if 
-!     end do
-    
+    call wgbas(ip, 'form', ip2)
+    call swgwin(0, 0, 200, 100)
+    call wgpbut(ip2, 'Azimuthal',id_but1)
+    call swgwin(0, 120, 200, 100)
+    call wgpbut(ip2, 'Polar', id_but2)
+    call swgcbk(id_but1, myplot) 
+    call swgcbk(id_but2, myplot) 
+    call myplot(id_but1)
     call wgfin()
 
 contains
@@ -64,10 +52,10 @@ contains
         integer, intent(in) :: id
         integer :: lev
 
-        if (id == id_scl1) then
-            call gwgscl(id, xrot1)
-        else if (id == id_scl2) then
-            call gwgscl(id, xrot2)
+        if (id == id_but1) then
+            xrot1 = xrot1 + 10
+        else if (id == id_but2) then
+            xrot2 = xrot2 + 10
         end if
         
         
