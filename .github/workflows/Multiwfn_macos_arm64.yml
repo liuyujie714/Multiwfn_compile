@@ -104,9 +104,9 @@ jobs:
 
     - name: Test GUI
       run: | 
-        brew install --cask xquartz
+        #brew install --cask xquartz
         brew install ffmpeg cliclick
-        sudo /opt/X11/libexec/privileged_startx || true
+        # sudo /opt/X11/libexec/privileged_startx || true
 
         cp ./${{env.Multiwfn_version}}/build/libdislin_d.dylib .
         cp ./${{env.Multiwfn_version}}/build/Multiwfn .
