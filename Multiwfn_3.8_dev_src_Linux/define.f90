@@ -299,7 +299,6 @@ integer :: nbasis=0,nbasisCar=0,nshell=0,nprimshell=0 !The number of basis (actu
 integer :: nindbasis=0 !Number of independent basis functions. Can directly load from fch and mwfn. For other case like molden, nindbasis keeps 0, means undetermined
 integer,allocatable :: shtype(:),shtypeCar(:),shcon(:),shcen(:) !Type, contraction degree and attributed center of a basis shell
 real*8,allocatable :: primshexp(:),primshcoeff(:) !Exponent and contraction coefficient of a primitive shell
-   !Note: Sizes of basshell, bascen, etc. may be larger than the number of actual basis functions, because they are initially allocated for Cartesian basis functions, which may have larger number
 integer,allocatable :: basshell(:) !The ith element is the shell index that the ith basis attributed to
 integer,allocatable :: bascen(:),bastype(:) !Center/type of basis, definition is the same as GTF
 integer,allocatable :: basstart(:),basend(:) !The ith element means the basis from where to where is attributed to the ith atom. If any of them is 0, that means this atom does not have basis function
@@ -381,7 +380,7 @@ integer :: istrtype=0 !Strength type. Avoid selecting the type every time when l
 integer idissetlight1,idissetlight2,idissetlight3,idissetlight4,idissetlight5,idissetlightall0,idissetlightall1,idissetangle,idissetzoom,idissetplaneXVU,idissetplaneYVU
 integer idisgraph,idiszoomin,idiszoomout,idisisosurscl,idisscrval,idisshowbothsign,idisshowisosur,idisshowmol,idisisosursec,iorbseltext,iorbtxt,iorblis,idisshowdatarange
 integer idisorbinfo2,idisorbinfo3,idissetVANG3D
-integer idisshowatmlab,idisshowaxis,idisbondradius,idislabelsize,idisbondcrit,idisatmsize,idisshowpathlab !In draw mol GUI
+integer idisshowatmlab,idisshowaxis,idisbondradius,idislabelsize,idisbondcrit,idisatmsize,idisshowpathlab, idisarot, idisprot !In draw mol GUI
 integer idisshowattlab,idisdrawinternalbasin,idisattsize !Draw basin GUI
 integer idisshow3n3,idisshow3n1,idisshow3p1,idisshow3p3,idisshowCPlab,idisshowpath,idisshowbassurf
 integer idisshowlocminlab,idisshowlocmaxlab,idisshowlocminpos,idisshowlocmaxpos !For molecular surface analysis
@@ -449,6 +448,8 @@ integer :: ishowlocminlab=0,ishowlocmaxlab=0,ishowlocminpos=0,ishowlocmaxpos=0 !
 integer :: ishow3n3=0,ishow3n1=0,ishow3p1=0,ishow3p3=0
 real*8 :: bondcrit=1.15D0,textheigh=38D0,ratioatmsphere=1D0,ratioCPsphere=1D0,bondradius=0.2D0,attsphsize=0.1D0
 real*8 :: XVU=150D0,YVU=30D0,ZVU=6D0,XFAC=1D0,VANG3DANG=28D0,XFOC=0D0,YFOC=0D0,ZFOC=0D0,camrotang=0D0 !3D view angle, they are all default value of DISLIN
+integer :: startX = 0, startY = 0 ! mouse position
+logical :: isDragging = .false.   ! mouse dragging status
 integer :: iorthoview=0 !=0: Perspective, =1: Orthographic projection in 3D view
 !Parameter for drawing domain defined by isosurfaces as grids
 integer :: idrawdomainidx=0,idrawdomain=0,ndomain=0

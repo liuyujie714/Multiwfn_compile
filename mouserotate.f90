@@ -1,4 +1,6 @@
-! Mouse rotate module, written by Yujie Liu, 2025-04-08
+! Mouse rotate module, only use on Windows x64 system
+! Link user32.lib
+! Written by Yujie Liu, 2025-04-08
 
 ! Usage example:
 ! 1. add global variables to define.f90
@@ -8,7 +10,7 @@
 ! 2. add it to gui function in GUI.f90, such as drawmolgui, ...
 !   use defvar
 !   use mouse_rotate_mod
-!   call swgcbk(idisgraph, mouse_rotate)    ! register mouse callback
+!   call swgcbk(idisgraph, mouse_rotate)    ! register mouse callback when click draw region
 
 module mouse_rotate_mod
     use, intrinsic :: iso_c_binding
@@ -21,8 +23,8 @@ module mouse_rotate_mod
     type, bind(c) :: MSG
         integer(c_intptr_t) :: hwnd
         integer(c_int) :: message
-        integer(c_intptr_t) :: wParam
-        integer(c_intptr_t) :: lParam
+        integer(c_intptr_t) :: wParam ! should 8 bytes on x64
+        integer(c_intptr_t) :: lParam ! should 8 bytes on x64
         integer(c_int) :: time
         type(POINT) :: pt
     end type
@@ -88,6 +90,7 @@ contains
         integer, intent(in) :: id
         type(MSG) :: current_msg 
         integer :: currentX, currentY, delx, dely
+        real*8 :: yvutemp
         integer(c_intptr_t) :: active_window
         logical(c_bool) :: dummy1
         integer(c_intptr_t) :: dummy2
@@ -97,31 +100,32 @@ contains
         if (active_window == 0) return
         dummy2 = SetCapture(active_window)
         
-        do
+        do while (.true.)
             if (PeekMessage(current_msg, active_window, 0, 0, PM_REMOVE)) then
                 dummy1 = TranslateMessage(current_msg)
                 dummy2 = DispatchMessage(current_msg)
                 
                 select case (current_msg%message)
                 case (WM_LBUTTONDOWN)
-                    startX = iand(int(current_msg%lParam, kind=4), 65535_4)
-                    startY = ishft(int(current_msg%lParam, kind=4), -16)
+                    startX = iand(current_msg%lParam, 65535_8)
+                    startY = iand(ishft(current_msg%lParam, -16), 65535_8)
                     isDragging = .true.
                 
                 case (WM_MOUSEMOVE)
                     if (isDragging) then
-                        currentX = iand(int(current_msg%lParam, kind=4), 65535_4)
-                        currentY = ishft(int(current_msg%lParam, kind=4), -16)
+                        currentX = iand(current_msg%lParam, 65535_8)
+                        currentY = iand(ishft(current_msg%lParam, -16), 65535_8)
                         delx = currentX - startX
                         dely = currentY - startY
                         
                         if (abs(delx) > 5 .or. abs(dely) > 5) then
-                            XVU = XVU + delx * 0.5
-                            YVU = YVU + dely * 0.5
-                            
                             startX = currentX
                             startY = currentY
+
                             ! plot actions
+                            XVU = XVU + delx * 0.5
+                            yvutemp = YVU + dely * 0.5
+                            if (yvutemp >= -90D0 .and. yvutemp < 90D0) YVU = yvutemp
                             if (GUI_mode/=2) then
                                 call drawmol
                             else if (GUI_mode==2) then
@@ -135,9 +139,7 @@ contains
                     end if
                 
                 case (WM_LBUTTONUP)
-                    if (ReleaseCapture()) then
-                        isDragging = .false.
-                    end if
+                    if (ReleaseCapture()) isDragging = .false.
                     return
 
                 end select

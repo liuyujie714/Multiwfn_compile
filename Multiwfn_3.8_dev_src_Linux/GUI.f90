@@ -60,6 +60,7 @@ end subroutine
 !!--------- A GUI for drawing molecular structure and orbital isosurface
 subroutine drawmolgui
 use defvar
+use mouse_rotate_mod
 character ictmp*5,molorblist*600000 !Max 99999 orbitals (the 0th is "none"), each one take up 5 characters, adding "|", so 100000*(5+1)=600000
 isavepic=0
 if (ifPBC>0) then
@@ -92,6 +93,7 @@ end if
 call SWGPOP("NOOK")  !Don't show OK&QUIT&HELP in upper menu
 call SWGPOP("NOQUIT")
 call SWGPOP("NOHELP")
+call SWGOPT("TRACK", "SCROLL"); ! Real time change value
 CALL WGINI('HORI',idiswindow)
 call swgatt(idiswindow,"INACTIVE","CLOSE") !Disable close button
 call swgatt(idiswindow,"OFF","MAXI") !Disable maximization button
@@ -179,10 +181,13 @@ CALL SWGSPC(1.3D0,0D0) !Set space between widgets below
 CALL WGBAS(idiswindow,"VERT",idisright)
 if ((isys==1.and.imodlayout==1).or.isys==2) CALL WGBAS(idiswindow,"VERT",idisright2) !Provide another frame for linux version
 call wgpbut(idisright,"RETURN",idisreturn)
-call wgpbut(idisright,"Up",idisrotup)
-call wgpbut(idisright,"Down",idisrotdown)
-call wgpbut(idisright,"Left",idisrotleft)
-call wgpbut(idisright,"Right",idisrotright)
+call swgstp(1.0D0)
+call wgscl(idisright, "Arotate", 0D0, 359.999D0, XVU, -1, idisarot)
+call wgscl(idisright, "Protate", 0D0, 90D0, YVU, -1, idisprot)
+! call wgpbut(idisright,"Up",idisrotup)
+! call wgpbut(idisright,"Down",idisrotdown)
+! call wgpbut(idisright,"Left",idisrotleft)
+! call wgpbut(idisright,"Right",idisrotright)
 call wgpbut(idisright,"Zoom in",idiszoomin)
 call wgpbut(idisright,"Zoom out",idiszoomout)
 call wgpbut(idisright,"Reset view",idisreset)
@@ -318,10 +323,13 @@ call SWGCBK(idisloadconn,loadconn)
 call SWGCBK(idisshowfractcoord,showfractcoord)
 call SWGCBK(idisexpintcoord,export_intcoord)
 call SWGCBK(idisreturn,GUIreturn)
-call SWGCBK(idisrotleft,rotleft)
-call SWGCBK(idisrotright,rotright)
-call SWGCBK(idisrotup,rotup)
-call SWGCBK(idisrotdown,rotdown)
+call SWGCBK(idisarot, funcarot)
+call SWGCBK(idisprot, funcprot)
+call swgcbk(idisgraph, mouse_rotate)
+! call SWGCBK(idisrotleft,rotleft)
+! call SWGCBK(idisrotright,rotright)
+! call SWGCBK(idisrotup,rotup)
+! call SWGCBK(idisrotdown,rotdown)
 call SWGCBK(idiszoomin,zoomin)
 call SWGCBK(idiszoomout,zoomout)
 call SWGCB3(idisgraph,zoominout)
@@ -1292,6 +1300,29 @@ end subroutine
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
+subroutine funcarot(id)
+integer,intent (in) :: id
+character tmpstr*20
+if (GUI_mode==1) then
+	call gwgscl(id, XVU)
+	call drawmol
+else if (GUI_mode==2) then
+	call drawplane(dp_init1,dp_end1,dp_init2,dp_end2,dp_init3,dp_end3,idrawtype)
+	write(tmpstr,"(f8.2)") XVU
+end if
+end subroutine
+
+subroutine funcprot(id)
+integer,intent (in) :: id
+character tmpstr*20
+if (GUI_mode==1) then
+	call gwgscl(id, YVU)
+	call drawmol
+else if (GUI_mode==2) then
+	call drawplane(dp_init1,dp_end1,dp_init2,dp_end2,dp_init3,dp_end3,idrawtype)
+	write(tmpstr,"(f8.2)") YVU
+end if
+end subroutine
 
 subroutine rotleft(id)
 integer,intent (in) :: id
@@ -1414,6 +1445,8 @@ if (GUI_mode==1.or.GUI_mode==3) then
 		call swgscl(idisatmsize,ratioatmsphere)
 		if (imodlayout/=2) call swgscl(idisbondcrit,bondcrit)
 		call swgscl(idislabelsize,textheigh)
+		call swgscl(idisarot, XVU)
+		call swgscl(idisprot, YVU)
 	else if (GUI_mode==3) then
 		ZVU=7D0
 		if (isosursec==0) isosurshowboth=1
@@ -1687,8 +1720,6 @@ gridv3=0;gridv3(3)=dz
 nx=nint(molxlen/dx)+1
 ny=nint(molylen/dy)+1
 nz=nint(molzlen/dz)+1
-write(*,*) "*****************************iorb******************#####"
-write(*,*) iorb
 if (iorb==0) then !Namely "None" in the orbital list
 	if (isosursec==0) then
 		idrawisosur=0

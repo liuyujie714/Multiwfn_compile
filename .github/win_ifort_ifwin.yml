@@ -1,0 +1,47 @@
+name: Download ifwin
+
+on:
+  push:
+    branches:
+      - master
+
+env:
+  WINDOWS_HPCKIT_URL: https://registrationcenter-download.intel.com/akdlm/IRC_NAS/c95a3b26-fc45-496c-833b-df08b10297b9/w_HPCKit_p_2024.1.0.561_offline.exe
+  WINDOWS_FORTRAN_COMPONENTS: intel.oneapi.win.ifort-compiler
+
+jobs:
+  Windows:
+    runs-on: windows-2022
+
+    if: github.event.repository.owner.id == github.event.sender.id
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        
+      - name: Install Fortran compiler and Visual Studio 2022 integration
+        run: |
+          .github/scripts/install_ifort.bat ${{env.WINDOWS_HPCKIT_URL}} ${{env.WINDOWS_FORTRAN_COMPONENTS}}
+
+      - name: Activate compiler environment
+        run: |
+          .github/scripts/activate_env.bat
+
+      - name: List include
+        shell: cmd
+        run: |
+          dir /s /b "C:\Program Files (x86)\Intel\oneAPI\*ifwin.f90"
+        
+      - name: Copy file
+        shell: pwsh
+        run: |
+          md tempfiles
+          Copy-Item -Path "C:\Program Files (x86)\Intel\oneAPI\compiler\latest\opt\compiler\include\"  -Destination "tempfiles\" -Force -Recurse
+          
+      - name: Upload ifwin
+        uses: actions/upload-artifact@v4
+        if: ${{ success() }}
+        with:
+          name: ifwin_Win_x64
+          path: |
+            .\tempfiles\*
+            

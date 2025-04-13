@@ -14,7 +14,7 @@ use topo
 use surfvertex
 use basinintmod
 implicit real*8 (a-h,o-z)
-integer i,j,idxtmp,iret,screenx,screeny,ipath,ipathp1,ipt,icp1,icp2,ipathtype,ipathmidpt,isurf,interval, ilevel
+integer i,j,idxtmp,iret,screenx,screeny,ipath,ipathp1,ipt,icp1,icp2,ipathtype,ipathmidpt,isurf,interval
 real*8 abslenx,absleny,abslenz,plotlenx,plotleny,plotlenz !absolute and real 3D coordinate
 real*8 plot2abs,xplotcoor,yplotcoor,absx,absy,absz,dist,textheighmod,extsiz,augplotlen
 real*8 trianglex(3),triangley(3),trianglez(3)
@@ -97,12 +97,7 @@ else !Other cases, determine displayed spatial scope by boundary atoms of the sy
     zhigh=zlow+plotlenz
 end if
 
-!Initialize DISLIN, MacOS Arm64 has bug for disini, maybe exit after disfin
-call GETLEV(ilevel)
-if (ilevel /= 0) then
-	CALL DISFIN
-	CALL DOEVNT
-end if
+!Initialize DISLIN
 abslenx=2D0 !Absolute length in DISLIN
 absleny=abslenx*plotleny/plotlenx
 abslenz=abslenx*plotlenz/plotlenx
@@ -120,16 +115,11 @@ else if (isavepic==1) then
     end if
 	CALL setxid(0,'NONE')
 	call METAFL(graphformat)
-        CALL IMGFMT("RGB") !If don't call this routine, the saved picture use palette color mode by default, the color is not smooth
 	call winsiz(graph3Dwidth,graph3Dheight) !Actual image size is set by this routine, namely 770*770
 end if
 CALL SCRMOD('revers')
 CALL PAGE(3000,3000)
-
-call GETLEV(ilevel)
-write(*,*) "#############+#+++++++++#############$$#$$$$"
-write(*,*) ilevel
-
+CALL IMGFMT("RGB") !If don't call this routine, the saved picture use palette color mode by default, the color is not smooth
 CALL DISINI
 if (iorthoview==0) then
 	CALL PROJ3D("PERSPECTIVE")
@@ -139,7 +129,7 @@ else if (iorthoview==1) then
 end if
 CALL VFOC3D(XFOC,YFOC,ZFOC,"ABS")
 CALL VUP3D(camrotang)
-call ERRMOD("ALL","ON")
+call ERRMOD("ALL","OFF")
 ! call linmod("ON","SMOOTH") !It seems that Anti-aliased doesn't take effect
 CALL LABDIG(1,"X")
 CALL LABDIG(1,"Y")
@@ -198,7 +188,7 @@ if (idrawmol==1.or.ishowatmlab==1) then
 	if (ishowboundaryatom==1.and.ifPBC>0) then
 		call construct_atmp_withbound(ncenter_tmp)
 	else
-		if (allocated(a_tmp)) deallocate(a_tmp, a_tmp_idx)
+		if (allocated(a_tmp)) deallocate(a_tmp)
 		ncenter_tmp=ncenter
 		allocate(a_tmp(ncenter),a_tmp_idx(ncenter))
 		a_tmp=a
@@ -554,6 +544,25 @@ if (idrawisosur==1) then
             if (iplottime==2) call surmsh("ON")
         end if
 		if (isosur1style==5) CALL TPRINI !Must be called individually for same and opposite survalue, else same part will completely overlay opposite part
+		open(58, file='cubmat.txt', status='replace')
+		write(58, *) nx, ny, nz   ! 写入维度（可选）
+		do i = 1, nx
+			write(58, '(F20.12)') arrayx(i)
+		end do
+		do i = 1, ny
+			write(58, '(F20.12)') arrayy(i)
+		end do
+		do i = 1, nz
+			write(58, '(F20.12)') arrayz(i)
+		end do
+		do k = 1, nx
+			do j = 1, ny
+				do i = 1, nz
+					write(58, '(F20.12)') cubmat(k,j,i)  ! 每行一个值
+				end do
+			end do
+		end do
+		close(58)
 		call suriso(arrayx,nx,arrayy,ny,arrayz,nz,cubmat,sur_valuenow)
 		if (isosur1style==5) CALL TPRFIN
 		call surmsh("OFF") !If don't set this, then other things (atoms, bonds) will be drawn as LINES too
