@@ -544,25 +544,6 @@ if (idrawisosur==1) then
             if (iplottime==2) call surmsh("ON")
         end if
 		if (isosur1style==5) CALL TPRINI !Must be called individually for same and opposite survalue, else same part will completely overlay opposite part
-		open(58, file='cubmat.txt', status='replace')
-		write(58, *) nx, ny, nz   ! 写入维度（可选）
-		do i = 1, nx
-			write(58, '(F20.12)') arrayx(i)
-		end do
-		do i = 1, ny
-			write(58, '(F20.12)') arrayy(i)
-		end do
-		do i = 1, nz
-			write(58, '(F20.12)') arrayz(i)
-		end do
-		do k = 1, nx
-			do j = 1, ny
-				do i = 1, nz
-					write(58, '(F20.12)') cubmat(k,j,i)  ! 每行一个值
-				end do
-			end do
-		end do
-		close(58)
 		call suriso(arrayx,nx,arrayy,ny,arrayz,nz,cubmat,sur_valuenow)
 		if (isosur1style==5) CALL TPRFIN
 		call surmsh("OFF") !If don't set this, then other things (atoms, bonds) will be drawn as LINES too

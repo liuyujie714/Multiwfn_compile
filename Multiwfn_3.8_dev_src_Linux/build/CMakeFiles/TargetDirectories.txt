@@ -1,0 +1,10 @@
+/c/Users/liuyujie714/Desktop/Multiwfn_compile/Multiwfn_3.8_dev_src_Linux/build/CMakeFiles/lib_hrr.dir
+/c/Users/liuyujie714/Desktop/Multiwfn_compile/Multiwfn_3.8_dev_src_Linux/build/CMakeFiles/lib_2f2.dir
+/c/Users/liuyujie714/Desktop/Multiwfn_compile/Multiwfn_3.8_dev_src_Linux/build/CMakeFiles/lib_base.dir
+/c/Users/liuyujie714/Desktop/Multiwfn_compile/Multiwfn_3.8_dev_src_Linux/build/CMakeFiles/Multiwfn.dir
+/c/Users/liuyujie714/Desktop/Multiwfn_compile/Multiwfn_3.8_dev_src_Linux/build/CMakeFiles/edit_cache.dir
+/c/Users/liuyujie714/Desktop/Multiwfn_compile/Multiwfn_3.8_dev_src_Linux/build/CMakeFiles/rebuild_cache.dir
+/c/Users/liuyujie714/Desktop/Multiwfn_compile/Multiwfn_3.8_dev_src_Linux/build/CMakeFiles/list_install_components.dir
+/c/Users/liuyujie714/Desktop/Multiwfn_compile/Multiwfn_3.8_dev_src_Linux/build/CMakeFiles/install.dir
+/c/Users/liuyujie714/Desktop/Multiwfn_compile/Multiwfn_3.8_dev_src_Linux/build/CMakeFiles/install/local.dir
+/c/Users/liuyujie714/Desktop/Multiwfn_compile/Multiwfn_3.8_dev_src_Linux/build/CMakeFiles/install/strip.dir
