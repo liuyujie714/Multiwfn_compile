@@ -11,7 +11,6 @@
 #ifdef _WIN32
 ! use intel fortran ifwin
 #ifdef __INTEL_COMPILER
-#error test
 module mouse_rotate_mod
     implicit none
     

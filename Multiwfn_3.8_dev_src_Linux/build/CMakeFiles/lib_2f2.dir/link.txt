@@ -1,2 +1,0 @@
-/ucrt64/bin/ar.exe qc liblib_2f2.a CMakeFiles/lib_2f2.dir/ext/2F2.c.o
-/ucrt64/bin/ranlib.exe liblib_2f2.a
