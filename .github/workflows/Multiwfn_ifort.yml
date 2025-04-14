@@ -99,8 +99,9 @@ jobs:
       #     Copy-Item -Path "*.dll"                         -Destination "tempfiles\" -Force
 
       - name: Test Multiwfn on AMD EPC
-        run:
-          cd .\tempfiles
+        run: |
+          md tempfiles
+          cd tempfiles
           echo q | .\Multiwfn.exe .\examples\phenanthrene.fch
           
       - name: Upload Multiwfn
