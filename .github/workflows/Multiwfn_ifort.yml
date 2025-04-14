@@ -54,11 +54,11 @@ jobs:
           # curl -L http://sobereva.com/multiwfn/misc/${{env.Multiwfn_version}}.zip -o Multiwfn_src.zip
           # 7z x Multiwfn_src.zip
 
-          # download latest manual and examples to msic
+          # download latest manual and examples to misc
           curl -L http://sobereva.com/multiwfn/misc/Multiwfn_3.8_dev_bin_Win64.rar -o bin.rar
-          7z x bin.rar -omsic examples *.ini *.pdf *.txt -r -y
-          Move-Item -Path "msic/Multiwfn_3.8*/*" "msic/." -Force
-          Remove-Item -Path "msic/Multiwfn_3.8*" -Force
+          7z x bin.rar -omisc examples *.ini *.pdf *.txt -r -y
+          Move-Item -Path "misc/Multiwfn_3.8*/*" "misc/." -Force
+          Remove-Item -Path "misc/Multiwfn_3.8*" -Force
           Remove-Item -Path "bin.rar" -Force
 
           # dislin for windows ifort
