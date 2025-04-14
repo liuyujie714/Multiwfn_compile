@@ -1,0 +1,27 @@
+name: Test latest Windows Multiwfn 
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  Windows:
+    runs-on: windows-2022
+
+    if: github.event.repository.owner.id == github.event.sender.id
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: System info
+        run: |
+          Get-CimInstance Win32_Processor | Select-Object Name, NumberOfCores, NumberOfLogicalProcessors, MaxClockSpeed, L2CacheSize, L3CacheSize
+
+      - name: Run multiwfn
+        run: |
+          curl -L https://github.com/liuyujie714/Multiwfn_compile/releases/download/bleed/Multiwfn_3.8_dev_Win_x64_2025.04.14.tar.gz -o Program.tar.gz
+          7z x Program.tar.gz
+          cd Multiwfn_3.8*
+
+          echo q | .\Multiwfn.exe .\examples\phenanthrene.fch
