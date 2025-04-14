@@ -102,7 +102,8 @@ else()
         /Qopt-matmul
         /Qmkl:parallel
         /Qmkl
-        /QxCORE-AVX2
+        /arch:SSE4.2
+        /QxSSE4.2
         /threads
         /stand:f08
         /static
