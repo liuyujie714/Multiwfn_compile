@@ -102,7 +102,6 @@ else()
         /Qopt-matmul
         /Qmkl:parallel
         /Qmkl
-        /QxSSE4.2
         /threads
         /stand:f08
         /static

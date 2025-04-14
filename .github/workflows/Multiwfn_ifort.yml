@@ -97,6 +97,11 @@ jobs:
           Copy-Item -Path "${{github.workspace}}\misc\*"  -Destination "tempfiles\" -Force -Recurse
           # dll
           Copy-Item -Path "*.dll"                         -Destination "tempfiles\" -Force
+
+      - name: Test Multiwfn on AMD EPC
+        run:
+          cd tempfiles
+          echo q | .\Multiwfn.exe .\examples\phenanthrene.fch
           
       - name: Upload Multiwfn
         uses: actions/upload-artifact@v4
