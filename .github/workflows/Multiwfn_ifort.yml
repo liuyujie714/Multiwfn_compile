@@ -29,78 +29,77 @@ jobs:
       #     path: ${{github.workflow}}\${{env.Multiwfn_version}}\build
       #     key: ${{ runner.os }}-ifort-2025.0-code
 
-      # - name: "Setup cache for dependencies"
-      #   uses: actions/github-script@v7
-      #   with:
-      #     script: |
-      #       core.exportVariable('ACTIONS_CACHE_URL', process.env.ACTIONS_CACHE_URL || '');
-      #       core.exportVariable('ACTIONS_RUNTIME_TOKEN', process.env.ACTIONS_RUNTIME_TOKEN || '');
+      - name: "Setup cache for dependencies"
+        uses: actions/github-script@v7
+        with:
+          script: |
+            core.exportVariable('ACTIONS_CACHE_URL', process.env.ACTIONS_CACHE_URL || '');
+            core.exportVariable('ACTIONS_RUNTIME_TOKEN', process.env.ACTIONS_RUNTIME_TOKEN || '');
 
-      # - name: Install flint dependencies via vcpkg
-      #   run: |
-      #     vcpkg install flint:x64-windows-static arb:x64-windows-static --binarysource="clear;x-gha,readwrite"
+      - name: Install flint dependencies via vcpkg
+        run: |
+          vcpkg install flint:x64-windows-static arb:x64-windows-static --binarysource="clear;x-gha,readwrite"
 
-      # - name: Install Fortran compiler/MKL and Visual Studio 2022 integration
-      #   run: |
-      #     .github/scripts/install_ifort.bat ${{env.WINDOWS_MKL_URL}} ${{env.WINDOWS_MKL_COMPONENTS}}
-      #     .github/scripts/install_ifort.bat ${{env.WINDOWS_HPCKIT_URL}} ${{env.WINDOWS_FORTRAN_COMPONENTS}}
+      - name: Install Fortran compiler/MKL and Visual Studio 2022 integration
+        run: |
+          .github/scripts/install_ifort.bat ${{env.WINDOWS_MKL_URL}} ${{env.WINDOWS_MKL_COMPONENTS}}
+          .github/scripts/install_ifort.bat ${{env.WINDOWS_HPCKIT_URL}} ${{env.WINDOWS_FORTRAN_COMPONENTS}}
 
-      # - name: Activate compiler environment and Copy libiomp5md.dll to working directory
-      #   run: |
-      #     .github/scripts/activate_env.bat
+      - name: Activate compiler environment and Copy libiomp5md.dll to working directory
+        run: |
+          .github/scripts/activate_env.bat
 
-      # - name: Download Multiwfn and dislin source code 
-      #   run: |
-      #     # curl -L http://sobereva.com/multiwfn/misc/${{env.Multiwfn_version}}.zip -o Multiwfn_src.zip
-      #     # 7z x Multiwfn_src.zip
+      - name: Download Multiwfn and dislin source code 
+        run: |
+          # curl -L http://sobereva.com/multiwfn/misc/${{env.Multiwfn_version}}.zip -o Multiwfn_src.zip
+          # 7z x Multiwfn_src.zip
 
-      #     # download latest manual and examples to misc
-      #     curl -L http://sobereva.com/multiwfn/misc/Multiwfn_3.8_dev_bin_Win64.rar -o bin.rar
-      #     7z x bin.rar -omisc examples *.ini *.pdf *.txt -r -y
-      #     Move-Item -Path "misc/Multiwfn_3.8*/*" "misc/." -Force
-      #     Remove-Item -Path "misc/Multiwfn_3.8*" -Force
-      #     Remove-Item -Path "bin.rar" -Force
+          # download latest manual and examples to misc
+          curl -L http://sobereva.com/multiwfn/misc/Multiwfn_3.8_dev_bin_Win64.rar -o bin.rar
+          7z x bin.rar -omisc examples *.ini *.pdf *.txt -r -y
+          Move-Item -Path "misc/Multiwfn_3.8*/*" "misc/." -Force
+          Remove-Item -Path "misc/Multiwfn_3.8*" -Force
+          Remove-Item -Path "bin.rar" -Force
 
-      #     # dislin for windows ifort
-      #     curl -L https://www.dislin.de/downloads/win64/dl_11_ic.zip -o dislin.zip --insecure
-      #     unzip dislin.zip -d temp
-      #     copy-Item -Path "temp\disifl_d.lib"  -Destination  . -Force
-      #     dir
+          # dislin for windows ifort
+          curl -L https://www.dislin.de/downloads/win64/dl_11_ic.zip -o dislin.zip --insecure
+          unzip dislin.zip -d temp
+          copy-Item -Path "temp\disifl_d.lib"  -Destination  . -Force
+          dir
         
-      # - name: Configure build for amd64
-      #   uses: ilammy/msvc-dev-cmd@v1
-      #   with:
-      #     arch: amd64
-      #     toolset: 14.29
+      - name: Configure build for amd64
+        uses: ilammy/msvc-dev-cmd@v1
+        with:
+          arch: amd64
+          toolset: 14.29
 
-      # - name: Compile Multiwfn
-      #   shell: cmd
-      #   run: |
-      #     cd ${{env.Multiwfn_version}}
-      #     copy ..\CMakeLists.txt . /Y
-      #     copy ..\disifl_d.lib . /Y
-      #     md build && cd build
-      #     cmake .. -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DFLINT_INCLUDE=C:\vcpkg\packages\flint_x64-windows-static\include -DFLINT_LIB=C:\vcpkg\packages\flint_x64-windows-static\lib\flint.lib -A x64
-      #     cmake --build . --config ${{env.BUILD_TYPE}} --target install 
+      - name: Compile Multiwfn
+        shell: cmd
+        run: |
+          cd ${{env.Multiwfn_version}}
+          copy ..\CMakeLists.txt . /Y
+          copy ..\disifl_d.lib . /Y
+          md build && cd build
+          cmake .. -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DFLINT_INCLUDE=C:\vcpkg\packages\flint_x64-windows-static\include -DFLINT_LIB=C:\vcpkg\packages\flint_x64-windows-static\lib\flint.lib -A x64
+          cmake --build . --config ${{env.BUILD_TYPE}} --target install 
           
-      #     dir ${{env.BUILD_TYPE}}
+          dir ${{env.BUILD_TYPE}}
 
-      # - name: Copy Multiwfn and dll to working directory
-      #   shell: pwsh
-      #   run: |
-      #     md tempfiles
-      #     Copy-Item -Path "${{env.Multiwfn_version}}\build\${{env.BUILD_TYPE}}\Multiwfn.exe"  -Destination "tempfiles\" -Force
-      #     #Copy-Item -Path "C:\vcpkg\packages\arb_x64-windows-static\bin\*.dll"               -Destination "tempfiles\" -Force
-      #     dumpbin /dependents tempfiles\Multiwfn.exe
+      - name: Copy Multiwfn and dll to working directory
+        shell: pwsh
+        run: |
+          md tempfiles
+          Copy-Item -Path "${{env.Multiwfn_version}}\build\${{env.BUILD_TYPE}}\Multiwfn.exe"  -Destination "tempfiles\" -Force
+          #Copy-Item -Path "C:\vcpkg\packages\arb_x64-windows-static\bin\*.dll"               -Destination "tempfiles\" -Force
+          dumpbin /dependents tempfiles\Multiwfn.exe
           
-      #     # misc 
-      #     Copy-Item -Path "${{github.workspace}}\misc\*"  -Destination "tempfiles\" -Force -Recurse
-      #     # dll
-      #     Copy-Item -Path "*.dll"                         -Destination "tempfiles\" -Force
+          # misc 
+          Copy-Item -Path "${{github.workspace}}\misc\*"  -Destination "tempfiles\" -Force -Recurse
+          # dll
+          Copy-Item -Path "*.dll"                         -Destination "tempfiles\" -Force
 
       - name: Test Multiwfn on AMD EPC
         run: |
-          md tempfiles
           cd tempfiles
           echo q | .\Multiwfn.exe .\examples\phenanthrene.fch
           
