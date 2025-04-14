@@ -26,7 +26,7 @@ contains
         integer(WORD) :: currentX, currentY, delx, dely
         real*8 :: yvutemp
         integer(HANDLE) :: active_window
-        logical(BOOL) :: dummy1
+        integer(BOOL) :: dummy1
         integer(HANDLE) :: dummy2
         character tmpstr*20
         
@@ -35,7 +35,7 @@ contains
         dummy2 = SetCapture(active_window)
         
         do while (.true.)
-            if (PeekMessage(current_msg, active_window, 0, 0, PM_REMOVE)) then
+            if (PeekMessage(current_msg, active_window, 0, 0, PM_REMOVE) == TRUE) then
                 dummy1 = TranslateMessage(current_msg)
                 dummy2 = DispatchMessage(current_msg)
                 
@@ -73,7 +73,7 @@ contains
                     end if
                 
                 case (WM_LBUTTONUP)
-                    if (ReleaseCapture()) isDragging = .false.
+                    if (ReleaseCapture() == TRUE) isDragging = .false.
                     return
 
                 end select
