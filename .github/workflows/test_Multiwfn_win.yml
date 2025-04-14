@@ -21,9 +21,5 @@ jobs:
       - name: Run multiwfn
         run: |
           curl -L https://github.com/liuyujie714/Multiwfn_compile/releases/download/bleed/Multiwfn_3.8_dev_Win_x64_2025.04.14.tar.gz -o Program.tar.gz
-          7z x Program.tar.gz
-          ls 
-          cd Multiwfn_3.8*
-          ls
-
+          tar -xf Program.tar.gz
           echo q | .\Multiwfn.exe .\examples\phenanthrene.fch
