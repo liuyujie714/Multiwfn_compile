@@ -10,7 +10,7 @@ env:
   
 jobs:
   MacOS-Arm64:
-    runs-on: macos-13
+    runs-on: macos-14
     steps:
     - name: Checkout
       uses: actions/checkout@v3
@@ -26,10 +26,14 @@ jobs:
         # wget http://sobereva.com/multiwfn/misc/${{env.Multiwfn_version}}.zip
         # unzip ${{env.Multiwfn_version}}.zip
         # rm ${{env.Multiwfn_version}}.zip
-        wget http://sobereva.com/multiwfn/misc/Multiwfn_3.8_dev_bin_Linux_noGUI.zip
-        unzip -o -j Multiwfn_3.8_dev_bin_Linux_noGUI.zip Multiwfn_3.8_dev_bin_Linux_noGUI/{settings.ini,LICENSE.txt,examples/phenol.xyz}
-        rm Multiwfn_3.8_dev_bin_Linux_noGUI.zip 
-        ls
+
+        # download latest manual and examples to misc
+        curl -L http://sobereva.com/multiwfn/misc/Multiwfn_3.8_dev_bin_Linux_noGUI.zip -o bin.zip
+        7z x bin.zip -omisc examples *.ini *.pdf *.txt -r -y
+        cp -r misc/Multiwfn_3.8_dev_bin_Linux*/* misc/.
+        rm -rf misc/Multiwfn_3.8_dev_bin_Linux* bin.zip
+
+        ls misc/
         
     - name: Build static flint
       run: |
@@ -56,10 +60,10 @@ jobs:
 
     - name: Install libraries
       run: |
-        #wget https://www.dislin.de/downloads/macOS/dislin-11.5.macOS.arm.64.tar.gz
-        #tar -xf dislin-11.5.macOS.arm.64.tar.gz
-        wget https://www.dislin.de/downloads/macOS/dislin-11.5.macOS.intel.64.tar.gz
-        tar -xf dislin-11.5.macOS.intel.64.tar.gz
+        wget https://www.dislin.de/downloads/macOS/dislin-11.5.macOS.arm.64.tar.gz
+        tar -xf dislin-11.5.macOS.arm.64.tar.gz
+        #wget https://www.dislin.de/downloads/macOS/dislin-11.5.macOS.intel.64.tar.gz
+        #tar -xf dislin-11.5.macOS.intel.64.tar.gz
         export DISLIN=$PWD/dislin
         cd dislin-11.5
         ./INSTALL
