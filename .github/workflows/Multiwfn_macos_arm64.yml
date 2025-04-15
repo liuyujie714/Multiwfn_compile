@@ -95,7 +95,7 @@ jobs:
       run: |
         cp misc/settings.ini ${{env.Multiwfn_version}}/build
         cp dislin/libdislin_d.dylib ${{env.Multiwfn_version}}/build
-        ./${{env.Multiwfn_version}}/build/Multiwfn phenol.xyz <<< "q"      
+        ./${{env.Multiwfn_version}}/build/Multiwfn misc/examples/phenol.xyz <<< "q"      
 
     - name: Upload MacOS artifact
       uses: actions/upload-artifact@v4
