@@ -93,7 +93,7 @@ jobs:
 
     - name: Test Command
       run: |
-        cp settings.ini ${{env.Multiwfn_version}}/build
+        cp misc/settings.ini ${{env.Multiwfn_version}}/build
         cp dislin/libdislin_d.dylib ${{env.Multiwfn_version}}/build
         ./${{env.Multiwfn_version}}/build/Multiwfn phenol.xyz <<< "q"      
 
