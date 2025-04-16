@@ -46,14 +46,13 @@ jobs:
         ffmpeg -f avfoundation -framerate 30 -video_size 1920x1080 -i "0" -t 15 -c:v libx264 output.mp4 &
         sleep 2
         chmod a+x program_test
-        lldb -b -s ./test/lldb.txt ./program_test > backtrace.log 2>&1 
-        cat backtrace.log
+        lldb -b -s ./test/lldb.txt ./program_test &
         sleep 2
-        # for i in `seq 1200 10 1600`
-        # do 
-        #     cliclick c:$i,400
-        #     cliclick c:$i,450
-        # done
+        for i in `seq 1200 10 1600`
+        do 
+            cliclick c:$i,400
+            cliclick c:$i,450
+        done
         sleep 15
 
     - name: Upload recording
