@@ -1,7 +1,7 @@
 #Multiwfn_3.8_dev_src_Linux/
 Multiwfn_3.8_dev_src_Linux/build
 Multiwfn_3.8_dev_src_Linux/CMakeLists.txt
-test/
+#test/
 ifwin_Win_x64/
 test.ipynb
 misc

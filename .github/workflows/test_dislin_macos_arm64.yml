@@ -33,7 +33,7 @@ jobs:
       run: |
         export DISLIN=$PWD/dislin
         gfortran-14 -c ./test/dislin_d.f90 
-        gfortran-14 ./test/test_dislin_gui.f90 -L$DISLIN -ldislin_d -framework cocoa -o program_test
+        gfortran-14 -g -O0 ./test/test_dislin_gui.f90 -L$DISLIN -ldislin_d -framework cocoa -o program_test
         otool -L program_test
 
     - name: Test GUI
@@ -46,13 +46,13 @@ jobs:
         ffmpeg -f avfoundation -framerate 30 -video_size 1920x1080 -i "0" -t 15 -c:v libx264 output.mp4 &
         sleep 2
         chmod a+x program_test
-        ./program_test &
+        lldb -b -s lldb_script.txt ./program_test > backtrace.log 2>&1 
         sleep 2
-        for i in `seq 1200 10 1600`
-        do 
-            cliclick c:$i,400
-            cliclick c:$i,450
-        done
+        # for i in `seq 1200 10 1600`
+        # do 
+        #     cliclick c:$i,400
+        #     cliclick c:$i,450
+        # done
         sleep 15
 
     - name: Upload recording
