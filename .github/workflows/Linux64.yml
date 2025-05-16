@@ -30,6 +30,7 @@ jobs:
 
     - name: Download Multiwfn
       run: |
+        rm -rf ${{env.Multiwfn_version}}
         curl -L http://sobereva.com/multiwfn/misc/${{env.Multiwfn_version}}.zip -o Multiwfn_src.zip
         7z x Multiwfn_src.zip
 
