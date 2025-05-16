@@ -30,8 +30,9 @@ jobs:
     
     - name: Build static flint
       run: |
-        vcpkg install flint:x64-linux-release
+        vcpkg install flint:x64-linux-release arb:x64-linux-release
         ls /usr/local/share/vcpkg/packages/flint_x64-linux-release/lib
+        ls /usr/local/share/vcpkg/packages/arb_x64-linux-release
         
     - name: Install Intel oneAPI compiler
       run: |
@@ -58,7 +59,7 @@ jobs:
     - name: Compile Multiwfn
       run: |
         cd ${{env.Multiwfn_version}}
-        sed -i 's|INCLUDE = -I./ -I./ext|& -I /usr/local/share/vcpkg/packages/flint_x64-linux-release/include -I /usr/local/share/vcpkg/packages/mpfr_x64-linux-release/include -I /usr/local/share/vcpkg/packages/gmp_x64-linux-release/include|' Makefile 
+        sed -i 's|INCLUDE = -I./ -I./ext|& -I/usr/local/share/vcpkg/packages/flint_x64-linux-release/include -I/usr/local/share/vcpkg/packages/mpfr_x64-linux-release/include -I/usr/local/share/vcpkg/packages/gmp_x64-linux-release/include -I/usr/local/share/vcpkg/packages/arb_x64-linux-release/include|' Makefile 
         sed -i 's|^LIB_base =.*|&  /usr/local/share/vcpkg/packages/flint_x64-linux-release/lib/libflint.a|' Makefile
         cat Makefile
         make GUI WITH_FD=1 OS=Ubuntu -j4 
