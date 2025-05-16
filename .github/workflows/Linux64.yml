@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - master
+      
+env:
+  Multiwfn_version:  Multiwfn_3.8_dev_src_Linux
   
 jobs:
   Linux-64:
@@ -23,12 +26,22 @@ jobs:
         ls $DISLIN/                  
         echo "PATH=$PATH:$DISLIN/bin" >> $GITHUB_ENV
         echo "LD_LIBRARY_PATH=$DISLIN:$LD_LIBRARY_PATH" >> $GITHUB_ENV 
-        sudo apt update
-        sudo apt install libxm4 libmotif-dev libgl1-mesa-dev freeglut3-dev mesa-common-dev libglu1-mesa-dev
+        sudo apt install p7zip-full libxm4 libmotif-dev libgl1-mesa-dev 
 
-    - name: Build Test
+    - name: Download Multiwfn
       run: |
-        export DISLIN=$PWD/dislin
-        gfortran -c ./test/dislin_d.f90 
-        gfortran -O2 ./test/test_dislin_gui.f90 -L$DISLIN -L/usr/lib/x86_64-linux-gnu -ldislin_d -lXm -lX11 -lXt -lGL -o program_test
-        ldd program_test
+        curl -L http://sobereva.com/multiwfn/misc/${{env.Multiwfn_version}}.zip -o Multiwfn_src.zip
+        7z x Multiwfn_src.zip
+
+    - name: Build static flint
+      run: |
+        # compile from source code
+        curl -L https://github.com/flintlib/flint/releases/download/v3.2.1/flint-3.2.1.tar.gz -o flint.tar.gz
+        tar -xvf flint.tar.gz 
+        rm -rf flint.tar.gz
+        cd flint*
+        ./configure --enable-static --enable-avx2 --prefix="${{steps.msys2.outputs.msys2-location}}/ucrt64"
+        make -j4
+        make install
+
+        
