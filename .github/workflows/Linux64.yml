@@ -42,6 +42,7 @@ jobs:
         echo ${{ steps.setup-fortran.outputs.fc }} 
         echo ${{ env.MKLLIB }}
         ifort --version
+        ls -al /opt/intel/oneapi/mkl/latest/lib/intel64
 
     - name: Download Multiwfn
       run: |
