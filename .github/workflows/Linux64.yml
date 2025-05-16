@@ -23,7 +23,7 @@ jobs:
         ls $DISLIN/                  
         echo "PATH=$PATH:$DISLIN/bin" >> $GITHUB_ENV
         echo "LD_LIBRARY_PATH=$DISLIN:$LD_LIBRARY_PATH" >> $GITHUB_ENV 
-        sudo apt install libxm4 libmotif-dev libgl1-mesa-dev
+        sudo apt install libxm4 libmotif-dev libgl1-mesa-dev freeglut3-dev mesa-common-dev
 
     - name: Build Test
       run: |
