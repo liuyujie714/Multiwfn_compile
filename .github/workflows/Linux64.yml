@@ -61,7 +61,7 @@ jobs:
 
     - name: Check dependents
       run: |
-        ldd Multiwfn
+        ldd ./${{env.Multiwfn_version}}/Multiwfn
 
     - name: Upload Multiwfn
       uses: actions/upload-artifact@v4
