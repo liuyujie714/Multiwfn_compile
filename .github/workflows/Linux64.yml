@@ -23,11 +23,11 @@ jobs:
         ls $DISLIN/                  
         echo "PATH=$PATH:$DISLIN/bin" >> $GITHUB_ENV
         echo "LD_LIBRARY_PATH=$DISLIN:$LD_LIBRARY_PATH" >> $GITHUB_ENV 
-        sudo apt install libxm4 libmotif-dev
+        sudo apt install libxm4 libmotif-dev libgl1-mesa-dev
 
     - name: Build Test
       run: |
         export DISLIN=$PWD/dislin
         gfortran -c ./test/dislin_d.f90 
-        gfortran -static -O2 ./test/test_dislin_gui.f90 -L$DISLIN -ldislin_d -lXm -lX11 -lXt -o program_test
+        gfortran -static -O2 ./test/test_dislin_gui.f90 -L$DISLIN -ldislin_d -lXm -lX11 -lXt -lGL -o program_test
         ldd program_test
