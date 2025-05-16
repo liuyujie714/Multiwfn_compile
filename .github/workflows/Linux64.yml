@@ -23,7 +23,7 @@ jobs:
         ls $DISLIN/                  
         echo "PATH=$PATH:$DISLIN/bin" >> $GITHUB_ENV
         echo "LD_LIBRARY_PATH=$DISLIN:$LD_LIBRARY_PATH" >> $GITHUB_ENV 
-        sudo apt install libxm4
+        sudo apt install libxm4 libmotif-dev
 
     - name: Build Test
       run: |
