@@ -52,4 +52,10 @@ jobs:
         vcpkg install flint:x64-linux-release
         ls /usr/local/share/vcpkg/packages/flint_x64-linux-release/lib
 
-        
+    - name: Compile Multiwfn
+      run: |
+        cd ${{env.Multiwfn_version}}
+        sed -i 's|INCLUDE = -I./ -I./ext|& /usr/local/share/vcpkg/packages/flint_x64-linux-release/include|' Makefile 
+        sed -i 's|^LIB_base =.*|&  /usr/local/share/vcpkg/packages/flint_x64-linux-release/lib/libflint.a|' Makefile
+        cat Makefile
+        make WITH_FD=1 OS=Ubuntu -j4 
