@@ -8,6 +8,12 @@
 !   call swgcbk(idisgraph, mouse_rotate)    ! register mouse callback when click draw region
 
 
+! Update: 2025.05.17 
+!   Try support Linux x64 system use X11 & fortran-xlib (https://github.com/interkosmos/fortran-xlib)
+!   Note: Must double click left button to activate rotate operator
+!   TODO: fix above bug
+
+
 #ifdef _WIN32
 ! use intel fortran ifwin
 #ifdef __INTEL_COMPILER
@@ -226,4 +232,217 @@ contains
     end subroutine mouse_rotate
 end module mouse_rotate_mod
 #endif
+
+#else
+! use X11 & fortran-xlib
+module mouse_rotate_mod
+    use, intrinsic :: iso_c_binding
+    use xlib
+    implicit none
+
+    ! key code
+    integer(c_long), parameter :: XK_Control_L  = 65507     !0xffe3
+    integer(c_long), parameter :: XK_Control_R  = 65508     !0xffe4
+    integer(c_long), parameter :: XK_Shift_L    = 65505     !0xffe1
+    integer(c_long), parameter :: XK_Shift_R    = 65506     !0xffe2
+    integer(c_long), parameter :: None          = 0     
+    integer(c_int), parameter :: GrabModeSync   = 0
+    integer(c_int), parameter :: GrabModeAsync  = 1
+    integer(c_int), parameter :: AnyModifier    = ishft(1, 15)
+    integer(c_int), parameter :: AnyButton      = 0
+    integer(c_int), parameter :: AnyKey         = 0
+
+    interface
+        function XLookupKeysym(xkey_event, index) bind(C, name="XLookupKeysym")
+            import c_int, c_long, x_key_event
+            type(x_key_event), intent(in) :: xkey_event  
+            integer(c_int), value :: index               
+            integer(c_long) :: XLookupKeysym             
+        end function
+
+        function XGrabButton(display, button, modifiers, grab_window, owner_events, &
+            event_mask, pointer_mode, keyboard_mode, confine_to, cursor) &
+            bind(c, name="XGrabButton")
+            import :: c_ptr, c_int, c_long, c_bool
+            type(c_ptr), value :: display
+            integer(c_int), value :: button
+            integer(c_int), value :: modifiers
+            integer(c_long), value :: grab_window
+            logical(c_bool), value :: owner_events
+            integer(c_int), value :: event_mask
+            integer(c_int), value :: pointer_mode
+            integer(c_int), value :: keyboard_mode
+            integer(c_long), value :: confine_to
+            integer(c_long), value :: cursor
+            integer(c_int) :: XGrabButton
+        end function XGrabButton
+
+        function XAllowEvents(display, event_mode, time) bind(c, name="XAllowEvents")
+            import :: c_ptr, c_int, c_long
+            type(c_ptr), value :: display       
+            integer(c_int), value :: event_mode 
+            integer(c_long), value :: time      
+            integer(c_int) :: XAllowEvents     
+          end function XAllowEvents
+
+        function XSendEvent(display, w, propagate, event_mask, event) bind(C, name="XSendEvent")
+            import :: c_ptr, c_long, c_int, c_bool, x_event
+            type(c_ptr), value :: display
+            integer(c_long), value :: w
+            logical(c_bool), value :: propagate
+            integer(c_long), value :: event_mask
+            type(x_event), value :: event
+            integer(c_int) :: XSendEvent
+        end function
+
+        function XGrabKey(display, keycode, modifiers, grab_window, owner_events, &
+            pointer_mode, keyboard_mode) bind(C, name='XGrabKey')
+            import :: c_int, c_ptr, c_long, c_bool
+            type(c_ptr), value :: display
+            integer(c_int), value :: keycode, modifiers
+            integer(c_long), value :: grab_window
+            logical(c_bool), value :: owner_events
+            integer(c_int), value :: pointer_mode, keyboard_mode
+            integer(c_int) :: XGrabKey
+        end function
+    end interface
+
+contains
+    subroutine mypot()
+        use plot
+        character tmpstr*20
+
+        if (GUI_mode/=2) then
+            call drawmol
+        else if (GUI_mode==2) then
+            call drawplane(dp_init1,dp_end1,dp_init2,dp_end2,dp_init3,dp_end3,idrawtype)
+            write(tmpstr,"(f8.2)") XVU
+            call SWGTXT(idissetplaneXVU,tmpstr)
+            write(tmpstr,"(f8.2)") YVU
+            call SWGTXT(idissetplaneYVU,tmpstr)
+        end if
+    end subroutine mypot
+    
+    subroutine mouse_rotate(id)
+        use defvar
+        integer, intent(in) :: id
+        type(c_ptr) :: display
+        integer(c_long) :: handle
+        integer(c_long)  :: mask = 0
+        type(x_event) :: event
+        integer :: ival
+        integer(c_int) :: currx, curry, delx, dely, startx, starty
+        logical :: isDragging = .false.
+        logical :: isCtrlPressed = .false.
+        logical :: isShiftPressed = .false.
+        real*8 :: yvutemp, ZVUtmp
+        integer(c_long) :: keycode = 0
+        integer(c_int) :: status
+        logical(c_bool) :: owner_events = .false.
+
+        ! connect X server
+        display = x_open_display(c_null_char)
+        if (.not. c_associated(display)) return
+        ! get window id (X11) for widget idisgraph
+        call gwgxid(idisgraph, ival)
+        handle = ival
+
+        ! 设置事件监听 
+        !mask = ior(KEY_PRESS_MASK, KEY_RELEASE_MASK)
+        mask = ior(mask, BUTTON_PRESS_MASK)
+        mask = ior(mask, BUTTON_RELEASE_MASK)
+        mask = ior(mask, BUTTON1_MOTION_MASK)
+
+        status = XGrabButton(display, AnyButton, AnyModifier, handle, owner_events, &
+                            int(mask, 4), GrabModeAsync, GrabModeAsync, None, None)
+        !print *, 'GrabButton status: ', status
+
+        status = XGrabKey(display, AnyKey, AnyModifier, handle, owner_events, &
+                        GrabModeAsync, GrabModeAsync)
+        !print *, 'XGrabKey status: ', status
+
+        ! 事件循环
+        do while (.true.)
+            !print *, 'waiting for event...'
+            call x_next_event(display, event)
+            !print *, 'event type= ', event%type
+            select case (event%type)
+                case (BUTTON_PRESS)
+                    !print *, 'button press'
+                    isDragging = .true.
+                    startx = event%x_button%x
+                    starty = event%x_button%y
+                    !print *, 'startx=', startx, 'starty=', starty
+
+                case (KEY_PRESS)
+                    keycode = XLookupKeysym(event%x_key, 0)
+                    !print  *, "keycode= ", keycode
+
+                    ! ! Q exit
+                    ! if (keycode==113) then
+                    !   call x_close_display(display)
+                    !   return
+                    ! end if
+                    
+                    ! if (keycode==119) then  ! W
+                    !   yvutemp = YVU - 3D0
+                    ! elseif (keycode==115) then ! S
+                    !   yvutemp = YVU + 3D0
+                    ! elseif (keycode==97) then ! A
+                    !   XVU = XVU - 3D0
+                    ! elseif (keycode==100) then ! D
+                    !   XVU = XVU + 3D0
+                    ! end if
+                    ! if (yvutemp >= -90D0 .and. yvutemp < 90D0) YVU = yvutemp
+                    ! call mypot()
+
+                    ! ctrl key
+                    if (keycode ==  XK_Shift_L .or. keycode == XK_Shift_R) isShiftPressed = .true.
+                    if (keycode ==  XK_Control_L .or. keycode == XK_Control_R) isCtrlPressed = .true.
+
+                case (KEY_RELEASE, BUTTON_RELEASE)
+                    !print *, 'key/button release'
+                    isDragging = .false.
+                    isShiftPressed = .false.
+                    isCtrlPressed = .false.
+                    call x_close_display(display) ! close display
+                    return
+
+                case (MOTION_NOTIFY)
+                    if (isDragging .eqv. .false.) cycle
+                    currx = event%x_motion%x
+                    curry = event%x_motion%y
+                    delx = currx - startx
+                    dely = curry - starty
+                    if (abs(delx) > 5 .or. abs(dely) > 5) then
+                        startX = currx
+                        startY = curry
+                        
+                        if (isCtrlPressed) then
+                            !Zoom in/out
+                            if (iorthoview==0) then
+                                ZVUtmp = ZVU + dely * 0.01D0
+                                if (ZVUtmp>2) ZVU=ZVUtmp
+                            else
+                                XFAC = XFAC - dely * 0.002D0
+                            end if
+                            !Rotate along screen
+                            camrotang = camrotang + delx * 0.2D0
+                        else if (isShiftPressed) then
+                            ORIGIN_3D_X= ORIGIN_3D_X + delx * 2
+                            ORIGIN_3D_Y= ORIGIN_3D_Y + dely * 2
+                        else !Rotate
+                            XVU = XVU + delx * 0.3
+                            yvutemp = YVU + dely * 0.3
+                            if (yvutemp >= -90D0 .and. yvutemp < 90D0) YVU = yvutemp
+                        end if
+
+                        ! plot 
+                        call mypot()
+                    endif
+            end select
+        end do
+    end subroutine mouse_rotate
+end module mouse_rotate_mod
+
 #endif
