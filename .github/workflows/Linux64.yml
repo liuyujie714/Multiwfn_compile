@@ -29,5 +29,5 @@ jobs:
       run: |
         export DISLIN=$PWD/dislin
         gfortran -c ./test/dislin_d.f90 
-        gfortran -O2 ./test/test_dislin_gui.f90 -L$DISLIN -ldislin_d -lXm -lX11 -lXt -o program_test
-        
+        gfortran -static -O2 ./test/test_dislin_gui.f90 -L$DISLIN -ldislin_d -lXm -lX11 -lXt -o program_test
+        ldd program_test
