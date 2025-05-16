@@ -29,11 +29,12 @@ jobs:
         sudo apt install libflint-arb-dev p7zip-full libxm4 libmotif-dev libgl1-mesa-dev libflint-dev
         
     - name: Install fortran
-      uses: fortran-lang/setup-fortran@v1
+      uses: ssciwr/setup-fortran@v0.1
       id: setup-fortran
       with:
         compiler: intel-classic
         version: 2021.10
+        install_mkl: true
 
     - name: Test ifort
       run: |
