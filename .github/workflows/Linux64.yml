@@ -37,5 +37,6 @@ jobs:
     - name: Build static flint
       run: |
         vcpkg install flint:x64-linux-release
+        ls /usr/local/share/vcpkg/packages/flint_x64-linux-release/lib
 
         
