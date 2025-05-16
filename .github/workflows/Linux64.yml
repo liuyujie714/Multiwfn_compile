@@ -21,9 +21,8 @@ jobs:
         ./INSTALL
         cd ..
         ls $DISLIN/                  
-        echo "PATH=${PATH}:${DISLIN}/bin" >> ～/.bashrc
-        echo "LD_LIBRARY_PATH=$DISLIN:$LD_LIBRARY_PATH" >> ～/.bashrc
-        source ～/.bashrc
+        echo "PATH=$PATH:$DISLIN/bin" >> $GITHUB_ENV
+        echo "LD_LIBRARY_PATH=$DISLIN:$LD_LIBRARY_PATH" >> $GITHUB_ENV 
 
     - name: Build Test
       run: |
