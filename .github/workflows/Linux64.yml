@@ -58,3 +58,15 @@ jobs:
         #sed -i "s|^LIB_base =.*|& -L${{ env.MKLLIB }}|" Makefile
         #cat Makefile
         make GUI WITH_FD=1 OS=Ubuntu -j4 
+
+    - name: Check dependents
+      run: |
+        ldd Multiwfn
+
+    - name: Upload Multiwfn
+      uses: actions/upload-artifact@v4
+      if: ${{ success() }}
+      with:
+        name: Multiwfn_Linux64
+        path: |
+          ./${{env.Multiwfn_version}}/Multiwfn
