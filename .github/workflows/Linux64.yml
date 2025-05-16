@@ -54,6 +54,6 @@ jobs:
         cd ${{env.Multiwfn_version}}
         #sed -i 's|INCLUDE = -I./ -I./ext|& -I /usr/local/share/vcpkg/packages/flint_x64-linux-release/include -I /usr/local/share/vcpkg/packages/mpfr_x64-linux-release/include -I /usr/local/share/vcpkg/packages/gmp_x64-linux-release/include|' Makefile 
         #sed -i 's|^LIB_base =.*|&  /usr/local/share/vcpkg/packages/flint_x64-linux-release/lib/libflint.a|' Makefile
-        sed -i 's/^LIB_base =.*/& -L${{ env.MKLLIB }}/' Makefile
+        sed -i "s/^LIB_base =.*/& -L${{ env.MKLLIB }}/" Makefile
         cat Makefile
         make GUI WITH_FD=1 OS=Ubuntu -j4 
