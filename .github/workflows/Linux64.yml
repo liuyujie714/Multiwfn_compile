@@ -28,6 +28,11 @@ jobs:
         echo "LD_LIBRARY_PATH=$DISLIN:$LD_LIBRARY_PATH" >> $GITHUB_ENV 
         sudo apt install p7zip-full libxm4 libmotif-dev libgl1-mesa-dev 
 
+    - name: Build static flint
+      run: |
+        vcpkg install flint:x64-linux-release
+        ls /usr/local/share/vcpkg/packages/flint_x64-linux-release/lib
+        
     - name: Install fortran
       uses: fortran-lang/setup-fortran@v1
       id: setup-fortran
@@ -46,11 +51,6 @@ jobs:
         rm -rf ${{env.Multiwfn_version}}
         curl -L http://sobereva.com/multiwfn/misc/${{env.Multiwfn_version}}.zip -o Multiwfn_src.zip
         7z x Multiwfn_src.zip
-
-    - name: Build static flint
-      run: |
-        vcpkg install flint:x64-linux-release
-        ls /usr/local/share/vcpkg/packages/flint_x64-linux-release/lib
 
     - name: Compile Multiwfn
       run: |
