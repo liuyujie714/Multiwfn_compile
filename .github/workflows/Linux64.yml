@@ -28,6 +28,19 @@ jobs:
         echo "LD_LIBRARY_PATH=$DISLIN:$LD_LIBRARY_PATH" >> $GITHUB_ENV 
         sudo apt install p7zip-full libxm4 libmotif-dev libgl1-mesa-dev 
 
+    - name: Install fortran
+      uses: fortran-lang/setup-fortran@v1
+      id: setup-fortran
+      with:
+        compiler: intel-classic
+        version: 2021.10
+
+    - name: Test ifort
+      run: |
+        echo ${{ env.FC }} 
+        echo ${{ steps.setup-fortran.outputs.fc }} 
+        ifort --version
+
     - name: Download Multiwfn
       run: |
         rm -rf ${{env.Multiwfn_version}}
