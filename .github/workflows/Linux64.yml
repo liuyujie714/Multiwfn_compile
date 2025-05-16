@@ -1,0 +1,33 @@
+name: Build Multiwfn Linux64
+
+on:
+  push:
+    branches:
+      - master
+  
+jobs:
+  MacOS-Arm64:
+    runs-on: ubuntu-22.04
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+      
+    - name: Install Dislin libraries
+      run: |
+        wget https://www.dislin.de/downloads/linux/i586_64/dislin-11.5.linux.i586_64.tar.gz
+        tar -xf dislin-11.5.linux.i586_64.tar.gz
+        export DISLIN=$PWD/dislin
+        cd dislin-11.5
+        ./INSTALL
+        cd ..
+        ls $DISLIN/                  
+        echo "PATH=${PATH}:${DISLIN}/bin" >> ～/.bashrc
+        echo "LD_LIBRARY_PATH=$DISLIN:$LD_LIBRARY_PATH" >> ～/.bashrc
+        source ～/.bashrc
+
+    - name: Build Test
+      run: |
+        export DISLIN=$PWD/dislin
+        gfortran -c ./test/dislin_d.f90 
+        gfortran -O2 ./test/test_dislin_gui.f90 -L$DISLIN -ldislin_d -o program_test
+        
