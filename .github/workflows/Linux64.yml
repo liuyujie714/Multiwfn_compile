@@ -43,7 +43,7 @@ jobs:
         rm GPG-PUB-KEY-INTEL-SW-PRODUCTS-2023.PUB
         echo "deb https://apt.repos.intel.com/oneapi all main" | sudo tee /etc/apt/sources.list.d/oneAPI.list
         sudo apt-get update
-        sudo apt-get install intel-oneapi-compiler-fortran-2024.2.1 intel-oneapi-compiler-dpcpp-cpp-and-cpp-classic-2024.2.1 intel-oneapi-mkl-2024.2.1 intel-oneapi-mkl-devel-2024.2.1
+        sudo apt-get install intel-oneapi-compiler-fortran-2021.4.0 intel-oneapi-compiler-dpcpp-cpp-and-cpp-classic-2021.4.0 intel-oneapi-mkl-2021.4.0 intel-oneapi-mkl-devel-2021.4.0
         source /opt/intel/oneapi/setvars.sh
         printenv >> $GITHUB_ENV
 
@@ -65,7 +65,7 @@ jobs:
         sed -i 's|^LIB_base =.*|&  /usr/local/share/vcpkg/packages/gmp_x64-linux-release/lib/libgmp.a  /usr/local/share/vcpkg/packages/mpfr_x64-linux-release/lib/libmpfr.a /usr/local/share/vcpkg/packages/arb_x64-linux-release/lib/libarb.a /usr/local/share/vcpkg/packages/flint_x64-linux-release/lib/libflint.a|' Makefile
         #sed -i 's/-lflint -lflint-arb/-lgmp -lmpfr -larb -lflint/g' Makefile
         sed -i 's/-mkl/-qmkl/g' Makefile
-        sed -i 's/\$(FC) \$(OPT) \$(objects)/ifort -qopenmp-link=static -qmkl -static-intel $(objects)/g' Makefile
+        sed -i 's/\$(FC) \$(OPT) \$(objects)/ifort $(objects)/g' Makefile
         cat Makefile
         make GUI WITH_FD=1 -j4 
 
