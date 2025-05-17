@@ -81,7 +81,7 @@ jobs:
         # use staitc flint 
         sed -i "s|INCLUDE = -I./ -I./ext|& -I${{github.workspace}}/flint/include|" Makefile 
         sed -i "s|^LIB_base =.*|& ${{github.workspace}}/flint/lib/libflint.a|" Makefile
-        sed -i 's/-lflint -lflint-arb/-Wl,-Bstatic -lflint -Wl,-Bdynamic/g' Makefile
+        sed -i 's/-lflint -lflint-arb//g'  Makefile
         sed -i 's/-mkl/-qmkl/g' Makefile
         cat Makefile
         make GUI WITH_FD=1 OS=Ubuntu -j4 
