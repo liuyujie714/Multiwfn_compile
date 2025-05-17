@@ -65,6 +65,7 @@ jobs:
         sed -i 's|^LIB_base =.*|&  /usr/local/share/vcpkg/packages/gmp_x64-linux-release/lib/libgmp.a  /usr/local/share/vcpkg/packages/mpfr_x64-linux-release/lib/libmpfr.a /usr/local/share/vcpkg/packages/arb_x64-linux-release/lib/libarb.a /usr/local/share/vcpkg/packages/flint_x64-linux-release/lib/libflint.a|' Makefile
         #sed -i 's/-lflint -lflint-arb/-lgmp -lmpfr -larb -lflint/g' Makefile
         sed -i 's/-mkl/-qmkl/g' Makefile
+        sed -i 's/\$(FC) \$(OPT) \$(objects)/ifort -qopenmp -qopenmp-link=static -threads -qopt-matmul $(SIMD) $(DISDIAG) -fpp -mkl -static-intel -DINTEL_MKL -stand f08 $(objects)/g' Makefile
         cat Makefile
         make GUI WITH_FD=1 -j4 
 
