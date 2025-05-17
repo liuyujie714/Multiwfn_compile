@@ -26,15 +26,15 @@ jobs:
         ls $DISLIN/                  
         echo "PATH=$PATH:$DISLIN/bin" >> $GITHUB_ENV
         echo "LD_LIBRARY_PATH=$DISLIN:$LD_LIBRARY_PATH" >> $GITHUB_ENV 
-        sudo apt install p7zip-full libxm4 libmotif-dev libgl1-mesa-dev 
+        sudo apt install p7zip-full libxm4 libmotif-dev libgl1-mesa-dev libflint-dev libflint-arb-dev
     
-    - name: Build static flint
-      run: |
-        vcpkg install flint:x64-linux-release arb:x64-linux-release
-        ls /usr/local/share/vcpkg/packages/flint_x64-linux-release/lib
-        ls /usr/local/share/vcpkg/packages/gmp_x64-linux-release/lib
-        ls /usr/local/share/vcpkg/packages/mpfr_x64-linux-release/lib
-        ls /usr/local/share/vcpkg/packages/arb_x64-linux-release/lib
+    # - name: Build static flint
+    #   run: |
+    #     vcpkg install flint:x64-linux-release arb:x64-linux-release
+    #     ls /usr/local/share/vcpkg/packages/flint_x64-linux-release/lib
+    #     ls /usr/local/share/vcpkg/packages/gmp_x64-linux-release/lib
+    #     ls /usr/local/share/vcpkg/packages/mpfr_x64-linux-release/lib
+    #     ls /usr/local/share/vcpkg/packages/arb_x64-linux-release/lib
         
     - name: Install Intel oneAPI compiler
       run: |
@@ -61,13 +61,13 @@ jobs:
     - name: Compile Multiwfn
       run: |
         cd ${{env.Multiwfn_version}}
-        sed -i 's|INCLUDE = -I./ -I./ext|& -I/usr/local/share/vcpkg/packages/flint_x64-linux-release/include -I/usr/local/share/vcpkg/packages/mpfr_x64-linux-release/include -I/usr/local/share/vcpkg/packages/gmp_x64-linux-release/include -I/usr/local/share/vcpkg/packages/arb_x64-linux-release/include|' Makefile 
-        sed -i 's|^LIB_base =.*|&  /usr/local/share/vcpkg/packages/gmp_x64-linux-release/lib/libgmp.a  /usr/local/share/vcpkg/packages/mpfr_x64-linux-release/lib/libmpfr.a /usr/local/share/vcpkg/packages/arb_x64-linux-release/lib/libarb.a /usr/local/share/vcpkg/packages/flint_x64-linux-release/lib/libflint.a|' Makefile
-        #sed -i 's/-lflint -lflint-arb/-lgmp -lmpfr -larb -lflint/g' Makefile
+        # sed -i 's|INCLUDE = -I./ -I./ext|& -I/usr/local/share/vcpkg/packages/flint_x64-linux-release/include -I/usr/local/share/vcpkg/packages/mpfr_x64-linux-release/include -I/usr/local/share/vcpkg/packages/gmp_x64-linux-release/include -I/usr/local/share/vcpkg/packages/arb_x64-linux-release/include|' Makefile 
+        # sed -i 's|^LIB_base =.*|&  /usr/local/share/vcpkg/packages/gmp_x64-linux-release/lib/libgmp.a  /usr/local/share/vcpkg/packages/mpfr_x64-linux-release/lib/libmpfr.a /usr/local/share/vcpkg/packages/arb_x64-linux-release/lib/libarb.a /usr/local/share/vcpkg/packages/flint_x64-linux-release/lib/libflint.a|' Makefile
+        # #sed -i 's/-lflint -lflint-arb/-lgmp -lmpfr -larb -lflint/g' Makefile
         sed -i 's/-mkl/-qmkl/g' Makefile
-        sed -i 's/\$(FC) \$(OPT) \$(objects)/ifort $(objects)/g' Makefile
+        # sed -i 's/\$(FC) \$(OPT) \$(objects)/ifort -qopenmp -qopenmp-link=static -threads -fpp -qmkl -static-intel -DINTEL_MKL -stand f08 $(objects)/g' Makefile
         cat Makefile
-        make GUI WITH_FD=1 -j4 
+        make GUI WITH_FD=1 OS=Ubuntu -j4 
 
     - name: Check dependents
       run: |
