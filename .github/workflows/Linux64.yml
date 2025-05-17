@@ -26,7 +26,7 @@ jobs:
         ls $DISLIN/                  
         echo "PATH=$PATH:$DISLIN/bin" >> $GITHUB_ENV
         echo "LD_LIBRARY_PATH=$DISLIN:$LD_LIBRARY_PATH" >> $GITHUB_ENV 
-        sudo apt install p7zip-full libxm4 libmotif-dev libgl1-mesa-dev libflint-dev libflint-arb-dev
+        sudo apt install p7zip-full libxm4 libmotif-dev libgl1-mesa-dev libgmp-dev libmpfr-dev
     
     # - name: Build static flint
     #   run: |
@@ -35,7 +35,19 @@ jobs:
     #     ls /usr/local/share/vcpkg/packages/gmp_x64-linux-release/lib
     #     ls /usr/local/share/vcpkg/packages/mpfr_x64-linux-release/lib
     #     ls /usr/local/share/vcpkg/packages/arb_x64-linux-release/lib
-        
+
+    - name: Build static flint
+      run: |
+        curl -L https://github.com/flintlib/flint/releases/download/v3.2.1/flint-3.2.1.tar.gz -o flint.tar.gz
+        tar -xvf flint.tar.gz 
+        rm -rf flint.tar.gz
+        cd flint*
+        ./configure --enable-static --enable-avx2 --prefix=${{github.workspace}}/flint
+        make -j4
+        make install
+        ls ${{github.workspace}}/flint
+
+
     - name: Install Intel oneAPI compiler
       run: |
         wget https://apt.repos.intel.com/intel-gpg-keys/GPG-PUB-KEY-INTEL-SW-PRODUCTS-2023.PUB
@@ -66,8 +78,10 @@ jobs:
         # sed -i 's/-lflint -lflint-arb/-lgmp -lmpfr -larb -lflint/g' Makefile
         # sed -i 's/\$(FC) \$(OPT) \$(objects)/ifort -qopenmp -qopenmp-link=static -threads -fpp -qmkl -static-intel -DINTEL_MKL -stand f08 $(objects)/g' Makefile
 
-        # use staitc flint  -static-libgcc
-        sed -i 's/-lflint -lflint-arb/-Wl,-Bstatic -lflint -Wl,-Bdynamic -lflint-arb/g' Makefile
+        # use staitc flint 
+        sed -i "s|INCLUDE = -I./ -I./ext|& -I${{github.workspace}}/flint/include|" Makefile 
+        sed -i "s|^LIB_base =.*|& ${{github.workspace}}/flint/lib/libflint.a|' Makefile
+        sed -i 's/-lflint -lflint-arb/-Wl,-Bstatic -lflint -Wl,-Bdynamic/g' Makefile
         sed -i 's/-mkl/-qmkl/g' Makefile
         cat Makefile
         make GUI WITH_FD=1 OS=Ubuntu -j4 
