@@ -39,7 +39,7 @@ jobs:
       run: |
         git clone https://github.com/interkosmos/fortran-xlib.git
         cd fortran-xlib && make
-        cp libfortran-xlib.a xlib.mod ${{env.Multiwfn_version}}
+        cp libfortran-xlib.a xlib.mod ./${{env.Multiwfn_version}}
         
     
     # - name: Build static flint
