@@ -10,7 +10,7 @@
 
 ! Update: 2025.05.17 
 !   Try support Linux x64 system use X11 & fortran-xlib (https://github.com/interkosmos/fortran-xlib)
-!   Note: Must double click left button to activate rotate operator
+!   Note: Must click left button once, than press left button and drag molecule
 !   TODO: fix above bug
 
 
@@ -254,7 +254,7 @@ module mouse_rotate_mod
 
     interface
         function XLookupKeysym(xkey_event, index) bind(C, name="XLookupKeysym")
-            import c_int, c_long, x_key_event
+            import :: c_int, c_long, x_key_event
             type(x_key_event), intent(in) :: xkey_event  
             integer(c_int), value :: index               
             integer(c_long) :: XLookupKeysym             
@@ -285,16 +285,6 @@ module mouse_rotate_mod
             integer(c_int) :: XAllowEvents     
           end function XAllowEvents
 
-        function XSendEvent(display, w, propagate, event_mask, event) bind(C, name="XSendEvent")
-            import :: c_ptr, c_long, c_int, c_bool, x_event
-            type(c_ptr), value :: display
-            integer(c_long), value :: w
-            logical(c_bool), value :: propagate
-            integer(c_long), value :: event_mask
-            type(x_event), value :: event
-            integer(c_int) :: XSendEvent
-        end function
-
         function XGrabKey(display, keycode, modifiers, grab_window, owner_events, &
             pointer_mode, keyboard_mode) bind(C, name='XGrabKey')
             import :: c_int, c_ptr, c_long, c_bool
@@ -305,6 +295,13 @@ module mouse_rotate_mod
             integer(c_int), value :: pointer_mode, keyboard_mode
             integer(c_int) :: XGrabKey
         end function
+
+        ! internal subroutine, do not call it
+        subroutine XPutBackEvent__(display, event_return) bind(c, name="XPutBackEvent")
+            import :: c_int, c_ptr, x_event
+            type(c_ptr), intent(in), value  :: display 
+            type(x_event), intent(inout)    :: event_return 
+        end subroutine XPutBackEvent__
     end interface
 
 contains
@@ -322,6 +319,32 @@ contains
             call SWGTXT(idissetplaneYVU,tmpstr)
         end if
     end subroutine mypot
+
+    subroutine XPutBackEvent(display, event_return)
+        type(c_ptr),   intent(in)    :: display
+        type(x_event), intent(inout) :: event_return
+
+        call XPutBackEvent__(display, event_return)
+        ! process union 
+        select case (event_return%type)
+            case (button_press)     ! XButtonEvent
+                event_return%x_button = transfer(event_return, event_return%x_button)
+            case (button_release)   ! XButtonEvent
+                event_return%x_button = transfer(event_return, event_return%x_button)
+            case (client_message)   ! XClientMessageEvent
+                event_return%x_client_message = transfer(event_return, event_return%x_client_message)
+            case (configure_notify) ! XConfigureNotifyEvent
+                event_return%x_configure = transfer(event_return, event_return%x_configure)
+            case (expose)           ! XExposeEvent
+                event_return%x_expose = transfer(event_return, event_return%x_expose)
+            case (key_press)        ! XKeyEvent
+                event_return%x_key = transfer(event_return, event_return%x_key)
+            case (key_release)      ! XKeyEvent
+                event_return%x_key = transfer(event_return, event_return%x_key)
+            case (motion_notify)    ! XMotionEvent
+                event_return%x_motion= transfer(event_return, event_return%x_motion)
+        end select
+    end subroutine XPutBackEvent
     
     subroutine mouse_rotate(id)
         use defvar
@@ -338,20 +361,18 @@ contains
         real*8 :: yvutemp, ZVUtmp
         integer(c_long) :: keycode = 0
         integer(c_int) :: status
-        logical(c_bool) :: owner_events = .false.
-
+        logical(c_bool) :: owner_events = .true.
+        
         ! connect X server
         display = x_open_display(c_null_char)
         if (.not. c_associated(display)) return
         ! get window id (X11) for widget idisgraph
-        call gwgxid(idisgraph, ival)
+        call gwgxid(id, ival)
         handle = ival
 
-        ! 设置事件监听 
-        !mask = ior(KEY_PRESS_MASK, KEY_RELEASE_MASK)
-        mask = ior(mask, BUTTON_PRESS_MASK)
-        mask = ior(mask, BUTTON_RELEASE_MASK)
-        mask = ior(mask, BUTTON1_MOTION_MASK)
+        ! 设置鼠标事件监听 
+        mask = ior(BUTTON_PRESS_MASK, BUTTON_RELEASE_MASK)
+        mask = ior(mask, BUTTON1_MOTION_MASK) ! left button
 
         status = XGrabButton(display, AnyButton, AnyModifier, handle, owner_events, &
                             int(mask, 4), GrabModeAsync, GrabModeAsync, None, None)
@@ -361,6 +382,11 @@ contains
                         GrabModeAsync, GrabModeAsync)
         !print *, 'XGrabKey status: ', status
 
+        ! event%type = BUTTON_PRESS
+        ! event%x_motion%x = 0
+        ! event%x_motion%y = 0
+        ! call XPutBackEvent(display, event)
+        
         ! 事件循环
         do while (.true.)
             !print *, 'waiting for event...'
@@ -401,7 +427,7 @@ contains
                     if (keycode ==  XK_Control_L .or. keycode == XK_Control_R) isCtrlPressed = .true.
 
                 case (KEY_RELEASE, BUTTON_RELEASE)
-                    !print *, 'key/button release'
+                    ! print *, 'key/button release'
                     isDragging = .false.
                     isShiftPressed = .false.
                     isCtrlPressed = .false.
@@ -429,11 +455,11 @@ contains
                             !Rotate along screen
                             camrotang = camrotang + delx * 0.2D0
                         else if (isShiftPressed) then
-                            ORIGIN_3D_X= ORIGIN_3D_X + delx * 2
-                            ORIGIN_3D_Y= ORIGIN_3D_Y + dely * 2
+                            ORIGIN_3D_X= ORIGIN_3D_X + delx * 2D0
+                            ORIGIN_3D_Y= ORIGIN_3D_Y + dely * 2D0
                         else !Rotate
-                            XVU = XVU + delx * 0.3
-                            yvutemp = YVU + dely * 0.3
+                            XVU = XVU + delx * 0.3D0
+                            yvutemp = YVU + dely * 0.3D0
                             if (yvutemp >= -90D0 .and. yvutemp < 90D0) YVU = yvutemp
                         end if
 
