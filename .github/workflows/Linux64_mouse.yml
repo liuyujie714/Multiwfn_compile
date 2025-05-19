@@ -28,18 +28,18 @@ jobs:
         echo "LD_LIBRARY_PATH=$DISLIN:$LD_LIBRARY_PATH" >> $GITHUB_ENV 
         sudo apt install p7zip-full libxm4 libmotif-dev libgl1-mesa-dev libgmp-dev libmpfr-dev
 
-    - name: Build fortran-xlib
-      run: |
-        git clone https://github.com/interkosmos/fortran-xlib.git
-        cd fortran-xlib && make
-        cp libfortran-xlib.a xlib.mod ${{env.Multiwfn_version}}
-
     - name: Download Multiwfn and Modify
       run: |
         rm -rf ${{env.Multiwfn_version}}
         curl -L http://sobereva.com/multiwfn/misc/${{env.Multiwfn_version}}.zip -o Multiwfn_src.zip
         7z x Multiwfn_src.zip
         cp GUI_modify.f90 ${{env.Multiwfn_version}}/GUI.f90
+
+    - name: Build fortran-xlib
+      run: |
+        git clone https://github.com/interkosmos/fortran-xlib.git
+        cd fortran-xlib && make
+        cp libfortran-xlib.a xlib.mod ${{env.Multiwfn_version}}
         
     
     # - name: Build static flint
