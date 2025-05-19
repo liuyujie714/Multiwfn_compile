@@ -34,13 +34,6 @@ jobs:
         curl -L http://sobereva.com/multiwfn/misc/${{env.Multiwfn_version}}.zip -o Multiwfn_src.zip
         7z x Multiwfn_src.zip
         cp GUI_modify.f90 ${{env.Multiwfn_version}}/GUI.f90
-
-    - name: Build fortran-xlib
-      run: |
-        git clone https://github.com/interkosmos/fortran-xlib.git
-        cd fortran-xlib && make
-        cp libfortran-xlib.a xlib.mod ../${{env.Multiwfn_version}}
-        
     
     # - name: Build static flint
     #   run: |
@@ -78,6 +71,15 @@ jobs:
         ifort --version
         ls -al /opt/intel/oneapi/mkl/latest/lib/intel64
 
+    - name: Build fortran-xlib
+      run: |
+        git clone https://github.com/interkosmos/fortran-xlib.git
+        cd fortran-xlib
+        ifort -O2 -c src/xlib.f90
+        ifort -O2 -c src/xpm.f90
+        ar rcs libfortran-xlib.a xlib.o xpm.o
+        cp libfortran-xlib.a xlib.mod ../${{env.Multiwfn_version}}
+    
     - name: Compile Multiwfn
       run: |
         cd ${{env.Multiwfn_version}}
