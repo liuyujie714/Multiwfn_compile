@@ -13,7 +13,9 @@
 > Tian Lu, A comprehensive electron wavefunction analysis toolbox for chemists, Multiwfn, J. Chem. Phys., 161, 082503 (2024) DOI: 10.1063/5.0216272
 
 
+
 # 鼠标拖拽旋转功能
+
 目前Multiwfn官网已经加入了对Windows系统下图形界面的分子旋转，平移等功能。
 
 最近，本人又尝试添加了`Linux`系统的支持，效果不算非常好，主要是每次进行拖拽旋转的时候**必须先点击一下图形区域**，然后**再次点击并拖拽**就可以旋转了。因为Linux下底层是采用的X11，不像Win32好用，详情可以自行查看`mouserotate.f90`中的代码部分:
