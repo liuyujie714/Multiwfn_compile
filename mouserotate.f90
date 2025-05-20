@@ -1,5 +1,5 @@
-! Mouse rotate module, only use on Windows x64 system
-! Link user32.lib
+! Mouse rotate module, support Windows & Linux 
+! Link user32.lib for windows
 ! Written by Yujie Liu, 2025-04-08
 
 ! Usage example:
@@ -10,6 +10,7 @@
 
 ! Update: 2025.05.17 
 !   Try support Linux x64 system use X11 & fortran-xlib (https://github.com/interkosmos/fortran-xlib)
+!   please see https://github.com/liuyujie714/Multiwfn_compile
 !   Note: Must click left button once, than press left button and drag molecule
 !   TODO: fix above bug
 

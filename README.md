@@ -23,10 +23,23 @@
 ! use X11 & fortran-xlib
 module mouse_rotate_mod
 ```
-这一部分。主要利用X11的[fortran-xlib](https://github.com/interkosmos/fortran-xlib)接口进行底层操作，需要链接这个xlib库。
+这一部分主要利用X11的[fortran-xlib](https://github.com/interkosmos/fortran-xlib)接口进行底层操作，需要链接这个xlib库`libfortran-xlib.a`。
+
+**注意:**
+如果是在Linux上是采用的`ifort`编译器进行编译，务必添加下列编译选择，确保C bind的bool行为和Inter Fortran的一致:
+```
+-fpscomp logicals
+```
+同时`fortran-xlib`这个库也要利用`ifort`进行编译，比如：
+```bash
+ifort -O2 -c src/xlib.f90
+ifort -O2 -c src/xpm.f90
+ar rcs libfortran-xlib.a xlib.o xpm.o
+```
 
 
 
+-----------------------------
 # 源码获取
 
 [Multiwfn_3.8_dev_src_Linux.zip](http://sobereva.com/multiwfn/misc/Multiwfn_3.8_dev_src_Linux.zip)这个源码虽然写的是Linux的，但是实测在Windows上可以正常编译和运行的。
