@@ -4,9 +4,6 @@ on:
   push:
     branches:
       - master
-      
-env:
-  Multiwfn_version:  Multiwfn_3.8_dev_src_Linux
   
 jobs:
   Linux-64:
@@ -15,17 +12,20 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v3
  
-    - name: Install Dislin libraries
+    - name: Install libraries
       run: |
         sudo apt install libxm4 libmotif-dev libgl1-mesa-dev libgmp-dev libmpfr-dev
 
-    - name: Test X11
+    - name: Install Intel oneAPI compiler
       run: |
-        grep AnyModifier /usr/include/X11/X.h
-        grep AnyButton /usr/include/X11/X.h
-        grep AnyKey /usr/include/X11/X.h
-        grep GrabModeSync /usr/include/X11/X.h
-        grep GrabModeAsync /usr/include/X11/X.h
+        wget https://apt.repos.intel.com/intel-gpg-keys/GPG-PUB-KEY-INTEL-SW-PRODUCTS-2023.PUB
+        sudo apt-key add GPG-PUB-KEY-INTEL-SW-PRODUCTS-2023.PUB
+        rm GPG-PUB-KEY-INTEL-SW-PRODUCTS-2023.PUB
+        echo "deb https://apt.repos.intel.com/oneapi all main" | sudo tee /etc/apt/sources.list.d/oneAPI.list
+        sudo apt-get update
+        sudo apt-get install intel-oneapi-compiler-fortran-2021.4.0 intel-oneapi-compiler-dpcpp-cpp-and-cpp-classic-2021.4.0 intel-oneapi-mkl-2021.4.0 intel-oneapi-mkl-devel-2021.4.0
+        source /opt/intel/oneapi/setvars.sh
+        printenv >> $GITHUB_ENV
 
     - name: Test fortran-xlib
       run: |
