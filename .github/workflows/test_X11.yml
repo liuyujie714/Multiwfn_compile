@@ -1,0 +1,29 @@
+name: Build Multiwfn Linux64
+
+on:
+  push:
+    branches:
+      - master
+      
+env:
+  Multiwfn_version:  Multiwfn_3.8_dev_src_Linux
+  
+jobs:
+  Linux-64:
+    runs-on: ubuntu-22.04
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+ 
+    - name: Install Dislin libraries
+      run: |
+        sudo apt install libxm4 libmotif-dev libgl1-mesa-dev libgmp-dev libmpfr-dev
+
+    - name: Test X11
+      run: |
+        grep AnyModifier /usr/include/X11/X.h
+        grep AnyButton /usr/include/X11/X.h
+        grep AnyKey /usr/include/X11/X.h
+        grep GrabModeSync /usr/include/X11/X.h
+        grep GrabModeAsync /usr/include/X11/X.h
+
