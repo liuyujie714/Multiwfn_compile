@@ -382,14 +382,14 @@ contains
 
         ! 设置鼠标事件监听 
         mask = ior(BUTTON_PRESS_MASK, BUTTON_RELEASE_MASK)
-        !mask = ior(mask, BUTTON1_MOTION_MASK) ! left button
+        mask = ior(mask, BUTTON1_MOTION_MASK) ! left button
 
         status = XGrabButton(display, AnyButton, AnyModifier, handle, owner_events, &
-                            int(mask), GrabModeAsync, GrabModeAsync, None, None)
+                            int(mask, 4), GrabModeAsync, GrabModeAsync, None, None)
         !print *, 'GrabButton status: ', status
 
-        status = XGrabKey(display, AnyKey, AnyModifier, handle, owner_events, &
-                        GrabModeAsync, GrabModeAsync)
+        ! status = XGrabKey(display, AnyKey, AnyModifier, handle, owner_events, &
+        !                 GrabModeAsync, GrabModeAsync)
         !print *, 'XGrabKey status: ', status
 
         ! event%type = BUTTON_PRESS
@@ -399,12 +399,12 @@ contains
         
         ! 事件循环
         do while (.true.)
-            print *, 'waiting for event...'
+            !print *, 'waiting for event...'
             call x_next_event(display, event)
-            print *, 'event type= ', event%type
+            !print *, 'event type= ', event%type
             select case (event%type)
                 case (BUTTON_PRESS)
-                    print *, 'button press'
+                    !print *, 'button press'
                     isDragging = .true.
                     startx = event%x_button%x
                     starty = event%x_button%y
