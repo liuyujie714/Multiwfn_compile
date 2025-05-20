@@ -34,9 +34,9 @@ jobs:
         ifort -O2 -c src/xlib.f90
         ifort -O2 -c src/xpm.f90
         ar rcs libfortran-xlib.a xlib.o xpm.o
-        ifort -o window examples/window/window.f90 libfortran-xlib.a -lX11
-        ifort -o events examples/events/events.f90 libfortran-xlib.a -lX11
-        ifort -o drawing examples/drawing/drawing.f90 libfortran-xlib.a -lX11
+        ifort -o ../window examples/window/window.f90 libfortran-xlib.a -lX11
+        ifort -o ../events examples/events/events.f90 libfortran-xlib.a -lX11
+        ifort -o ../drawing examples/drawing/drawing.f90 libfortran-xlib.a -lX11
 
     - name: Upload exe
       uses: actions/upload-artifact@v4
