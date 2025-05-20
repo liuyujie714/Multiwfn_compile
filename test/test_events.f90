@@ -78,13 +78,14 @@ program main
     ! Show window.
     mask = ior(BUTTON_PRESS_MASK, BUTTON_RELEASE_MASK)
     mask = ior(mask, BUTTON1_MOTION_MASK) ! left button
+    mask = ior(mask, POINTER_MOTION_MASK) ! left button
+    mask = ior(mask, EXPOSURE_MASK) ! left button
 
-    ! status = XGrabButton(display, AnyButton, AnyModifier, window, owner_events, &
-    ! int(mask, 4), GrabModeAsync, GrabModeAsync, None, None)
+    status = XGrabButton(display, AnyButton, AnyModifier, window, owner_events, &
+    int(mask, 4), GrabModeAsync, GrabModeAsync, None, None)
 
-    ! status = XGrabKey(display, AnyKey, AnyModifier, window, owner_events, &
-    ! GrabModeAsync, GrabModeAsync)
-    call x_select_input(display, window, mask)
+    status = XGrabKey(display, AnyKey, AnyModifier, window, owner_events, &
+    GrabModeAsync, GrabModeAsync)
 
 
     call x_map_window(display, window)
