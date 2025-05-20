@@ -382,6 +382,7 @@ contains
         ! 设置鼠标事件监听 
         mask = ior(BUTTON_PRESS_MASK, BUTTON_RELEASE_MASK)
         mask = ior(mask, BUTTON1_MOTION_MASK) ! left button
+        print *, 'mask= ', mask
 
         status = XGrabButton(display, AnyButton, AnyModifier, handle, owner_events, &
                             int(mask, 4), GrabModeAsync, GrabModeAsync, None, None)
