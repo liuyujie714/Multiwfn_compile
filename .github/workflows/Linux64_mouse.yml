@@ -83,16 +83,15 @@ jobs:
     - name: Compile Multiwfn
       run: |
         cd ${{env.Multiwfn_version}}
-        # sed -i 's|INCLUDE = -I./ -I./ext|& -I/usr/local/share/vcpkg/packages/flint_x64-linux-release/include -I/usr/local/share/vcpkg/packages/mpfr_x64-linux-release/include -I/usr/local/share/vcpkg/packages/gmp_x64-linux-release/include -I/usr/local/share/vcpkg/packages/arb_x64-linux-release/include|' Makefile 
-        # sed -i 's|^LIB_base =.*|&  /usr/local/share/vcpkg/packages/gmp_x64-linux-release/lib/libgmp.a  /usr/local/share/vcpkg/packages/mpfr_x64-linux-release/lib/libmpfr.a /usr/local/share/vcpkg/packages/arb_x64-linux-release/lib/libarb.a /usr/local/share/vcpkg/packages/flint_x64-linux-release/lib/libflint.a|' Makefile
-        # sed -i 's/-lflint -lflint-arb/-lgmp -lmpfr -larb -lflint/g' Makefile
-        # sed -i 's/\$(FC) \$(OPT) \$(objects)/ifort -qopenmp -qopenmp-link=static -threads -fpp -qmkl -static-intel -DINTEL_MKL -stand f08 $(objects)/g' Makefile
 
         # use staitc flint 
         sed -i "s|INCLUDE = -I./ -I./ext|& -I${{github.workspace}}/flint/include|" Makefile 
         sed -i "s|^LIB_base =.*|& ./libfortran-xlib.a ${{github.workspace}}/flint/lib/libflint.a /usr/lib/x86_64-linux-gnu/libmpfr.a /usr/lib/x86_64-linux-gnu/libgmp.a|" Makefile
         sed -i 's/-lflint -lflint-arb//g'  Makefile
-        sed -i 's/-mkl/-qmkl/g' Makefile
+        
+        # fix ifort compiler C bind issue for Bool, add '-fpscomp logicals'
+        sed -i 's/-mkl/-qmkl -fpscomp logicals /g' Makefile
+
         cat Makefile
         make GUI WITH_FD=1 OS=Ubuntu -j4 
 
