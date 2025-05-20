@@ -385,7 +385,7 @@ contains
         !mask = ior(mask, BUTTON1_MOTION_MASK) ! left button
 
         status = XGrabButton(display, AnyButton, AnyModifier, handle, owner_events, &
-                            int(mask, 4), GrabModeAsync, GrabModeAsync, None, None)
+                            int(mask), GrabModeAsync, GrabModeAsync, None, None)
         !print *, 'GrabButton status: ', status
 
         status = XGrabKey(display, AnyKey, AnyModifier, handle, owner_events, &
