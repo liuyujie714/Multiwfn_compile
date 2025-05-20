@@ -260,7 +260,6 @@ module mouse_rotate_mod
     integer(c_int), parameter :: GrabModeAsync  = 1
     integer(c_int), parameter :: AnyModifier    = ishft(1, 15)
     integer(c_int), parameter :: AnyButton      = 0
-    integer(c_int), parameter :: BUTTON1        = 1 ! left button
     integer(c_int), parameter :: AnyKey         = 0
 
     interface
@@ -385,7 +384,7 @@ contains
         mask = ior(BUTTON_PRESS_MASK, BUTTON_RELEASE_MASK)
         mask = ior(mask, BUTTON1_MOTION_MASK) ! left button
 
-        status = XGrabButton(display, BUTTON1, AnyModifier, handle, owner_events, &
+        status = XGrabButton(display, AnyButton, AnyModifier, handle, owner_events, &
                             int(mask, 4), GrabModeAsync, GrabModeAsync, None, None)
         !print *, 'GrabButton status: ', status
 
@@ -400,12 +399,12 @@ contains
         
         ! 事件循环
         do while (.true.)
-            !print *, 'waiting for event...'
+            print *, 'waiting for event...'
             call x_next_event(display, event)
-            !print *, 'event type= ', event%type
+            print *, 'event type= ', event%type
             select case (event%type)
                 case (BUTTON_PRESS)
-                    !print *, 'button press'
+                    print *, 'button press'
                     isDragging = .true.
                     startx = event%x_button%x
                     starty = event%x_button%y
