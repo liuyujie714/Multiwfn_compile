@@ -64,10 +64,7 @@ program main
 				print *, 'KeyRelease'
         end select
     end do
-    return
 
-    ! Clean up and close window.
-!     call x_free_gc(display, gc)
     call x_destroy_window(display, window)
     call x_close_display(display)
 end program main
