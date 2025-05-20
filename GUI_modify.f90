@@ -384,18 +384,19 @@ contains
         mask = ior(BUTTON_PRESS_MASK, BUTTON_RELEASE_MASK)
         mask = ior(mask, BUTTON1_MOTION_MASK) ! left button
 
-        status = XGrabButton(display, AnyButton, AnyModifier, handle, owner_events, &
-                            int(mask, 4), GrabModeAsync, GrabModeAsync, None, None)
-        !print *, 'GrabButton status: ', status
+        ! status = XGrabButton(display, AnyButton, AnyModifier, handle, owner_events, &
+        !                     int(mask, 4), GrabModeAsync, GrabModeAsync, None, None)
+        ! !print *, 'GrabButton status: ', status
 
-        status = XGrabKey(display, AnyKey, AnyModifier, handle, owner_events, &
-                        GrabModeAsync, GrabModeAsync)
-        !print *, 'XGrabKey status: ', status
+        ! status = XGrabKey(display, AnyKey, AnyModifier, handle, owner_events, &
+        !                 GrabModeAsync, GrabModeAsync)
+        ! !print *, 'XGrabKey status: ', status
 
         ! event%type = BUTTON_PRESS
         ! event%x_motion%x = 0
         ! event%x_motion%y = 0
         ! call XPutBackEvent(display, event)
+        call x_select_input(display, handle, mask)
         
         ! 事件循环
         do while (.true.)
