@@ -260,7 +260,7 @@ module mouse_rotate_mod
     integer(c_int), parameter :: GrabModeAsync  = 1
     integer(c_int), parameter :: AnyModifier    = ishft(1, 15)
     integer(c_int), parameter :: AnyButton      = 0
-    integer(c_int), parameter :: BUTTON1        = 0 ! left button
+    integer(c_int), parameter :: BUTTON1        = 1 ! left button
     integer(c_int), parameter :: AnyKey         = 0
 
     interface
