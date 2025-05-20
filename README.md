@@ -26,7 +26,7 @@ module mouse_rotate_mod
 这一部分主要利用X11的[fortran-xlib](https://github.com/interkosmos/fortran-xlib)接口进行底层操作，需要链接这个xlib库`libfortran-xlib.a`。
 
 **注意:**
-如果是在Linux上是采用的`ifort`编译器进行编译，务必添加下列编译选择，确保C bind的bool行为和Inter Fortran的一致:
+如果是在Linux上是采用的`ifort`编译器进行编译，务必添加下列编译选项，确保C bind的bool行为和Inter Fortran的一致:
 ```
 -fpscomp logicals
 ```

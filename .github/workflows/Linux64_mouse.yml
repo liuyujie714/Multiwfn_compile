@@ -102,7 +102,7 @@ jobs:
     - name: Pack Multiwfn
       run: |
         curl -O -L http://sobereva.com/multiwfn/misc/Multiwfn_3.8_dev_bin_Linux.zip
-        unzip temp.zip
+        unzip Multiwfn_3.8_dev_bin_Linux.zip
         cd Multiwfn_3.8_dev_bin_Linux && rm -rf Multiwfn
         cp ../${{env.Multiwfn_version}}/Multiwfn .
 
