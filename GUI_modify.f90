@@ -101,12 +101,13 @@
             end subroutine mouse_rotate
         end module mouse_rotate_mod
 
-#   else !Use general C binding
+!Use general C binding
+#   else 
         module mouse_rotate_mod
             use, intrinsic :: iso_c_binding
             implicit none
     
-            type, bind(c) :: POINT
+            type, bind(c) :: MyPOINT
                 integer(c_long) :: x, y
             end type
     
@@ -116,7 +117,7 @@
                 integer(c_intptr_t) :: wParam ! should 8 bytes on x64
                 integer(c_intptr_t) :: lParam ! should 8 bytes on x64
                 integer(c_int) :: time
-                type(POINT) :: pt
+                type(MyPOINT) :: pt
             end type
     
             interface
@@ -259,6 +260,7 @@ module mouse_rotate_mod
     integer(c_int), parameter :: GrabModeAsync  = 1
     integer(c_int), parameter :: AnyModifier    = ishft(1, 15)
     integer(c_int), parameter :: AnyButton      = 0
+    integer(c_int), parameter :: BUTTON1        = 0 ! left button
     integer(c_int), parameter :: AnyKey         = 0
 
     interface
@@ -382,9 +384,8 @@ contains
         ! 设置鼠标事件监听 
         mask = ior(BUTTON_PRESS_MASK, BUTTON_RELEASE_MASK)
         mask = ior(mask, BUTTON1_MOTION_MASK) ! left button
-        print *, 'mask= ', mask
 
-        status = XGrabButton(display, AnyButton, AnyModifier, handle, owner_events, &
+        status = XGrabButton(display, BUTTON1, AnyModifier, handle, owner_events, &
                             int(mask, 4), GrabModeAsync, GrabModeAsync, None, None)
         !print *, 'GrabButton status: ', status
 
