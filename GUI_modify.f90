@@ -388,8 +388,8 @@ contains
                             int(mask, 4), GrabModeAsync, GrabModeAsync, None, None)
         !print *, 'GrabButton status: ', status
 
-        ! status = XGrabKey(display, AnyKey, AnyModifier, handle, owner_events, &
-        !                 GrabModeAsync, GrabModeAsync)
+        status = XGrabKey(display, AnyKey, AnyModifier, handle, owner_events, &
+                        GrabModeAsync, GrabModeAsync)
         !print *, 'XGrabKey status: ', status
 
         ! event%type = BUTTON_PRESS
