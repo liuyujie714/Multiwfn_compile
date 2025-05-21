@@ -256,6 +256,8 @@ module mouse_rotate_mod
     integer(c_long), parameter :: XK_Shift_L    = 65505     !0xffe1
     integer(c_long), parameter :: XK_Shift_R    = 65506     !0xffe2
     integer(c_long), parameter :: None          = 0     
+    integer(c_int), parameter :: XC_exchange    = 50       ! exchange shape
+    integer(c_int), parameter :: XC_hand2       = 60        ! hand shape
     integer(c_int), parameter :: GrabModeSync   = 0
     integer(c_int), parameter :: GrabModeAsync  = 1
     integer(c_int), parameter :: AnyModifier    = ishft(1, 15)
@@ -287,14 +289,6 @@ module mouse_rotate_mod
             integer(c_int) :: XGrabButton
         end function XGrabButton
 
-        function XAllowEvents(display, event_mode, time) bind(c, name="XAllowEvents")
-            import :: c_ptr, c_int, c_long
-            type(c_ptr), value :: display       
-            integer(c_int), value :: event_mode 
-            integer(c_long), value :: time      
-            integer(c_int) :: XAllowEvents     
-          end function XAllowEvents
-
         function XGrabKey(display, keycode, modifiers, grab_window, owner_events, &
             pointer_mode, keyboard_mode) bind(C, name='XGrabKey')
             import :: c_int, c_ptr, c_long, c_bool
@@ -306,12 +300,30 @@ module mouse_rotate_mod
             integer(c_int) :: XGrabKey
         end function
 
-        ! internal subroutine, do not call it
-        subroutine XPutBackEvent__(display, event_return) bind(c, name="XPutBackEvent")
-            import :: c_int, c_ptr, x_event
-            type(c_ptr), intent(in), value  :: display 
-            type(x_event), intent(inout)    :: event_return 
-        end subroutine XPutBackEvent__
+        function XCreateFontCursor(display, shape) bind(c, name="XCreateFontCursor")
+            import :: c_int, c_ptr, c_long
+            type(c_ptr), value :: display
+            integer(c_int), value :: shape
+            integer(c_long) :: XCreateFontCursor
+        end function
+
+        subroutine XDefineCursor(display, window, cursor) bind(c, name="XDefineCursor")
+            import :: c_int, c_ptr, c_long
+            type(c_ptr), value :: display
+            integer(c_long), value :: window, cursor
+        end subroutine
+
+        subroutine XUndefineCursor(display, window) bind(c, name="XUndefineCursor")
+            import :: c_int, c_ptr, c_long
+            type(c_ptr), value :: display
+            integer(c_long), value :: window
+        end subroutine XUndefineCursor
+
+        subroutine XFreeCursor(display, cursor) bind(c, name="XFreeCursor")
+            import :: c_int, c_ptr, c_long
+            type(c_ptr), value :: display
+            integer(c_long), value :: cursor
+        end subroutine XFreeCursor
     end interface
 
 contains
@@ -329,38 +341,12 @@ contains
             call SWGTXT(idissetplaneYVU,tmpstr)
         end if
     end subroutine mypot
-
-    subroutine XPutBackEvent(display, event_return)
-        type(c_ptr),   intent(in)    :: display
-        type(x_event), intent(inout) :: event_return
-
-        call XPutBackEvent__(display, event_return)
-        ! process union 
-        select case (event_return%type)
-            case (button_press)     ! XButtonEvent
-                event_return%x_button = transfer(event_return, event_return%x_button)
-            case (button_release)   ! XButtonEvent
-                event_return%x_button = transfer(event_return, event_return%x_button)
-            case (client_message)   ! XClientMessageEvent
-                event_return%x_client_message = transfer(event_return, event_return%x_client_message)
-            case (configure_notify) ! XConfigureNotifyEvent
-                event_return%x_configure = transfer(event_return, event_return%x_configure)
-            case (expose)           ! XExposeEvent
-                event_return%x_expose = transfer(event_return, event_return%x_expose)
-            case (key_press)        ! XKeyEvent
-                event_return%x_key = transfer(event_return, event_return%x_key)
-            case (key_release)      ! XKeyEvent
-                event_return%x_key = transfer(event_return, event_return%x_key)
-            case (motion_notify)    ! XMotionEvent
-                event_return%x_motion= transfer(event_return, event_return%x_motion)
-        end select
-    end subroutine XPutBackEvent
     
     subroutine mouse_rotate(id)
         use defvar
         integer, intent(in) :: id
         type(c_ptr) :: display
-        integer(c_long) :: handle
+        integer(c_long) :: handle, cursor
         integer(c_long)  :: mask = NO_EVENT_MASK
         type(x_event) :: event
         integer :: ival
@@ -392,6 +378,11 @@ contains
                         GrabModeAsync, GrabModeAsync)
         !print *, 'XGrabKey status: ', status
         
+        ! change cursor use hand
+        cursor = XCreateFontCursor(display, XC_hand2)
+        call XDefineCursor(display, handle, cursor)
+        call x_flush(display)
+
         ! 事件循环
         do while (.true.)
             !print *, 'waiting for event...'
@@ -405,27 +396,16 @@ contains
                     starty = event%x_button%y
                     !print *, 'startx=', startx, 'starty=', starty
 
+                    ! change cursor to exchange shape
+                    call XUndefineCursor(display, handle)
+                    call XFreeCursor(display, cursor)
+                    cursor = XCreateFontCursor(display, XC_exchange)
+                    call XDefineCursor(display, handle, cursor)
+                    call x_flush(display)
+
                 case (KEY_PRESS)
                     keycode = XLookupKeysym(event%x_key, 0)
                     !print  *, "keycode= ", keycode
-
-                    ! ! Q exit
-                    ! if (keycode==113) then
-                    !   call x_close_display(display)
-                    !   return
-                    ! end if
-                    
-                    ! if (keycode==119) then  ! W
-                    !   yvutemp = YVU - 3D0
-                    ! elseif (keycode==115) then ! S
-                    !   yvutemp = YVU + 3D0
-                    ! elseif (keycode==97) then ! A
-                    !   XVU = XVU - 3D0
-                    ! elseif (keycode==100) then ! D
-                    !   XVU = XVU + 3D0
-                    ! end if
-                    ! if (yvutemp >= -90D0 .and. yvutemp < 90D0) YVU = yvutemp
-                    ! call mypot()
 
                     ! ctrl and shift key
                     if (keycode ==  XK_Shift_L .or. keycode == XK_Shift_R) isShiftPressed = .true.
@@ -436,6 +416,9 @@ contains
                     isDragging = .false.
                     isShiftPressed = .false.
                     isCtrlPressed = .false.
+                    ! delete all
+                    call XUndefineCursor(display, handle)
+                    call XFreeCursor(display, cursor)
                     call x_close_display(display) ! close display
                     return
 
