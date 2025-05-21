@@ -18,10 +18,11 @@
 
 目前Multiwfn官网已经加入了对Windows系统下图形界面的分子旋转，平移等功能。
 
-最近，本人又尝试添加了`Linux`系统的支持，效果不算非常好，主要是每次进行拖拽旋转的时候**必须先点击一下图形区域**，然后**再次点击并拖拽**就可以旋转了。因为Linux下底层是采用的X11，不像Win32好用，详情可以自行查看`mouserotate.f90`中的代码部分:
+最近，本人又尝试添加了`Linux`系统的支持，效果不算非常好，主要是每次进行拖拽旋转的时候**必须先点击一下图形区域**，然后**再次点击并拖拽**就可以旋转了。因为Linux下底层是采用的X11，没有Win32那么好用，详情可以自行查看`mouserotate.f90`中的代码部分:
 ``` fortran
 ! use X11 & fortran-xlib
 module mouse_rotate_mod
+...
 ```
 这一部分主要利用X11的[fortran-xlib](https://github.com/interkosmos/fortran-xlib)接口进行底层操作，需要链接这个xlib库`libfortran-xlib.a`。
 
@@ -32,11 +33,10 @@ module mouse_rotate_mod
 ```
 同时`fortran-xlib`这个库也要利用`ifort`进行编译，比如：
 ```bash
-ifort -O2 -c src/xlib.f90
-ifort -O2 -c src/xpm.f90
+ifort -O2 -fpscomp logicals -c src/xlib.f90
+ifort -O2 -fpscomp logicals -c src/xpm.f90
 ar rcs libfortran-xlib.a xlib.o xpm.o
 ```
-
 
 
 -----------------------------
@@ -47,14 +47,16 @@ ar rcs libfortran-xlib.a xlib.o xpm.o
 
 # 编译方案
 
-## 方案1
+## Windows系统
+
+### 方案1
 
 Visual Studio 2022 + Inter Fortran compiler and MKL (from Intel oneAPI).
 
 原生编译，官方推荐的编译方式，性能好。
 
 
-[![Win x64 GPU](https://github.com/liuyujie714/Multiwfn_compile/actions/workflows/Multiwfn_ifort.yml/badge.svg)](https://github.com/liuyujie714/Multiwfn_compile/actions/workflows/Multiwfn_ifort.yml) 
+[![Win x64](https://github.com/liuyujie714/Multiwfn_compile/actions/workflows/Multiwfn_ifort.yml/badge.svg)](https://github.com/liuyujie714/Multiwfn_compile/actions/workflows/Multiwfn_ifort.yml) 
 
 可直接点击下载最新编译好的二进制，时间为每次触发编译时间：
 
@@ -62,12 +64,21 @@ Visual Studio 2022 + Inter Fortran compiler and MKL (from Intel oneAPI).
 
 
 
-## 方案2
+### 方案2
 
 MingW64 + GNU Fortran + lapack
 
-[![Win x64 GPU](https://github.com/liuyujie714/Multiwfn_compile/actions/workflows/Multiwfn_mingw64.yml/badge.svg)](https://github.com/liuyujie714/Multiwfn_compile/actions/workflows/Multiwfn_mingw64.yml)
+[![Win x64](https://github.com/liuyujie714/Multiwfn_compile/actions/workflows/Multiwfn_mingw64.yml/badge.svg)](https://github.com/liuyujie714/Multiwfn_compile/actions/workflows/Multiwfn_mingw64.yml)
 
 
 此方案编译出的二进制程序性能比方案1略差，因为采用的是Mingw64下的gfortran本身就有性能问题，注意链接的是ucrt64库
 
+
+## Linux系统
+可采用Ifort或者GCC进行编译，推荐使用Ifort
+
+Ifort + MKL + 支持鼠标拖拽旋转
+
+[![Linux x64](https://github.com/liuyujie714/Multiwfn_compile/actions/workflows/Linux64_mouse.yml/badge.svg)](https://github.com/liuyujie714/Multiwfn_compile/actions/workflows/Linux64_mouse.yml)
+[![Downloads](https://img.shields.io/github/downloads/liuyujie714/Multiwfn_compile/total)](https://github.com/liuyujie714/Multiwfn_compile/releases)
+ 

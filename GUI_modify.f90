@@ -361,7 +361,7 @@ contains
         integer, intent(in) :: id
         type(c_ptr) :: display
         integer(c_long) :: handle
-        integer(c_long)  :: mask = 0
+        integer(c_long)  :: mask = NO_EVENT_MASK
         type(x_event) :: event
         integer :: ival
         integer(c_int) :: currx, curry, delx, dely, startx, starty
@@ -391,11 +391,6 @@ contains
         status = XGrabKey(display, AnyKey, AnyModifier, handle, owner_events, &
                         GrabModeAsync, GrabModeAsync)
         !print *, 'XGrabKey status: ', status
-
-        ! event%type = BUTTON_PRESS
-        ! event%x_motion%x = 0
-        ! event%x_motion%y = 0
-        ! call XPutBackEvent(display, event)
         
         ! 事件循环
         do while (.true.)
@@ -432,7 +427,7 @@ contains
                     ! if (yvutemp >= -90D0 .and. yvutemp < 90D0) YVU = yvutemp
                     ! call mypot()
 
-                    ! ctrl key
+                    ! ctrl and shift key
                     if (keycode ==  XK_Shift_L .or. keycode == XK_Shift_R) isShiftPressed = .true.
                     if (keycode ==  XK_Control_L .or. keycode == XK_Control_R) isCtrlPressed = .true.
 

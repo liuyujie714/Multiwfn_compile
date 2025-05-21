@@ -75,8 +75,8 @@ jobs:
       run: |
         git clone https://github.com/interkosmos/fortran-xlib.git
         cd fortran-xlib
-        ifort -O2 -c src/xlib.f90
-        ifort -O2 -c src/xpm.f90
+        ifort -O2 -fpscomp logicals -c src/xlib.f90
+        ifort -O2 -fpscomp logicals -c src/xpm.f90
         ar rcs libfortran-xlib.a xlib.o xpm.o
         cp libfortran-xlib.a xlib.mod ../${{env.Multiwfn_version}}
     
@@ -165,6 +165,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: Multiwfn_Linux64
+          path: ./Multiwfn_3.8_dev_bin_Linux
 
       - name: Package Linux artifact to release
         run: |
