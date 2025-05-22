@@ -51,7 +51,11 @@ jobs:
         tar -xf arb.tar.gz
         rm -rf arb.tar.gz
         cd arb*
-        ./configure --extensions=${{github.workspace}}/flint --with-flint=${{github.workspace}}/flint  --enable-static 
+        ./configure \
+        --extensions=${{github.workspace}}/flint \
+        --with-flint=${{github.workspace}}/flint  \
+        --enable-static \
+        --prefix=${{github.workspace}}/flint
         make -j4
         make install
 
@@ -65,7 +69,7 @@ jobs:
         name=Intel® oneAPI repository
         baseurl=https://yum.repos.intel.com/oneapi
         enabled=1
-        gpgcheck=1
+        gpgcheck=0
         repo_gpgcheck=1
         gpgkey=https://yum.repos.intel.com/intel-gpg-keys/GPG-PUB-KEY-INTEL-SW-PRODUCTS-2023.PUB
         EOF
@@ -98,7 +102,7 @@ jobs:
 
         # use staitc flint 
         sed -i "s|INCLUDE = -I./ -I./ext|& -I${{github.workspace}}/flint/include|" Makefile 
-        sed -i "s|^LIB_base =.*|& ./libfortran-xlib.a ${{github.workspace}}/flint/lib/libflint.a|" Makefile
+        sed -i "s|^LIB_base =.*|& ./libfortran-xlib.a ${{github.workspace}}/flint/lib/libflint.a ${{github.workspace}}/flint/lib/libarb.a|" Makefile
         
         # fix ifort compiler C bind issue for Bool, add '-fpscomp logicals'
         sed -i 's/-mkl/-qmkl -fpscomp logicals /g' Makefile
