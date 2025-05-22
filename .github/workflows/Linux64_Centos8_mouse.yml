@@ -7,6 +7,7 @@ on:
       
 env:
   Multiwfn_version:  Multiwfn_3.8_dev_src_Linux
+  LANG: zh_CN.UTF-8
   
 jobs:
   Linux-64-Centos8:
