@@ -27,8 +27,6 @@ jobs:
         sed -i 's/mirrorlist/#mirrorlist/g' /etc/yum.repos.d/CentOS-*
         sed -i 's|#baseurl=http://mirror.centos.org|baseurl=http://vault.centos.org|g' /etc/yum.repos.d/CentOS-*
         yum install epel-release -y
-        curl -o arb.rpm -L https://ftp.lysator.liu.se/pub/opensuse/distribution/leap/15.6/repo/oss/x86_64/libarb2-2.23.0-bp156.3.4.x86_64.rpm
-        dnf install arb.rpm
         yum install p7zip libGL-devel libGLU-devel motif-devel gmp-devel mpfr-devel gcc gcc-c++ make automake autoconf kernel-devel -y
 
     - name: Download Multiwfn and Modify
@@ -47,6 +45,15 @@ jobs:
         ./configure --enable-static --prefix=${{github.workspace}}/flint
         make -j4
         make install
+
+        curl -L https://github.com/flintlib/arb/archive/refs/tags/2.23.0.tar.gz -o arb.tar.gz
+        tar -xf arb.tar.gz
+        rm -rf arb.tar.gz
+        cd arb*
+        ./configure --extensions=${{github.workspace}}/flint --enable-static
+        make -j4
+        make install
+
         ls ${{github.workspace}}/flint
         ls ${{github.workspace}}/flint/lib
 
