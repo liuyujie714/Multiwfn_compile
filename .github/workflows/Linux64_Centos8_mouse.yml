@@ -30,7 +30,7 @@ jobs:
 
     - name: Build static mpfr and gmp
       run: |
-        curl -L https://gmplib.org/download/gmp/gmp-6.2.1.tar.xz -o gmp.tar.xz
+        curl -L https://ftp.gnu.org/gnu/gmp/gmp-6.2.1.tar.xz -o gmp.tar.xz
         tar -xf gmp.tar.xz && rm -rf gmp.tar.xz
         cd gmp*
         ./configure --enable-static
