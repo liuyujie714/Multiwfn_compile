@@ -23,21 +23,29 @@ jobs:
         sed -i s/mirror.centos.org/vault.centos.org/g /etc/yum.repos.d/*.repo
         sed -i s/^#.*baseurl=http/baseurl=http/g /etc/yum.repos.d/*.repo
         sed -i s/^mirrorlist=http/#mirrorlist=http/g /etc/yum.repos.d/*.repo
-
         sed -i 's/mirrorlist/#mirrorlist/g' /etc/yum.repos.d/CentOS-*
         sed -i 's|#baseurl=http://mirror.centos.org|baseurl=http://vault.centos.org|g' /etc/yum.repos.d/CentOS-*
-        yum clean all
-        yum makecache
         yum install epel-release -y
-        yum search mpfr
-        yum search gmp
-        exit
-        yum install p7zip git libGL-devel libGLU-devel motif-devel gmp-devel mpfr-devel gcc gcc-c++ make automake autoconf kernel-devel -y
+        yum install p7zip git libGL-devel libGLU-devel motif-devel gcc gcc-c++ make automake autoconf kernel-devel -y
+
+    - name: Build static mpfr and gmp
+      run: |
+        curl -L https://www.mpfr.org/mpfr-current/mpfr-4.2.2.tar.gz
+        cd mpfr*
+        ./configure --enable-static
+        make install -j4
+
+        cd ..
+        curl -L https://gmplib.org/download/gmp/gmp-6.2.1.tar.gz
+        cd gmp*
+        ./configure --enable-static
+        make install -j4
 
     - name: Download Multiwfn and Modify
       run: |
-        rpm -ql mpfr-devel
-        rpm -ql gmp-devel 
+        ls /usr/local/lib/libmpfr.a
+        ls /usr/local/lib/libgmp.a
+        ls /usr/local/include
         rm -rf ${{env.Multiwfn_version}}
         curl -L http://sobereva.com/multiwfn/misc/${{env.Multiwfn_version}}.zip -o Multiwfn_src.zip
         7za x Multiwfn_src.zip
@@ -45,24 +53,11 @@ jobs:
 
     - name: Build static flint
       run: |
-        curl -L https://flintlib.org/download/flint-2.9.0.tar.gz -o flint.tar.gz
+        curl -L https://flintlib.org/download/flint-3.2.1.tar.gz -o flint.tar.gz
         tar -xf flint.tar.gz 
         rm -rf flint.tar.gz
         cd flint*
         ./configure --enable-static --prefix=${{github.workspace}}/flint
-        make -j4
-        make install
-
-        cd ..
-        curl -L https://github.com/flintlib/arb/archive/refs/tags/2.23.0.tar.gz -o arb.tar.gz
-        tar -xf arb.tar.gz
-        rm -rf arb.tar.gz
-        cd arb*
-        ./configure \
-        --extensions=${{github.workspace}}/flint \
-        --with-flint=${{github.workspace}}/flint  \
-        --enable-static \
-        --prefix=${{github.workspace}}/flint
         make -j4
         make install
 
@@ -108,8 +103,8 @@ jobs:
         cd ${{env.Multiwfn_version}}
 
         # use staitc flint 
-        sed -i "s|INCLUDE = -I./ -I./ext|& -I${{github.workspace}}/flint/include|" Makefile 
-        sed -i "s|^LIB_base =.*|& ./libfortran-xlib.a ${{github.workspace}}/flint/lib/libflint.a ${{github.workspace}}/flint/lib/libarb.a /usr/lib64/libmpfr.a /usr/lib64/libgmp.a|" Makefile
+        sed -i "s|INCLUDE = -I./ -I./ext|& -I${{github.workspace}}/flint/include /usr/local/include|" Makefile 
+        sed -i "s|^LIB_base =.*|& ./libfortran-xlib.a ${{github.workspace}}/flint/lib/libflint.a /usr/local/lib/libmpfr.a /usr/local/lib/libgmp.a|" Makefile
         
         # fix ifort compiler C bind issue for Bool, add '-fpscomp logicals'
         sed -i 's/-mkl/-qmkl -fpscomp logicals /g' Makefile
