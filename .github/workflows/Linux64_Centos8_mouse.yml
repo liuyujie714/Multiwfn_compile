@@ -1,4 +1,4 @@
-name: Build Multiwfn Linux64 with mouse rotate on Centos 6.1
+name: Build Multiwfn Linux64 with mouse rotate on Centos 8
 
 on:
   push:
@@ -9,7 +9,7 @@ env:
   Multiwfn_version:  Multiwfn_3.8_dev_src_Linux
   
 jobs:
-  Linux-64-Centos7:
+  Linux-64-Centos8:
     runs-on: ubuntu-22.04
     container:
       image: centos:8
@@ -27,7 +27,7 @@ jobs:
         sed -i 's/mirrorlist/#mirrorlist/g' /etc/yum.repos.d/CentOS-*
         sed -i 's|#baseurl=http://mirror.centos.org|baseurl=http://vault.centos.org|g' /etc/yum.repos.d/CentOS-*
         yum install epel-release -y
-        yum install p7zip libGL-devel libGLU-devel motif-devel gmp-devel mpfr-devel -y
+        yum install p7zip libGL-devel libGLU-devel motif-devel gmp-devel mpfr-devel gcc gcc-c++ make automake autoconf kernel-devel -y
 
     - name: Download Multiwfn and Modify
       run: |
@@ -117,7 +117,7 @@ jobs:
 
 # refer to https://github.com/endless-sky/endless-sky/blob/master/.github/workflows/cd.yaml
   Release:
-    needs: [Linux-64-Centos7]
+    needs: [Linux-64-Centos8]
     runs-on: ubuntu-latest
 
     env:
