@@ -31,6 +31,8 @@ jobs:
 
     - name: Download Multiwfn and Modify
       run: |
+        ls /usr/lib64/libmpfr.a 
+        ls /usr/lib64/libgmp.a
         rm -rf ${{env.Multiwfn_version}}
         curl -L http://sobereva.com/multiwfn/misc/${{env.Multiwfn_version}}.zip -o Multiwfn_src.zip
         7za x Multiwfn_src.zip
@@ -102,7 +104,7 @@ jobs:
 
         # use staitc flint 
         sed -i "s|INCLUDE = -I./ -I./ext|& -I${{github.workspace}}/flint/include|" Makefile 
-        sed -i "s|^LIB_base =.*|& ./libfortran-xlib.a ${{github.workspace}}/flint/lib/libflint.a ${{github.workspace}}/flint/lib/libarb.a|" Makefile
+        sed -i "s|^LIB_base =.*|& ./libfortran-xlib.a ${{github.workspace}}/flint/lib/libflint.a ${{github.workspace}}/flint/lib/libarb.a /usr/lib64/libmpfr.a /usr/lib64/libgmp.a|" Makefile
         
         # fix ifort compiler C bind issue for Bool, add '-fpscomp logicals'
         sed -i 's/-mkl/-qmkl -fpscomp logicals /g' Makefile
