@@ -124,8 +124,8 @@ jobs:
         curl -O -L http://sobereva.com/multiwfn/misc/Multiwfn_3.8_dev_bin_Linux.zip
         7za x Multiwfn_3.8_dev_bin_Linux.zip
         cd Multiwfn_3.8_dev_bin_Linux && rm -rf Multiwfn
-        ls
-        cp ../${{env.Multiwfn_version}}/Multiwfn .
+        ls -alt
+        #cp ../${{env.Multiwfn_version}}/Multiwfn .
 
     - name: Upload Multiwfn
       uses: actions/upload-artifact@v4
