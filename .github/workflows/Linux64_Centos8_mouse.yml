@@ -19,114 +19,105 @@ jobs:
       uses: actions/checkout@v2
       
 
-    # - name: Install dependencies
-    #   run: |
-    #     sed -i s/mirror.centos.org/vault.centos.org/g /etc/yum.repos.d/*.repo
-    #     sed -i s/^#.*baseurl=http/baseurl=http/g /etc/yum.repos.d/*.repo
-    #     sed -i s/^mirrorlist=http/#mirrorlist=http/g /etc/yum.repos.d/*.repo
-    #     sed -i 's/mirrorlist/#mirrorlist/g' /etc/yum.repos.d/CentOS-*
-    #     sed -i 's|#baseurl=http://mirror.centos.org|baseurl=http://vault.centos.org|g' /etc/yum.repos.d/CentOS-*
-    #     yum install epel-release -y
-    #     yum install p7zip git libGL-devel libGLU-devel motif-devel gcc gcc-c++ make automake autoconf kernel-devel -y
-
-    # - name: Build static mpfr and gmp
-    #   run: |
-    #     curl -L https://ftp.gnu.org/gnu/gmp/gmp-6.2.1.tar.xz -o gmp.tar.xz
-    #     tar -xf gmp.tar.xz && rm -rf gmp.tar.xz
-    #     cd gmp*
-    #     ./configure --enable-static
-    #     make -j4 && make install
-
-    #     cd ..
-    #     curl -L https://www.mpfr.org/mpfr-current/mpfr-4.2.2.tar.gz -o mpfr.tar.gz
-    #     tar -xf mpfr.tar.gz && rm -rf mpfr.tar.gz
-    #     cd mpfr*
-    #     ./configure --enable-static
-    #     make -j4 && make install
-
-    # - name: Download Multiwfn and Modify
-    #   run: |
-    #     ls /usr/local/lib/libmpfr.a
-    #     ls /usr/local/lib/libgmp.a
-    #     ls /usr/local/include
-    #     rm -rf ${{env.Multiwfn_version}}
-    #     curl -L http://sobereva.com/multiwfn/misc/${{env.Multiwfn_version}}.zip -o Multiwfn_src.zip
-    #     7za x Multiwfn_src.zip
-    #     cp GUI_modify.f90 ${{env.Multiwfn_version}}/GUI.f90
-
-    # - name: Build static flint
-    #   run: |
-    #     curl -L https://flintlib.org/download/flint-3.2.1.tar.gz -o flint.tar.gz
-    #     tar -xf flint.tar.gz 
-    #     rm -rf flint.tar.gz
-    #     cd flint*
-    #     ./configure --enable-static --prefix=${{github.workspace}}/flint
-    #     make -j4
-    #     make install
-
-    #     ls ${{github.workspace}}/flint
-    #     ls ${{github.workspace}}/flint/lib
-
-    # - name: Install Intel oneAPI compiler
-    #   run: |
-    #     tee > /etc/yum.repos.d/oneAPI.repo << EOF
-    #     [oneAPI]
-    #     name=Intel® oneAPI repository
-    #     baseurl=https://yum.repos.intel.com/oneapi
-    #     enabled=1
-    #     gpgcheck=0
-    #     repo_gpgcheck=1
-    #     gpgkey=https://yum.repos.intel.com/intel-gpg-keys/GPG-PUB-KEY-INTEL-SW-PRODUCTS-2023.PUB
-    #     EOF
-
-    #     yum install -y intel-oneapi-compiler-fortran-2021.4.0 \
-    #                   intel-oneapi-compiler-dpcpp-cpp-and-cpp-classic-2021.4.0 \
-    #                   intel-oneapi-mkl-2021.4.0 \
-    #                   intel-oneapi-mkl-devel-2021.4.0
-
-    # - name: Test ifort
-    #   run: |
-    #     source /opt/intel/oneapi/setvars.sh
-    #     ifort --version
-    #     ls -al /opt/intel/oneapi/mkl/latest/lib/intel64
-
-    # - name: Build fortran-xlib
-    #   run: |
-    #     source /opt/intel/oneapi/setvars.sh
-    #     git clone https://github.com/interkosmos/fortran-xlib.git
-    #     cd fortran-xlib
-    #     ifort -O2 -fpscomp logicals -c src/xlib.f90
-    #     ifort -O2 -fpscomp logicals -c src/xpm.f90
-    #     ar rcs libfortran-xlib.a xlib.o xpm.o
-    #     cp libfortran-xlib.a xlib.mod ../${{env.Multiwfn_version}}
-    
-    # - name: Compile Multiwfn
-    #   run: |
-    #     source /opt/intel/oneapi/setvars.sh
-    #     cd ${{env.Multiwfn_version}}
-
-    #     # use staitc flint 
-    #     sed -i "s|INCLUDE = -I./ -I./ext|& -I${{github.workspace}}/flint/include /usr/local/include|" Makefile 
-    #     sed -i "s|^LIB_base =.*|& ./libfortran-xlib.a ${{github.workspace}}/flint/lib/libflint.a /usr/local/lib/libmpfr.a /usr/local/lib/libgmp.a|" Makefile
-        
-    #     # fix ifort compiler C bind issue for Bool, add '-fpscomp logicals'
-    #     sed -i 's/-mkl/-qmkl -fpscomp logicals /g' Makefile
-
-    #     cat Makefile
-    #     make GUI WITH_FD=1 -j4 
-
-    # - name: Check dependents
-    #   run: |
-    #     ldd ./${{env.Multiwfn_version}}/Multiwfn
-
-    - name: Pack Multiwfn
+    - name: Install dependencies
       run: |
-        # curl -O -L http://sobereva.com/multiwfn/misc/Multiwfn_3.8_dev_bin_Linux.zip
-        # 7za x Multiwfn_3.8_dev_bin_Linux.zip
-        # cd Multiwfn_3.8_dev_bin_Linux && rm -rf Multiwfn
-        mkdir Multiwfn_3.8_dev_bin_Linux
-        echo "6666" > Multiwfn_3.8_dev_bin_Linux/Multiwfn 
-        #cp ../${{env.Multiwfn_version}}/Multiwfn .
+        sed -i s/mirror.centos.org/vault.centos.org/g /etc/yum.repos.d/*.repo
+        sed -i s/^#.*baseurl=http/baseurl=http/g /etc/yum.repos.d/*.repo
+        sed -i s/^mirrorlist=http/#mirrorlist=http/g /etc/yum.repos.d/*.repo
+        sed -i 's/mirrorlist/#mirrorlist/g' /etc/yum.repos.d/CentOS-*
+        sed -i 's|#baseurl=http://mirror.centos.org|baseurl=http://vault.centos.org|g' /etc/yum.repos.d/CentOS-*
+        yum install epel-release -y
+        yum install p7zip git libGL-devel libGLU-devel motif-devel gcc gcc-c++ make automake autoconf kernel-devel -y
+
+    - name: Build static mpfr and gmp
+      run: |
+        curl -L https://ftp.gnu.org/gnu/gmp/gmp-6.2.1.tar.xz -o gmp.tar.xz
+        tar -xf gmp.tar.xz && rm -rf gmp.tar.xz
+        cd gmp*
+        ./configure --enable-static
+        make -j4 && make install
+
+        cd ..
+        curl -L https://www.mpfr.org/mpfr-current/mpfr-4.2.2.tar.gz -o mpfr.tar.gz
+        tar -xf mpfr.tar.gz && rm -rf mpfr.tar.gz
+        cd mpfr*
+        ./configure --enable-static
+        make -j4 && make install
+
+    - name: Download Multiwfn and Modify
+      run: |
+        ls /usr/local/lib/libmpfr.a
+        ls /usr/local/lib/libgmp.a
+        ls /usr/local/include
+        rm -rf ${{env.Multiwfn_version}}
+        curl -L http://sobereva.com/multiwfn/misc/${{env.Multiwfn_version}}.zip -o Multiwfn_src.zip
+        7za x Multiwfn_src.zip
+        cp GUI_modify.f90 ${{env.Multiwfn_version}}/GUI.f90
+
+    - name: Build static flint
+      run: |
+        curl -L https://flintlib.org/download/flint-3.2.1.tar.gz -o flint.tar.gz
+        tar -xf flint.tar.gz 
+        rm -rf flint.tar.gz
+        cd flint*
+        ./configure --enable-static --prefix=${{github.workspace}}/flint
+        make -j4
+        make install
+
+        ls ${{github.workspace}}/flint
+        ls ${{github.workspace}}/flint/lib
+
+    - name: Install Intel oneAPI compiler
+      run: |
+        tee > /etc/yum.repos.d/oneAPI.repo << EOF
+        [oneAPI]
+        name=Intel® oneAPI repository
+        baseurl=https://yum.repos.intel.com/oneapi
+        enabled=1
+        gpgcheck=0
+        repo_gpgcheck=1
+        gpgkey=https://yum.repos.intel.com/intel-gpg-keys/GPG-PUB-KEY-INTEL-SW-PRODUCTS-2023.PUB
+        EOF
+
+        yum install -y intel-oneapi-compiler-fortran-2021.4.0 \
+                      intel-oneapi-compiler-dpcpp-cpp-and-cpp-classic-2021.4.0 \
+                      intel-oneapi-mkl-2021.4.0 \
+                      intel-oneapi-mkl-devel-2021.4.0
+
+    - name: Test ifort
+      run: |
+        source /opt/intel/oneapi/setvars.sh
+        ifort --version
+        ls -al /opt/intel/oneapi/mkl/latest/lib/intel64
+
+    - name: Build fortran-xlib
+      run: |
+        source /opt/intel/oneapi/setvars.sh
+        git clone https://github.com/interkosmos/fortran-xlib.git
+        cd fortran-xlib
+        ifort -O2 -fpscomp logicals -c src/xlib.f90
+        ifort -O2 -fpscomp logicals -c src/xpm.f90
+        ar rcs libfortran-xlib.a xlib.o xpm.o
+        cp libfortran-xlib.a xlib.mod ../${{env.Multiwfn_version}}
+    
+    - name: Compile Multiwfn
+      run: |
+        source /opt/intel/oneapi/setvars.sh
+        cd ${{env.Multiwfn_version}}
+
+        # use staitc flint 
+        sed -i "s|INCLUDE = -I./ -I./ext|& -I${{github.workspace}}/flint/include /usr/local/include|" Makefile 
+        sed -i "s|^LIB_base =.*|& ./libfortran-xlib.a ${{github.workspace}}/flint/lib/libflint.a /usr/local/lib/libmpfr.a /usr/local/lib/libgmp.a|" Makefile
+        
+        # fix ifort compiler C bind issue for Bool, add '-fpscomp logicals'
+        sed -i 's/-mkl/-qmkl -fpscomp logicals /g' Makefile
+
+        cat Makefile
+        make GUI WITH_FD=1 -j4 
+
+    - name: Check dependents
+      run: |
+        ldd ./${{env.Multiwfn_version}}/Multiwfn
 
     - name: Upload Multiwfn
       uses: actions/upload-artifact@v4
@@ -134,7 +125,7 @@ jobs:
       with:
         name: Multiwfn_Linux64
         path: |
-          ./Multiwfn_3.8_dev_bin_Linux/Multiwfn 
+          ./${{env.Multiwfn_version}}/Multiwfn
 
 
 # refer to https://github.com/endless-sky/endless-sky/blob/master/.github/workflows/cd.yaml
@@ -149,16 +140,6 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-
-      - name: Download Linux artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: Multiwfn_Linux64
-          path: ./Multiwfn_3.8_dev_bin_Linux
-
-      - name: ls
-        run: |
-          ls ./Multiwfn_3.8_dev_bin_Linux
 
       - name: Install github-release
         run: |
@@ -197,7 +178,14 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: Multiwfn_Linux64
-          path: ./Multiwfn_3.8_dev_bin_Linux
+          path: ./
+
+      - name: Pack Multiwfn
+        run: |
+          curl -O -L http://sobereva.com/multiwfn/misc/Multiwfn_3.8_dev_bin_Linux.zip
+          unzip Multiwfn_3.8_dev_bin_Linux.zip
+          cd Multiwfn_3.8_dev_bin_Linux && rm -rf Multiwfn
+          cp ./Multiwfn .
 
       - name: Package Linux artifact to release
         run: |
