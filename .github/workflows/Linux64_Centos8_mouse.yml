@@ -31,8 +31,8 @@ jobs:
 
     - name: Download Multiwfn and Modify
       run: |
-        ls /usr/lib64/libmpfr.a 
-        ls /usr/lib64/libgmp.a
+        rpm -ql mpfr-devel
+        rpm -ql gmp-devel 
         rm -rf ${{env.Multiwfn_version}}
         curl -L http://sobereva.com/multiwfn/misc/${{env.Multiwfn_version}}.zip -o Multiwfn_src.zip
         7za x Multiwfn_src.zip
