@@ -185,7 +185,7 @@ jobs:
           curl -O -L http://sobereva.com/multiwfn/misc/Multiwfn_3.8_dev_bin_Linux.zip
           unzip Multiwfn_3.8_dev_bin_Linux.zip
           cd Multiwfn_3.8_dev_bin_Linux && rm -rf Multiwfn
-          cp ./Multiwfn .
+          mv ../Multiwfn .
 
       - name: Package Linux artifact to release
         run: |
