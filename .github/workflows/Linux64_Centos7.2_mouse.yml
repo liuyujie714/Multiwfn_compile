@@ -33,7 +33,7 @@ jobs:
       run: |
         rm -rf ${{env.Multiwfn_version}}
         curl -L http://sobereva.com/multiwfn/misc/${{env.Multiwfn_version}}.zip -o Multiwfn_src.zip
-        7z x Multiwfn_src.zip
+        7za x Multiwfn_src.zip
         cp GUI_modify.f90 ${{env.Multiwfn_version}}/GUI.f90
 
     - name: Build static flint
