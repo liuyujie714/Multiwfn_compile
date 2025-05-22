@@ -30,6 +30,7 @@ jobs:
 
     - name: Build static mpfr and gmp
       run: |
+        export LANG=en_US.UTF-8 
         curl -L https://www.mpfr.org/mpfr-current/mpfr-4.2.2.tar.gz
         tar -xf mpfr*
         cd mpfr*
