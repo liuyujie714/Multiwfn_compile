@@ -108,7 +108,7 @@ jobs:
         sed -i 's/-mkl/-qmkl -fpscomp logicals /g' Makefile
 
         cat Makefile
-        make GUI WITH_FD=1 OS=RHEL -j4 
+        make GUI WITH_FD=1 -j4 
 
     - name: Check dependents
       run: |
