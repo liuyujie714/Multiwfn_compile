@@ -79,16 +79,15 @@ jobs:
                       intel-oneapi-mkl-2021.4.0 \
                       intel-oneapi-mkl-devel-2021.4.0
 
-        source /opt/intel/oneapi/setvars.sh
-        echo "INTEL_ONEAPI_ROOT=/opt/intel/oneapi" >> $GITHUB_ENV
-
     - name: Test ifort
       run: |
+        source /opt/intel/oneapi/setvars.sh
         ifort --version
         ls -al /opt/intel/oneapi/mkl/latest/lib/intel64
 
     - name: Build fortran-xlib
       run: |
+        source /opt/intel/oneapi/setvars.sh
         git clone https://github.com/interkosmos/fortran-xlib.git
         cd fortran-xlib
         ifort -O2 -fpscomp logicals -c src/xlib.f90
@@ -98,6 +97,7 @@ jobs:
     
     - name: Compile Multiwfn
       run: |
+        source /opt/intel/oneapi/setvars.sh
         cd ${{env.Multiwfn_version}}
 
         # use staitc flint 
