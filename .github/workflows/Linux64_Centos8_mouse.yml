@@ -51,9 +51,7 @@ jobs:
         tar -xf arb.tar.gz
         rm -rf arb.tar.gz
         cd arb*
-        export FLINT_LIB_DIR=${{github.workspace}}/flint/lib
-        export FLINT_INC_DIR=${{github.workspace}}/flint/include
-        ./configure --extensions=${{github.workspace}}/flint --enable-static 
+        ./configure --extensions=${{github.workspace}}/flint --with-flint=${{github.workspace}}/flint  --enable-static 
         make -j4
         make install
 
