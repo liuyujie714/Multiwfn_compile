@@ -27,7 +27,7 @@ jobs:
         sed -i 's/mirrorlist/#mirrorlist/g' /etc/yum.repos.d/CentOS-*
         sed -i 's|#baseurl=http://mirror.centos.org|baseurl=http://vault.centos.org|g' /etc/yum.repos.d/CentOS-*
         yum install epel-release -y
-        yum search flint 
+        yum install p7zip libGL-devel libGLU-devel motif-devel gmp-devel mpfr-devel gcc gcc-c++ make automake autoconf kernel-devel -y
 
     - name: Download Multiwfn and Modify
       run: |
@@ -35,6 +35,17 @@ jobs:
         curl -L http://sobereva.com/multiwfn/misc/${{env.Multiwfn_version}}.zip -o Multiwfn_src.zip
         7za x Multiwfn_src.zip
         cp GUI_modify.f90 ${{env.Multiwfn_version}}/GUI.f90
+
+    - name: Build static flint
+      run: |
+        curl -L https://flintlib.org/download/flint-2.9.0.tar.gz -o flint.tar.gz
+        tar -xvf flint.tar.gz 
+        rm -rf flint.tar.gz
+        cd flint*
+        ./configure --enable-static --enable-avx2 --prefix=${{github.workspace}}/flint
+        make -j4
+        make install
+        ls ${{github.workspace}}/flint
 
     - name: Install Intel oneAPI compiler (CentOS 7.2)
       run: |
@@ -76,7 +87,7 @@ jobs:
 
         # use staitc flint 
         sed -i "s|INCLUDE = -I./ -I./ext|& -I${{github.workspace}}/flint/include|" Makefile 
-        sed -i "s|^LIB_base =.*|& ./libfortran-xlib.a|" Makefile
+        sed -i "s|^LIB_base =.*|& ./libfortran-xlib.a ${{github.workspace}}/flint/lib/libflint.a|" Makefile
         
         # fix ifort compiler C bind issue for Bool, add '-fpscomp logicals'
         sed -i 's/-mkl/-qmkl -fpscomp logicals /g' Makefile
