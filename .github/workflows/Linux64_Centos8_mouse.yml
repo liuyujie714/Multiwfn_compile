@@ -30,16 +30,16 @@ jobs:
 
     - name: Build static mpfr and gmp
       run: |
-        curl -L https://www.mpfr.org/mpfr-current/mpfr-4.2.2.tar.gz -o mpfr.tar.gz
-        tar -xf mpfr.tar.gz && rm -rf mpfr.tar.gz
-        cd mpfr*
+        curl -L https://gmplib.org/download/gmp/gmp-6.2.1.tar.xz -o gmp.tar.xz
+        tar -xf gmp.tar.xz && rm -rf gmp.tar.xz
+        cd gmp*
         ./configure --enable-static
         make install -j4
 
         cd ..
-        curl -L https://gmplib.org/download/gmp/gmp-6.2.1.tar.xz -o gmp.tar.xz
-        tar -xf gmp.tar.xz && rm -rf gmp.tar.xz
-        cd gmp*
+        curl -L https://www.mpfr.org/mpfr-current/mpfr-4.2.2.tar.gz -o mpfr.tar.gz
+        tar -xf mpfr.tar.gz && rm -rf mpfr.tar.gz
+        cd mpfr*
         ./configure --enable-static
         make install -j4
 
