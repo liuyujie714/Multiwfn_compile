@@ -12,11 +12,11 @@ jobs:
   Linux-64-Centos7:
     runs-on: ubuntu-22.04
     container:
-      image: centos:7.2
+      image: centos:8
 
     steps:
     - name: Checkout
-      uses: actions/checkout@v3
+      uses: actions/checkout@v2
       
     - name: Install dependencies
       run: |
