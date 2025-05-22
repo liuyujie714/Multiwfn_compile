@@ -12,7 +12,7 @@ jobs:
   Linux-64-Centos8:
     runs-on: ubuntu-22.04
     container:
-      image: centos:8
+      image: centos:7
 
     steps:
     - name: Checkout
