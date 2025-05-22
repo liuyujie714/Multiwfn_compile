@@ -1,4 +1,4 @@
-name: Build Multiwfn Linux64 with mouse rotate
+name: Build Multiwfn Linux64 with mouse rotate on Centos 6.1
 
 on:
   push:
@@ -9,24 +9,18 @@ env:
   Multiwfn_version:  Multiwfn_3.8_dev_src_Linux
   
 jobs:
-  Linux-64:
+  Linux-64-Centos7:
     runs-on: ubuntu-22.04
+    container:
+      image: centos:7.2
+
     steps:
     - name: Checkout
       uses: actions/checkout@v3
       
-    - name: Install Dislin libraries
+    - name: Install dependencies
       run: |
-        wget https://www.dislin.de/downloads/linux/i586_64/dislin-11.5.linux.i586_64.tar.gz
-        tar -xf dislin-11.5.linux.i586_64.tar.gz
-        export DISLIN=$PWD/dislin
-        cd dislin-11.5
-        ./INSTALL
-        cd ..
-        ls $DISLIN/                  
-        echo "PATH=$PATH:$DISLIN/bin" >> $GITHUB_ENV
-        echo "LD_LIBRARY_PATH=$DISLIN:$LD_LIBRARY_PATH" >> $GITHUB_ENV 
-        sudo apt install p7zip-full libxm4 libmotif-dev libgl1-mesa-dev libgmp-dev libmpfr-dev
+        sudo yum install libGL-devel libGLU-devel motif-devel gmp-devel mpfr-devel flint-devel
 
     - name: Download Multiwfn and Modify
       run: |
@@ -34,37 +28,37 @@ jobs:
         curl -L http://sobereva.com/multiwfn/misc/${{env.Multiwfn_version}}.zip -o Multiwfn_src.zip
         7z x Multiwfn_src.zip
         cp GUI_modify.f90 ${{env.Multiwfn_version}}/GUI.f90
-    
+
     # - name: Build static flint
     #   run: |
-    #     vcpkg install flint:x64-linux-release arb:x64-linux-release
-    #     ls /usr/local/share/vcpkg/packages/flint_x64-linux-release/lib
-    #     ls /usr/local/share/vcpkg/packages/gmp_x64-linux-release/lib
-    #     ls /usr/local/share/vcpkg/packages/mpfr_x64-linux-release/lib
-    #     ls /usr/local/share/vcpkg/packages/arb_x64-linux-release/lib
+    #     curl -L https://github.com/flintlib/flint/releases/download/v3.2.1/flint-3.2.1.tar.gz -o flint.tar.gz
+    #     tar -xvf flint.tar.gz 
+    #     rm -rf flint.tar.gz
+    #     cd flint*
+    #     ./configure --enable-static --enable-avx2 --prefix=${{github.workspace}}/flint
+    #     make -j4
+    #     make install
+    #     ls ${{github.workspace}}/flint
 
-    - name: Build static flint
+    - name: Install Intel oneAPI compiler (CentOS 7.2)
       run: |
-        curl -L https://github.com/flintlib/flint/releases/download/v3.2.1/flint-3.2.1.tar.gz -o flint.tar.gz
-        tar -xvf flint.tar.gz 
-        rm -rf flint.tar.gz
-        cd flint*
-        ./configure --enable-static --enable-avx2 --prefix=${{github.workspace}}/flint
-        make -j4
-        make install
-        ls ${{github.workspace}}/flint
+        tee > /etc/yum.repos.d/oneAPI.repo << EOF
+        [oneAPI]
+        name=Intel® oneAPI repository
+        baseurl=https://yum.repos.intel.com/oneapi
+        enabled=1
+        gpgcheck=1
+        repo_gpgcheck=1
+        gpgkey=https://yum.repos.intel.com/intel-gpg-keys/GPG-PUB-KEY-INTEL-SW-PRODUCTS.PUB
+        EOF
 
+        sudo yum install -y intel-oneapi-compiler-fortran-2021.4.0 \
+                      intel-oneapi-compiler-dpcpp-cpp-and-cpp-classic-2021.4.0 \
+                      intel-oneapi-mkl-2021.4.0 \
+                      intel-oneapi-mkl-devel-2021.4.0
 
-    - name: Install Intel oneAPI compiler
-      run: |
-        wget https://apt.repos.intel.com/intel-gpg-keys/GPG-PUB-KEY-INTEL-SW-PRODUCTS-2023.PUB
-        sudo apt-key add GPG-PUB-KEY-INTEL-SW-PRODUCTS-2023.PUB
-        rm GPG-PUB-KEY-INTEL-SW-PRODUCTS-2023.PUB
-        echo "deb https://apt.repos.intel.com/oneapi all main" | sudo tee /etc/apt/sources.list.d/oneAPI.list
-        sudo apt-get update
-        sudo apt-get install intel-oneapi-compiler-fortran-2021.4.0 intel-oneapi-compiler-dpcpp-cpp-and-cpp-classic-2021.4.0 intel-oneapi-mkl-2021.4.0 intel-oneapi-mkl-devel-2021.4.0
         source /opt/intel/oneapi/setvars.sh
-        printenv >> $GITHUB_ENV
+        echo "INTEL_ONEAPI_ROOT=/opt/intel/oneapi" >> $GITHUB_ENV
 
     - name: Test ifort
       run: |
@@ -86,14 +80,13 @@ jobs:
 
         # use staitc flint 
         sed -i "s|INCLUDE = -I./ -I./ext|& -I${{github.workspace}}/flint/include|" Makefile 
-        sed -i "s|^LIB_base =.*|& ./libfortran-xlib.a ${{github.workspace}}/flint/lib/libflint.a /usr/lib/x86_64-linux-gnu/libmpfr.a /usr/lib/x86_64-linux-gnu/libgmp.a|" Makefile
-        sed -i 's/-lflint -lflint-arb//g'  Makefile
+        sed -i "s|^LIB_base =.*|& ./libfortran-xlib.a |" Makefile
         
         # fix ifort compiler C bind issue for Bool, add '-fpscomp logicals'
         sed -i 's/-mkl/-qmkl -fpscomp logicals /g' Makefile
 
         cat Makefile
-        make GUI WITH_FD=1 OS=Ubuntu -j4 
+        make GUI WITH_FD=1 OS=RHEL -j4 
 
     - name: Check dependents
       run: |
@@ -117,7 +110,7 @@ jobs:
 
 # refer to https://github.com/endless-sky/endless-sky/blob/master/.github/workflows/cd.yaml
   Release:
-    needs: [Linux-64]
+    needs: [Linux-64-Centos7]
     runs-on: ubuntu-latest
 
     env:
