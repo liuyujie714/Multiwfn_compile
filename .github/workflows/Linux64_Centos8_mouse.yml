@@ -39,10 +39,10 @@ jobs:
     - name: Build static flint
       run: |
         curl -L https://flintlib.org/download/flint-2.9.0.tar.gz -o flint.tar.gz
-        tar -xvf flint.tar.gz 
+        tar -xf flint.tar.gz 
         rm -rf flint.tar.gz
         cd flint*
-        ./configure --enable-static --enable-avx2 --prefix=${{github.workspace}}/flint
+        ./configure --enable-static --prefix=${{github.workspace}}/flint
         make -j4
         make install
         ls ${{github.workspace}}/flint
