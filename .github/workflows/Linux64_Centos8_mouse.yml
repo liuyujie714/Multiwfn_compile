@@ -46,6 +46,7 @@ jobs:
         make -j4
         make install
 
+        cd ..
         curl -L https://github.com/flintlib/arb/archive/refs/tags/2.23.0.tar.gz -o arb.tar.gz
         tar -xf arb.tar.gz
         rm -rf arb.tar.gz
