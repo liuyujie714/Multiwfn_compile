@@ -20,7 +20,7 @@ jobs:
       
     - name: Install dependencies
       run: |
-        sudo yum install libGL-devel libGLU-devel motif-devel gmp-devel mpfr-devel flint-devel
+        yum install libGL-devel libGLU-devel motif-devel gmp-devel mpfr-devel flint-devel
 
     - name: Download Multiwfn and Modify
       run: |
@@ -52,7 +52,7 @@ jobs:
         gpgkey=https://yum.repos.intel.com/intel-gpg-keys/GPG-PUB-KEY-INTEL-SW-PRODUCTS.PUB
         EOF
 
-        sudo yum install -y intel-oneapi-compiler-fortran-2021.4.0 \
+        yum install -y intel-oneapi-compiler-fortran-2021.4.0 \
                       intel-oneapi-compiler-dpcpp-cpp-and-cpp-classic-2021.4.0 \
                       intel-oneapi-mkl-2021.4.0 \
                       intel-oneapi-mkl-devel-2021.4.0
