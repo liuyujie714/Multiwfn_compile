@@ -247,7 +247,7 @@ end module mouse_rotate_mod
         integer(c_long), parameter :: XK_Shift_L    = 65505     !0xffe1
         integer(c_long), parameter :: XK_Shift_R    = 65506     !0xffe2
         integer(c_long), parameter :: None          = 0     
-        integer(c_int), parameter :: XC_exchange    = 50       ! exchange shape
+        integer(c_int), parameter :: XC_exchange    = 50        ! exchange shape
         integer(c_int), parameter :: XC_hand2       = 60        ! hand shape
         integer(c_int), parameter :: GrabModeSync   = 0
         integer(c_int), parameter :: GrabModeAsync  = 1
@@ -337,7 +337,7 @@ end module mouse_rotate_mod
             use defvar
             integer, intent(in) :: id
             type(c_ptr) :: display
-            integer(c_long) :: handle, cursor
+            integer(c_long) :: hwnd, cursor
             integer(c_long)  :: mask = NO_EVENT_MASK
             type(x_event) :: event
             integer :: ival
@@ -349,32 +349,35 @@ end module mouse_rotate_mod
             integer(c_long) :: keycode = 0
             integer(c_int) :: status
             logical(c_bool) :: owner_events = .true.
+    
+            ! check gui type must be X11(1=OpenMotif, 2=GTK, 3=Win32)
+            call gwggui(ival)
+            if (ival/=1) return
             
             ! connect X server
             display = x_open_display(c_null_char)
             if (.not. c_associated(display)) return
             ! get window id (X11) for widget idisgraph
             call gwgxid(id, ival)
-            handle = ival
+            hwnd = ival
     
-            ! 设置鼠标事件监听 
+            ! set mouse event listening  
             mask = ior(BUTTON_PRESS_MASK, BUTTON_RELEASE_MASK)
             mask = ior(mask, BUTTON1_MOTION_MASK) ! left button
     
-            status = XGrabButton(display, AnyButton, AnyModifier, handle, owner_events, &
+            status = XGrabButton(display, AnyButton, AnyModifier, hwnd, owner_events, &
                                 int(mask, 4), GrabModeAsync, GrabModeAsync, None, None)
             !print *, 'GrabButton status: ', status
     
-            status = XGrabKey(display, AnyKey, AnyModifier, handle, owner_events, &
+            status = XGrabKey(display, AnyKey, AnyModifier, hwnd, owner_events, &
                             GrabModeAsync, GrabModeAsync)
             !print *, 'XGrabKey status: ', status
             
             ! change cursor use hand
             cursor = XCreateFontCursor(display, XC_hand2)
-            call XDefineCursor(display, handle, cursor)
-            call x_flush(display)
+            call XDefineCursor(display, hwnd, cursor)
     
-            ! 事件循环
+            ! event loop
             do while (.true.)
                 !print *, 'waiting for event...'
                 call x_next_event(display, event)
@@ -388,11 +391,10 @@ end module mouse_rotate_mod
                         !print *, 'startx=', startx, 'starty=', starty
     
                         ! change cursor to exchange shape
-                        call XUndefineCursor(display, handle)
+                        call XUndefineCursor(display, hwnd)
                         call XFreeCursor(display, cursor)
                         cursor = XCreateFontCursor(display, XC_exchange)
-                        call XDefineCursor(display, handle, cursor)
-                        call x_flush(display)
+                        call XDefineCursor(display, hwnd, cursor)
     
                     case (KEY_PRESS)
                         keycode = XLookupKeysym(event%x_key, 0)
@@ -407,8 +409,8 @@ end module mouse_rotate_mod
                         isDragging = .false.
                         isShiftPressed = .false.
                         isCtrlPressed = .false.
-                        ! delete all
-                        call XUndefineCursor(display, handle)
+                        ! delete all and close server
+                        call XUndefineCursor(display, hwnd)
                         call XFreeCursor(display, cursor)
                         call x_close_display(display) ! close display
                         return
@@ -419,7 +421,7 @@ end module mouse_rotate_mod
                         curry = event%x_motion%y
                         delx = currx - startx
                         dely = curry - starty
-                        if (abs(delx) > 5 .or. abs(dely) > 5) then
+                        if (abs(delx) > 2 .or. abs(dely) > 2) then
                             startX = currx
                             startY = curry
                             
