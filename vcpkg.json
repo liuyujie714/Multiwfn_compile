@@ -1,8 +1,4 @@
 {
   "dependencies": [ "flint", "arb" ],
-  "builtin-baseline": "d2452281016c6d77b6ef199d599d9929eafe4807",
-  "overrides": [
-    { "name": "flint", "version": "2.9.0" },
-    { "name": "arb", "version": "2.21.1" }
-  ]
+  "builtin-baseline": "2ad004460f5db4d3b66f62f5799ff66c265c4b5d",
 }
