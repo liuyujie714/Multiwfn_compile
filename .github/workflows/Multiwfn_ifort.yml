@@ -56,6 +56,8 @@ jobs:
 
       - name: Install flint dependencies via vcpkg
         run: |
+          cd C:\vcpkg
+          git checkout 9e593bb18ea69cc5095e012465dcd675a822ed0d
           vcpkg install flint:x64-windows-static --binarysource="clear;x-gha,readwrite"
 
       - name: Install Fortran compiler/MKL and Visual Studio 2022 integration
