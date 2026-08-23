@@ -5,8 +5,12 @@ if(NOT WIN32 AND NOT MINGW)
   message(FATAL_ERROR "Only windows system is supported!")
 endif()
 
-# 打开Fotran支持
+# 打开Fotran, C支持
 project(Multiwfn Fortran C)
+
+# 设置C11语言标准，高版本flint需要
+set(CMAKE_C_STANDARD 11)
+set(CMAKE_C_STANDARD_REQUIRED ON)
 
 # 清除Release模式下的默认优化选项
 set(CMAKE_Fortran_FLAGS_RELEASE "")
