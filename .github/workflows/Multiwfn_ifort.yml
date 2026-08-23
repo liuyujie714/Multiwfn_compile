@@ -6,7 +6,7 @@ on:
       - master
 
 env:
-  Multiwfn_version:  Multiwfn_3.8_dev_src_Linux
+  Multiwfn_version:  Multiwfn_latest_src_Linux
   BUILD_TYPE: Release
   WINDOWS_HPCKIT_URL: https://registrationcenter-download.intel.com/akdlm/IRC_NAS/c95a3b26-fc45-496c-833b-df08b10297b9/w_HPCKit_p_2024.1.0.561_offline.exe
   WINDOWS_FORTRAN_COMPONENTS: intel.oneapi.win.ifort-compiler
@@ -20,7 +20,7 @@ jobs:
     if: github.event.repository.owner.id == github.event.sender.id
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v6
 
       # - name: Cache Code
       #   id: cache-code
@@ -36,23 +36,10 @@ jobs:
             core.exportVariable('ACTIONS_CACHE_URL', process.env.ACTIONS_CACHE_URL || '');
             core.exportVariable('ACTIONS_RUNTIME_TOKEN', process.env.ACTIONS_RUNTIME_TOKEN || '');
 
-      - name: Install flint dependencies via vcpkg
-        run: |
-          vcpkg install flint:x64-windows-static arb:x64-windows-static --binarysource="clear;x-gha,readwrite"
-
-      - name: Install Fortran compiler/MKL and Visual Studio 2022 integration
-        run: |
-          .github/scripts/install_ifort.bat ${{env.WINDOWS_MKL_URL}} ${{env.WINDOWS_MKL_COMPONENTS}}
-          .github/scripts/install_ifort.bat ${{env.WINDOWS_HPCKIT_URL}} ${{env.WINDOWS_FORTRAN_COMPONENTS}}
-
-      - name: Activate compiler environment and Copy libiomp5md.dll to working directory
-        run: |
-          .github/scripts/activate_env.bat
-
       - name: Download Multiwfn and dislin source code 
         run: |
-          # curl -L http://sobereva.com/multiwfn/misc/${{env.Multiwfn_version}}.zip -o Multiwfn_src.zip
-          # 7z x Multiwfn_src.zip
+          curl -L http://sobereva.com/multiwfn/misc/${{env.Multiwfn_version}}.zip -o Multiwfn_src.zip
+          7z x Multiwfn_src.zip
 
           # download latest manual and examples to misc
           curl -L http://sobereva.com/multiwfn/misc/Multiwfn_3.8_dev_bin_Win64.rar -o bin.rar
@@ -66,6 +53,19 @@ jobs:
           unzip dislin.zip -d temp
           copy-Item -Path "temp\disifl_d.lib"  -Destination  . -Force
           dir
+
+      - name: Install flint dependencies via vcpkg
+        run: |
+          vcpkg install flint:x64-windows-static arb:x64-windows-static --binarysource="clear;x-gha,readwrite"
+
+      - name: Install Fortran compiler/MKL and Visual Studio 2022 integration
+        run: |
+          .github/scripts/install_ifort.bat ${{env.WINDOWS_MKL_URL}} ${{env.WINDOWS_MKL_COMPONENTS}}
+          .github/scripts/install_ifort.bat ${{env.WINDOWS_HPCKIT_URL}} ${{env.WINDOWS_FORTRAN_COMPONENTS}}
+
+      - name: Activate compiler environment and Copy libiomp5md.dll to working directory
+        run: |
+          .github/scripts/activate_env.bat
         
       - name: Configure build for amd64
         uses: ilammy/msvc-dev-cmd@v1
@@ -124,7 +124,7 @@ jobs:
         RELEASE_TAG: bleed
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v6
 
       - name: Install github-release
         run: |
