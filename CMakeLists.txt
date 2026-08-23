@@ -11,7 +11,7 @@ project(Multiwfn Fortran C)
 # 清除Release模式下的默认优化选项
 set(CMAKE_Fortran_FLAGS_RELEASE "")
 
-# 需要flint相关库: flint, arb, gmp, mpfr, pthreads 
+# 需要flint相关库: flint, gmp, mpfr, pthreads 
 if(MINGW)
     set(CMAKE_FIND_LIBRARY_SUFFIXES ".a")
     set(CMAKE_FIND_LIBRARY_PREFIXES "lib")
@@ -65,7 +65,6 @@ else()
     # for MSVC and Ifort
     set(LIBRARIES
         FLINT
-        ARB
         GMP
         MPFR
         PTHREADS
@@ -186,8 +185,8 @@ target_compile_options(
 
 # 编译C接口
 add_library(lib_2f2 STATIC ${C_SRC})
-target_include_directories(lib_2f2 PRIVATE ${FLINT_INCLUDE} ${MPFR_INCLUDE} ${GMP_INCLUDE} ${PTHREADS_INCLUDE} ${ARB_INCLUDE})
-target_link_libraries(lib_2f2 PRIVATE ${FLINT_LIB} ${MPFR_LIB} ${GMP_LIB} ${PTHREADS_LIB} ${ARB_LIB})
+target_include_directories(lib_2f2 PRIVATE ${FLINT_INCLUDE} ${MPFR_INCLUDE} ${GMP_INCLUDE} ${PTHREADS_INCLUDE}
+target_link_libraries(lib_2f2 PRIVATE ${FLINT_LIB} ${MPFR_LIB} ${GMP_LIB} ${PTHREADS_LIB} 
 
 # 生成目标文件
 add_library(lib_base STATIC ${SOURCES_GUI} ${SOURCES} ${LIBRETA_SOURCES})
