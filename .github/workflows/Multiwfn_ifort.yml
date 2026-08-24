@@ -5,7 +5,7 @@ on:
     branches:
       - master
   schedule:
-    - cron: '0 */12 * * *'
+    - cron: '0 */6 * * *'
   workflow_dispatch:
 
 env:
@@ -91,11 +91,11 @@ jobs:
           7z x Multiwfn_src.zip
 
           # download latest manual and examples to misc
-          curl -L http://sobereva.com/multiwfn/misc/Multiwfn_latest_bin_Linux_noGUI.zip -o bin.zip
-          7z x bin.zip -omisc examples *.ini *.pdf *.txt -r -y
+          curl -L http://sobereva.com/multiwfn/misc/Multiwfn_latest_bin_Win64.7z -o bin.7z
+          7z x bin.7z -omisc examples *.ini *.pdf *.txt -r -y
           Move-Item -Path "misc/Multiwfn_*/*" "misc/." -Force
           Remove-Item -Path "misc/Multiwfn_*" -Force
-          Remove-Item -Path "bin.zip" -Force
+          Remove-Item -Path "bin.7z" -Force
 
           # download rcedit for icon
           curl -L -o rcedit-x64.exe https://github.com/electron/rcedit/releases/download/v2.0.0/rcedit-x64.exe
@@ -108,7 +108,7 @@ jobs:
 
       - name: Install flint dependencies via vcpkg
         run: |
-          vcpkg install flint:x64-windows-static-release --binarysource="clear;x-gha,readwrite"
+          vcpkg install flint:x64-windows-static-release --binarysource="clear;nuget,readwrite"
           dir C:\vcpkg\packages\flint_x64-windows-static*
 
       - name: Install Fortran compiler/MKL and Visual Studio 2022 integration

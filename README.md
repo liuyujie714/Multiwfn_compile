@@ -16,7 +16,7 @@
 -----------------------------
 # 源码获取
 
-[Multiwfn_latest_src_Linux.zip](http://sobereva.com/multiwfn/misc/Multiwfn_latest_src_Linux.zip)这个源码虽然写的是Linux的，但是实测在Windows上可以正常编译和运行的。
+[Multiwfn_latest_src_Linux.zip](http://sobereva.com/multiwfn/misc/Multiwfn_latest_src_Linux.zip)这个虽然写的是Linux的，但实际上源码和Windows一样。
 
 # 编译方案
 
