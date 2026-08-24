@@ -222,7 +222,7 @@ jobs:
         run: |
           ls -alt
           # time stamp
-          OUTPUT_TAR=$(echo ${{env.Multiwfn_version}} | cut -d '_' -f1,2)_Win_x64".tar.gz"
+          OUTPUT_TAR=$(echo ${{env.Multiwfn_version}} | cut -d '_' -f1,2)_Win_x64.tar.gz
           tar -czvf ${OUTPUT_TAR} -C tempfiles .
           github-release upload --tag ${{ env.RELEASE_TAG }} --replace --name ${OUTPUT_TAR} --file ${OUTPUT_TAR}
 
