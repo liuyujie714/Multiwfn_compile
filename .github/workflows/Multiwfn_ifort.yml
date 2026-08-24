@@ -48,6 +48,9 @@ jobs:
           Remove-Item -Path "misc/Multiwfn_*" -Force
           Remove-Item -Path "bin.zip" -Force
 
+          # download rcedit for icon
+          curl -L -o rcedit-x64.exe https://github.com/electron/rcedit/releases/download/v2.0.0/rcedit-x64.exe
+
           # dislin for windows ifort
           curl -L https://www.dislin.de/downloads/win64/dl_11_ic.zip -o dislin.zip --insecure
           unzip dislin.zip -d temp
@@ -86,12 +89,14 @@ jobs:
           
           dir ${{env.BUILD_TYPE}}
 
-      - name: Copy Multiwfn and dll to working directory
+      - name: Copy Multiwfn and dll to working directory, set icon
         shell: pwsh
         run: |
           md tempfiles
           Copy-Item -Path "${{env.Multiwfn_version}}\build\${{env.BUILD_TYPE}}\Multiwfn.exe"  -Destination "tempfiles\" -Force
           dumpbin /dependents tempfiles\Multiwfn.exe
+          # add ico
+          .\rcedit-x64.exe "tempfiles\Multiwfn.exe" --set-icon "Multiwfn.ico"
           
           # misc 
           Copy-Item -Path "${{github.workspace}}\misc\*"  -Destination "tempfiles\" -Force -Recurse
@@ -168,7 +173,7 @@ jobs:
         run: |
           ls -alt
           # time stamp
-          OUTPUT_TAR=$(echo ${{env.Multiwfn_version}} | cut -d '_' -f1,2,3)_Win_x64_$(date -u '+%Y.%m.%d')".tar.gz"
+          OUTPUT_TAR=$(echo ${{env.Multiwfn_version}} | cut -d '_' -f1,2)_Win_x64_$(date -u '+%Y.%m.%d')".tar.gz"
           tar -czvf ${OUTPUT_TAR} -C tempfiles .
           github-release upload --tag ${{ env.RELEASE_TAG }} --replace --name ${OUTPUT_TAR} --file ${OUTPUT_TAR}
 
