@@ -116,8 +116,8 @@ else()
     set(OPT_O2 "/O2")
     set(LIB_GUI "${CMAKE_SOURCE_DIR}/disifl_d.lib")
 
-    # 设置链接器选项
-    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /STACK:1900000000 legacy_stdio_definitions.lib")
+    # 设置链接器选择
+    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /STACK:1900000000 legacy_stdio_definitions.lib /NODEFAULTLIB:libucrt.lib")
 
     # install all flint lib and include
     if (CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
