@@ -8,6 +8,10 @@ on:
     - cron: '0 */6 * * *'
   workflow_dispatch:
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 env:
   Multiwfn_version:  Multiwfn_latest_src_Linux
   BUILD_TYPE: Release
@@ -15,6 +19,8 @@ env:
   WINDOWS_FORTRAN_COMPONENTS: intel.oneapi.win.ifort-compiler
   WINDOWS_MKL_URL: https://registrationcenter-download.intel.com/akdlm/IRC_NAS/78da61ee-8ded-4aab-8964-fea48243b05e/w_onemkl_p_2024.1.0.696_offline.exe
   WINDOWS_MKL_COMPONENTS: intel.oneapi.win.mkl.devel
+  VCPKG_BINARY_SOURCES: "clear;files,C:/vcpkg/binary-cache,readwrite"
+
 
 jobs:
   Check-Update:
@@ -108,7 +114,7 @@ jobs:
 
       - name: Install flint dependencies via vcpkg
         run: |
-          vcpkg install flint:x64-windows-static-release --binarysource="clear;nuget,readwrite"
+          vcpkg install flint:x64-windows-static-release
           dir C:\vcpkg\packages\flint_x64-windows-static*
 
       - name: Install Fortran compiler/MKL and Visual Studio 2022 integration
