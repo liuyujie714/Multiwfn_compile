@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - master
+  schedule:
+    - cron: '0 */6 * * *'
+  workflow_dispatch:
 
 env:
   Multiwfn_version:  Multiwfn_latest_src_Linux
@@ -14,10 +17,56 @@ env:
   WINDOWS_MKL_COMPONENTS: intel.oneapi.win.mkl.devel
 
 jobs:
+  Check-Update:
+    runs-on: ubuntu-latest
+    outputs:
+      updated: ${{ steps.check.outputs.updated }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+        
+      - name: Restore hash from cache
+        id: cache-hash
+        uses: actions/cache@v4
+        with:
+          path: .source_hash
+          key: source-hash-${{ runner.os }}
+          
+      - name: Download and check source hash
+        id: check
+        run: |
+          curl -L http://sobereva.com/multiwfn/misc/Multiwfn_latest_src_Linux.zip -o current.zip
+          CURRENT_HASH=$(sha256sum current.zip | cut -d' ' -f1)
+          echo "current_hash=$CURRENT_HASH" >> $GITHUB_OUTPUT
+          
+          if [ -f .source_hash ]; then
+            LAST_HASH=$(cat .source_hash)
+            echo "last_hash=$LAST_HASH" >> $GITHUB_OUTPUT
+            
+            if [ "$CURRENT_HASH" != "$LAST_HASH" ]; then
+              echo "updated=true" >> $GITHUB_OUTPUT
+              echo "Source updated! Starting build..."
+            else
+              echo "updated=false" >> $GITHUB_OUTPUT
+              echo "No update detected"
+            fi
+          else
+            echo "updated=true" >> $GITHUB_OUTPUT
+            echo "First run, starting build..."
+          fi
+          
+      - name: Save hash to cache
+        if: steps.check.outputs.updated == 'true'
+        run: |
+          echo "${{ steps.check.outputs.current_hash }}" > .source_hash
+
   Windows:
     runs-on: windows-2022
-
-    if: github.event.repository.owner.id == github.event.sender.id
+    needs: Check-Update
+    if: |
+      needs.Check-Update.outputs.updated == 'true' ||
+      github.event_name == 'push' ||
+      github.event_name == 'workflow_dispatch'
     steps:
       - name: Checkout
         uses: actions/checkout@v6
