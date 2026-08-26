@@ -112,6 +112,16 @@ jobs:
           copy-Item -Path "temp\disifl_d.lib"  -Destination  . -Force
           dir
 
+      - name: Restore vcpkg binary cache
+        uses: actions/cache@v4
+        id: vcpkg-cache
+        with:
+          path: C:/vcpkg/binary-cache
+          key: vcpkg-bin-${{ runner.os }}-flint-${{ hashFiles('**/vcpkg.json') }}
+          restore-keys: |
+            vcpkg-bin-${{ runner.os }}-flint-
+            vcpkg-bin-${{ runner.os }}-
+            
       - name: Install flint dependencies via vcpkg
         run: |
           vcpkg install flint:x64-windows-static-release
