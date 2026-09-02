@@ -27,45 +27,39 @@ jobs:
   Check-Update:
     runs-on: ubuntu-latest
     outputs:
-      updated: ${{ steps.check.outputs.updated }}
+      updated: ${{ steps.decide.outputs.updated }}
+      current_hash: ${{ steps.check.outputs.current_hash }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v6
-        
-      - name: Restore hash from cache
-        id: cache-hash
-        uses: actions/cache@v4
-        with:
-          path: .source_hash
-          key: source-hash-${{ runner.os }}
-          
-      - name: Download and check source hash
+
+      - name: Download and compute source hash
         id: check
         run: |
           curl -L http://sobereva.com/multiwfn/misc/Multiwfn_latest_src_Linux.zip -o current.zip
           CURRENT_HASH=$(sha256sum current.zip | cut -d' ' -f1)
           echo "current_hash=$CURRENT_HASH" >> $GITHUB_OUTPUT
-          
-          if [ -f .source_hash ]; then
-            LAST_HASH=$(cat .source_hash)
-            echo "last_hash=$LAST_HASH" >> $GITHUB_OUTPUT
-            
-            if [ "$CURRENT_HASH" != "$LAST_HASH" ]; then
-              echo "updated=true" >> $GITHUB_OUTPUT
-              echo "Source updated! Starting build..."
-            else
-              echo "updated=false" >> $GITHUB_OUTPUT
-              echo "No update detected"
-            fi
+
+      # A cache marker keyed by this exact source hash exists => this version was
+      # already built and released successfully. Cache entries are immutable, so we
+      # key by hash instead of trying to overwrite a fixed key.
+      - name: Check if this source version was already released
+        id: srcmark
+        uses: actions/cache/restore@v4
+        with:
+          path: .source_hash
+          key: multiwfn-src-${{ runner.os }}-${{ steps.check.outputs.current_hash }}
+
+      - name: Decide whether to build
+        id: decide
+        run: |
+          if [ "${{ steps.srcmark.outputs.cache-hit }}" == "true" ]; then
+            echo "updated=false" >> $GITHUB_OUTPUT
+            echo "No update detected (this source version was already released)"
           else
             echo "updated=true" >> $GITHUB_OUTPUT
-            echo "First run, starting build..."
+            echo "Source updated! Starting build..."
           fi
-          
-      - name: Save hash to cache
-        if: steps.check.outputs.updated == 'true'
-        run: |
-          echo "${{ steps.check.outputs.current_hash }}" > .source_hash
 
   Windows:
     runs-on: windows-2022
@@ -92,7 +86,7 @@ jobs:
             core.exportVariable('ACTIONS_CACHE_URL', process.env.ACTIONS_CACHE_URL || '');
             core.exportVariable('ACTIONS_RUNTIME_TOKEN', process.env.ACTIONS_RUNTIME_TOKEN || '');
 
-      - name: Download Multiwfn and dislin source code 
+      - name: Download Multiwfn and dislin source code
         run: |
           curl -L http://sobereva.com/multiwfn/misc/${{env.Multiwfn_version}}.zip -o Multiwfn_src.zip
           7z x Multiwfn_src.zip
@@ -122,7 +116,7 @@ jobs:
           restore-keys: |
             vcpkg-bin-${{ runner.os }}-flint-
             vcpkg-bin-${{ runner.os }}-
-            
+
       - name: Install flint dependencies via vcpkg
         run: |
           vcpkg install flint:x64-windows-static-release
@@ -136,7 +130,7 @@ jobs:
       - name: Activate compiler environment and Copy libiomp5md.dll to working directory
         run: |
           .github/scripts/activate_env.bat
-        
+
       - name: Configure build for amd64
         uses: ilammy/msvc-dev-cmd@v1
         with:
@@ -151,8 +145,8 @@ jobs:
           copy ..\disifl_d.lib . /Y
           md build && cd build
           cmake .. -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DFLINT_INCLUDE=C:\vcpkg\packages\flint_x64-windows-static-release\include -DFLINT_LIB=C:\vcpkg\packages\flint_x64-windows-static-release\lib\flint.lib -A x64
-          cmake --build . --config ${{env.BUILD_TYPE}} --target install 
-          
+          cmake --build . --config ${{env.BUILD_TYPE}} --target install
+
           dir ${{env.BUILD_TYPE}}
 
       - name: Copy Multiwfn and dll to working directory, set icon
@@ -163,8 +157,8 @@ jobs:
           dumpbin /dependents tempfiles\Multiwfn.exe
           # add ico
           .\rcedit-x64.exe "tempfiles\Multiwfn.exe" --set-icon "Multiwfn.ico"
-          
-          # misc 
+
+          # misc
           Copy-Item -Path "${{github.workspace}}\misc\*"  -Destination "tempfiles\" -Force -Recurse
           # dll
           Copy-Item -Path "*.dll"                         -Destination "tempfiles\" -Force
@@ -173,7 +167,7 @@ jobs:
         run: |
           cd tempfiles
           echo q | .\Multiwfn.exe .\examples\phenanthrene.fch
-          
+
       - name: Upload Multiwfn
         uses: actions/upload-artifact@v4
         if: ${{ success() }}
@@ -186,7 +180,7 @@ jobs:
 
   # refer to https://github.com/endless-sky/endless-sky/blob/master/.github/workflows/cd.yaml
   Release:
-    needs: [Windows]
+    needs: [Check-Update, Windows]
     runs-on: ubuntu-latest
 
     env:
@@ -202,7 +196,7 @@ jobs:
           go install github.com/github-release/github-release@latest
           echo "GOPATH=$(go env GOPATH)" >> $GITHUB_ENV
           echo "$(go env GOPATH)/bin" >> $GITHUB_PATH
-      
+
       - name: Set environment variables
         run: |
           echo "RELEASE_TAG=bleed" >> $GITHUB_ENV
@@ -214,7 +208,7 @@ jobs:
         run: |
           git tag --force ${{ env.RELEASE_TAG }} ${{ github.sha }}
           git push --tags --force
-      
+
       - name: Check continuous release status
         run: |
           if ! github-release info -t ${{ env.RELEASE_TAG }} > /dev/null 2>&1; then
@@ -222,14 +216,14 @@ jobs:
           else
             echo "RELEASE_COMMAND=edit" >> $GITHUB_ENV
           fi
-      
+
       - name: Setup continuous release
         run: |
           DESCRIPTION="Triggered on $(date -u '+%Y/%m/%d, %H:%M') UTC by commit ${{ github.sha }} (@${{ github.actor }})
           This is an automated build of the latest source. It may be unstable or even crash, corrupt your save or eat your kitten. Use with caution!
           https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
           github-release ${{env.RELEASE_COMMAND}} --tag ${{ env.RELEASE_TAG }} --name "Bleed Release" --description "$DESCRIPTION" --pre-release
-      
+
       - name: Download Windows artifact
         uses: actions/download-artifact@v4
         with:
@@ -247,3 +241,19 @@ jobs:
           OUTPUT_TAR=flint-static-lib.tar.gz
           tar -czvf ${OUTPUT_TAR} -C flint_staticlib .
           github-release upload --tag ${{ env.RELEASE_TAG }} --replace --name ${OUTPUT_TAR} --file ${OUTPUT_TAR}
+
+      # Only mark this source version as released AFTER the build + upload succeeded.
+      # Otherwise a failed build would permanently suppress future builds of this hash.
+      - name: Mark this source hash as released
+        if: ${{ success() && needs.Check-Update.outputs.updated == 'true' }}
+        run: echo "${{ needs.Check-Update.outputs.current_hash }}" > .source_hash
+
+      # Save a NEW cache entry keyed by this source hash. Cache entries are immutable,
+      # so a unique per-hash key lets every new version add its own marker. Skip on
+      # forced rebuilds (push/dispatch) of an already-released hash to avoid a duplicate key.
+      - name: Save release marker to cache
+        if: ${{ success() && needs.Check-Update.outputs.updated == 'true' }}
+        uses: actions/cache/save@v4
+        with:
+          path: .source_hash
+          key: multiwfn-src-${{ runner.os }}-${{ needs.Check-Update.outputs.current_hash }}
