@@ -8,6 +8,10 @@ endif()
 # 打开Fotran, C支持
 project(Multiwfn Fortran C)
 
+if(POLICY CMP0177)
+    cmake_policy(SET CMP0177 NEW)
+endif()
+
 # 设置C11语言标准，高版本flint需要
 set(CMAKE_C_STANDARD 11)
 set(CMAKE_C_STANDARD_REQUIRED ON)
