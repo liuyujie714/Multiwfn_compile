@@ -204,6 +204,7 @@ target_compile_options(
         PRIVATE 
         ${COMMON_FLAGS}
         "$<$<CONFIG:Release>:${OPT_O2}>"
+        "$<$<Fortran_COMPILER_ID:Intel>:/MP>"
 )
 target_link_libraries(lib_base PRIVATE lib_hrr lib_2f2 ${LAPACK_LIB} ${BLAS_LIB})
 
