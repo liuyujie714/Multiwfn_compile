@@ -59,6 +59,7 @@ if(MINGW)
         -fopenmp
         -static
         -ffree-line-length-none
+        -std=legacy # fix Missing comma between descriptors error
     )
 
     # OPT_O1 只用于blockhrr_012345.f90
